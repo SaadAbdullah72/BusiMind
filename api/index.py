@@ -442,3 +442,60 @@ def handle_simulation(request: SimulationRequest):
             "implementation_steps": ["Review strategy.", "Audit budget."]
         }
     return data
+
+class GoogleLoginRequest(BaseModel):
+    token: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+
+@app.get("/api/config")
+def get_config():
+    return {"google_client_id": os.getenv("VITE_GOOGLE_CLIENT_ID")}
+
+@app.post("/api/auth/login")
+def credentials_login(payload: LoginRequest):
+    admin_email = "saad489254@gmail.com"
+    admin_password = "admin123"
+    if payload.email.strip() == admin_email and payload.password == admin_password:
+        return {"status": "success", "email": admin_email}
+    return JSONResponse(status_code=401, content={"status": "error", "message": "Invalid email or password."})
+
+@app.post("/api/auth/google")
+def google_auth(payload: GoogleLoginRequest):
+    client_id = os.getenv("VITE_GOOGLE_CLIENT_ID")
+    if not client_id:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "Google Client ID not configured on backend."})
+    try:
+        from google.oauth2 import idtoken
+        from google.auth.transport import requests as google_requests
+        idinfo = idtoken.verify_oauth2_token(payload.token, google_requests.Request(), client_id)
+        email = idinfo.get("email")
+        name = idinfo.get("name")
+        if email != "saad489254@gmail.com":
+            return JSONResponse(status_code=401, content={"status": "error", "message": f"Unauthorized email: {email}"})
+        return {"status": "success", "email": email, "name": name}
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"status": "error", "message": f"Token verification failed: {str(e)}"})
+
+@app.post("/api/auth/forgot-password")
+def forgot_password(payload: ForgotPasswordRequest):
+    if payload.email.strip() == "saad489254@gmail.com":
+        return {"status": "success", "message": "OTP sent successfully.", "otp": "489254"}
+    return JSONResponse(status_code=404, content={"status": "error", "message": "Email address not found."})
+
+@app.post("/api/auth/reset-password")
+def reset_password(payload: ResetPasswordRequest):
+    if payload.email.strip() == "saad489254@gmail.com" and payload.otp == "489254":
+        return {"status": "success", "message": "Password reset successfully."}
+    return JSONResponse(status_code=400, content={"status": "error", "message": "Invalid OTP code."})
+

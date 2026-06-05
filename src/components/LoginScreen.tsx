@@ -1,20 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface LoginScreenProps {
   onLoginSuccess: (email: string) => void;
 }
 
+type AuthView = 'login' | 'forgot-password' | 'otp-verify';
+
 export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
+  const [view, setView] = useState<AuthView>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState('');
-  const [showGoogleModal, setShowGoogleModal] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
 
-  const handleCredentialsLogin = (e: React.FormEvent) => {
+  // Forgot Password / OTP States
+  const [resetEmail, setResetEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [simulatedNotification, setSimulatedNotification] = useState<string | null>(null);
+
+  // Initialize Google Login dynamically using Client ID from backend config
+  useEffect(() => {
+    const initGoogleOAuth = async () => {
+      try {
+        const res = await fetch('/api/config');
+        const data = await res.json();
+        
+        if (data.google_client_id && (window as any).google) {
+          (window as any).google.accounts.id.initialize({
+            client_id: data.google_client_id,
+            callback: handleGoogleCredentialResponse,
+            context: 'signin',
+            ux_mode: 'popup',
+            auto_select: false,
+          });
+
+          // Render button programmatically
+          const btnParent = document.getElementById("google-signin-btn");
+          if (btnParent) {
+            (window as any).google.accounts.id.renderButton(btnParent, {
+              type: 'standard',
+              theme: 'filled_black',
+              size: 'large',
+              text: 'continue_with',
+              shape: 'pill',
+              width: 380,
+              logo_alignment: 'center'
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Google authentication service failed to initialize:", err);
+      }
+    };
+
+    // Brief timeout to ensure the Google GSI CDN script has parsed in DOM
+    const delayTimer = setTimeout(initGoogleOAuth, 800);
+    return () => clearTimeout(delayTimer);
+  }, [view]);
+
+  // Handle Google OAuth successful callback response
+  const handleGoogleCredentialResponse = async (response: any) => {
+    setError('');
+    setIsLoading(true);
+    setLoadingStep('Verifying Google authorization token...');
+    
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: response.credential })
+      });
+      const data = await res.json();
+      
+      if (res.ok && data.status === 'success') {
+        triggerLoadingSequence(data.email);
+      } else {
+        setError(data.message || 'Google authorization rejected.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('Failed to reach authentication gateway.');
+      setIsLoading(false);
+    }
+  };
+
+  // Credentials form submission (verified on backend)
+  const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -23,21 +99,114 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       return;
     }
 
-    if (email.trim() === 'saad489254@gmail.com' && password === 'admin123') {
-      triggerLoginSuccess('saad489254@gmail.com');
-    } else {
-      setError('Invalid email or password.');
+    setIsLoading(true);
+    setLoadingStep('Sending secure credentials...');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        triggerLoadingSequence(data.email);
+      } else {
+        setError(data.message || 'Invalid email or password.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('Server connection failed.');
+      setIsLoading(false);
     }
   };
 
-  const triggerLoginSuccess = (userEmail: string) => {
+  // Forgot password form submission
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setInfoMessage('');
+
+    if (!resetEmail) {
+      setError('Please enter your email.');
+      return;
+    }
+
     setIsLoading(true);
-    setLoadingStep('Connecting to secure gateway...');
-    
+    setLoadingStep('Checking email eligibility...');
+
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        setIsLoading(false);
+        setView('otp-verify');
+        setInfoMessage('Enter the 6-digit OTP code sent to your email.');
+        // Show simulated notification alert at top of page
+        setSimulatedNotification(`📧 [SIMULATION] OTP sent to ${resetEmail}: ${data.otp}`);
+        setTimeout(() => setSimulatedNotification(null), 15000); // clear after 15s
+      } else {
+        setError(data.message || 'Email not found.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('Failed to request OTP code.');
+      setIsLoading(false);
+    }
+  };
+
+  // OTP Verification and Password Reset
+  const handleOTPVerifySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!otpCode || !newPassword) {
+      setError('All fields are required.');
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadingStep('Verifying OTP code...');
+
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: resetEmail,
+          otp: otpCode,
+          new_password: newPassword
+        })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        setIsLoading(false);
+        setView('login');
+        setInfoMessage('Password reset successfully! Log in with your new credentials.');
+        setSimulatedNotification(null);
+      } else {
+        setError(data.message || 'OTP verification failed.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError('Failed to verify OTP code.');
+      setIsLoading(false);
+    }
+  };
+
+  const triggerLoadingSequence = (userEmail: string) => {
+    setLoadingStep('Establishing secure network tunnel...');
     setTimeout(() => {
-      setLoadingStep('Authenticating credentials...');
+      setLoadingStep('Authenticating encrypted tokens...');
       setTimeout(() => {
-        setLoadingStep('Initializing AI model environments...');
+        setLoadingStep('Syncing neural analytics layers...');
         setTimeout(() => {
           onLoginSuccess(userEmail);
         }, 800);
@@ -45,25 +214,75 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }, 600);
   };
 
-  const handleGoogleClick = () => {
-    setShowGoogleModal(true);
-  };
-
-  const selectGoogleAccount = () => {
-    setGoogleLoading(true);
-    setTimeout(() => {
-      setShowGoogleModal(false);
-      setGoogleLoading(false);
-      triggerLoginSuccess('saad489254@gmail.com');
-    }, 1200);
-  };
-
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 flex flex-col font-sans antialiased relative overflow-hidden select-none">
+      <style>{`
+        .logo-3d-container {
+          perspective: 800px;
+        }
+        .logo-3d-sphere {
+          position: relative;
+          width: 52px;
+          height: 52px;
+          transform-style: preserve-3d;
+          animation: logo-spin-y 8s linear infinite;
+        }
+        .logo-3d-ring {
+          position: absolute;
+          inset: 0;
+          border: 1.5px solid rgba(249, 115, 22, 0.3);
+          border-radius: 50%;
+          transform-style: preserve-3d;
+        }
+        .logo-3d-ring-1 { transform: rotateY(0deg); border-color: rgba(249, 115, 22, 0.65); filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.25)); }
+        .logo-3d-ring-2 { transform: rotateY(45deg); }
+        .logo-3d-ring-3 { transform: rotateY(90deg); border-color: rgba(249, 115, 22, 0.65); filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.25)); }
+        .logo-3d-ring-4 { transform: rotateY(135deg); }
+        .logo-3d-ring-h { transform: rotateX(90deg); border-color: rgba(251, 191, 36, 0.5); filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.2)); }
+        .logo-3d-core {
+          position: absolute;
+          width: 14px;
+          height: 14px;
+          background: radial-gradient(circle, #ff7a1a 0%, #c45a00 100%);
+          border-radius: 50%;
+          left: 50%;
+          top: 50%;
+          transform: translate3d(-50%, -50%, 0);
+          box-shadow: 0 0 14px 4px rgba(249, 115, 22, 0.8);
+          animation: core-pulse 2s ease-in-out infinite alternate;
+        }
+        @keyframes logo-spin-y {
+          0% { transform: rotateY(0deg) rotateX(15deg); }
+          100% { transform: rotateY(360deg) rotateX(15deg); }
+        }
+        @keyframes core-pulse {
+          0% { transform: translate3d(-50%, -50%, 0) scale(0.92); opacity: 0.8; }
+          100% { transform: translate3d(-50%, -50%, 0) scale(1.08); opacity: 1; }
+        }
+      `}</style>
       
       {/* Background Decorative Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
+
+      {/* Simulated Email / OTP Notification Banner */}
+      {simulatedNotification && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 animate-slideDown">
+          <div className="bg-[#0e0e11] border border-orange-500/30 rounded-2xl p-4 shadow-[0_4px_30px_rgba(249,115,22,0.15)] backdrop-blur-md flex items-start space-x-3.5">
+            <div className="text-2xl mt-0.5 animate-bounce">🔑</div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider">Secure Access Notification</h4>
+              <p className="text-xs text-slate-300 mt-1 font-mono break-words">{simulatedNotification}</p>
+            </div>
+            <button 
+              onClick={() => setSimulatedNotification(null)}
+              className="text-slate-500 hover:text-slate-300 transition-colors text-xs font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen w-full relative z-10">
         
@@ -108,151 +327,284 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           
           <div className="max-w-md w-full mx-auto space-y-8">
             
-            {/* Branding Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center p-0.5 shadow-[0_0_15px_rgba(249,115,22,0.2)]">
-                <div className="w-full h-full bg-[#0a0a0c] rounded-[10px] flex items-center justify-center">
-                  <svg className="w-5 h-5 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                  </svg>
+            {/* 3D Rotating Logo */}
+            <div className="flex flex-col items-center">
+              <div className="logo-3d-container w-20 h-20 flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-orange-500/5 rounded-full blur-xl pointer-events-none"></div>
+                <div className="logo-3d-sphere">
+                  <div className="logo-3d-ring logo-3d-ring-1"></div>
+                  <div className="logo-3d-ring logo-3d-ring-2"></div>
+                  <div className="logo-3d-ring logo-3d-ring-3"></div>
+                  <div className="logo-3d-ring logo-3d-ring-4"></div>
+                  <div className="logo-3d-ring logo-3d-ring-h"></div>
+                  <div className="logo-3d-core"></div>
                 </div>
               </div>
-              <span className="text-lg font-bold tracking-wider text-slate-200">RetailMind AI</span>
             </div>
 
-            {/* Headers */}
-            <div>
-              <h1 className="text-3xl font-extrabold text-white tracking-tight">Get Started</h1>
-              <p className="text-slate-400 text-sm mt-2 font-medium">
-                Welcome to HextaStudio - Let's get started
-              </p>
-            </div>
-
-            {/* Main Form */}
-            <form onSubmit={handleCredentialsLogin} className="space-y-6">
-              
-              {error && (
-                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 font-semibold flex items-center space-x-2 animate-shake">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                  </svg>
-                  <span>{error}</span>
+            {view === 'login' && (
+              <>
+                <div className="text-center md:text-left">
+                  <h1 className="text-3xl font-extrabold text-white tracking-tight">Get Started</h1>
                 </div>
-              )}
 
-              {/* Email Input */}
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Your Email</label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
-                  />
-                </div>
-              </div>
+                <form onSubmit={handleCredentialsLogin} className="space-y-6">
+                  
+                  {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 font-semibold flex items-center space-x-2 animate-shake">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                      </svg>
+                      <span>{error}</span>
+                    </div>
+                  )}
 
-              {/* Password Input */}
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="DsIs23@#12ds"
-                    className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl pl-4 pr-11 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
-                  />
+                  {infoMessage && (
+                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 font-semibold flex items-center space-x-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span>{infoMessage}</span>
+                    </div>
+                  )}
+
+                  {/* Email Input */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Your Email</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+
+                  {/* Password Input */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl pl-4 pr-11 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        {showPassword ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Remember and Forgot password */}
+                  <div className="flex items-center justify-between text-xs">
+                    <label className="flex items-center space-x-2 text-slate-400 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        defaultChecked 
+                        className="accent-orange-500 rounded bg-[#0a0a0c] border-[#1e1e24]"
+                      />
+                      <span>Remember me</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => { setView('forgot-password'); setError(''); setInfoMessage(''); }}
+                      className="text-orange-500 hover:text-orange-400 font-medium cursor-pointer"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+
+                  {/* Sign In Button */}
                   <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
                   >
-                    {showPassword ? (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                      </svg>
+                    {isLoading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Signing in...</span>
+                      </div>
                     ) : (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
+                      <span>Sign in</span>
                     )}
                   </button>
-                </div>
-              </div>
 
-              {/* Extra row */}
-              <div className="flex items-center justify-between text-xs">
-                <label className="flex items-center space-x-2 text-slate-400 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    defaultChecked 
-                    className="accent-orange-500 rounded bg-[#0a0a0c] border-[#1e1e24]"
-                  />
-                  <span>Remember me</span>
-                </label>
-                <a href="#forgot" className="text-orange-500 hover:text-orange-400 font-medium">Forgot Password?</a>
-              </div>
-
-              {/* Sign In Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Signing in...</span>
+                  {/* Divider */}
+                  <div className="relative flex items-center justify-center py-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-[#1e1e24]"></div>
+                    </div>
+                    <span className="relative px-3 bg-[#070708] text-xs text-slate-500 uppercase tracking-widest font-semibold">Or</span>
                   </div>
-                ) : (
-                  <span>Sign in</span>
-                )}
-              </button>
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center py-2">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#1e1e24]"></div>
+                  {/* Real Google Button Container */}
+                  <div className="flex justify-center w-full">
+                    <div id="google-signin-btn" className="min-h-[44px]"></div>
+                  </div>
+
+                </form>
+              </>
+            )}
+
+            {/* FORGOT PASSWORD VIEW */}
+            {view === 'forgot-password' && (
+              <>
+                <div>
+                  <h1 className="text-3xl font-extrabold text-white tracking-tight">Forgot Password</h1>
+                  <p className="text-slate-400 text-sm mt-2 font-medium">
+                    Enter your email to receive an authorization code.
+                  </p>
                 </div>
-                <span className="relative px-3 bg-[#070708] text-xs text-slate-500 uppercase tracking-widest font-semibold">Or</span>
-              </div>
 
-              {/* Google Button */}
-              <button
-                type="button"
-                onClick={handleGoogleClick}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center space-x-3 border border-[#1e1e24] bg-[#0a0a0c] hover:bg-[#121216] rounded-xl py-3 text-sm font-semibold text-slate-200 transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path
-                    fill="#EA4335"
-                    d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114A5.514 5.514 0 0 1 8.4 13c0-3.047 2.476-5.514 5.59-5.514c1.464 0 2.784.557 3.794 1.467l3.14-3.14C18.89 3.916 16.57 3 14 3C8.477 3 4 7.477 4 13s4.477 10 10 10c5.772 0 9.886-4.053 9.886-10c0-.682-.083-1.32-.224-1.715H12.24z"
-                  />
-                </svg>
-                <span>Continue with Google</span>
-              </button>
+                <form onSubmit={handleForgotPasswordSubmit} className="space-y-6">
+                  {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 font-semibold flex items-center space-x-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                      </svg>
+                      <span>{error}</span>
+                    </div>
+                  )}
 
-            </form>
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Your Email</label>
+                    <input
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
 
-            {/* Helper Credentials Hint */}
-            <div className="p-3 bg-[#0a0a0c] border border-[#1a1a20] rounded-xl text-center">
-              <span className="text-[11px] text-slate-500 font-semibold">
-                Hint: Log in with <span className="text-orange-400">saad489254@gmail.com</span> / <span className="text-orange-400">admin123</span>
-              </span>
-            </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                  >
+                    {isLoading ? 'Requesting OTP...' : 'Send OTP Code'}
+                  </button>
 
-            {/* Bottom Footer */}
-            <div className="text-center text-xs text-slate-500">
-              Already have an account? <span className="text-orange-500 hover:text-orange-400 cursor-pointer font-medium">Sign In</span>
-            </div>
+                  <button
+                    type="button"
+                    onClick={() => { setView('login'); setError(''); }}
+                    className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                  >
+                    ← Back to Login
+                  </button>
+                </form>
+              </>
+            )}
+
+            {/* OTP VERIFY VIEW */}
+            {view === 'otp-verify' && (
+              <>
+                <div>
+                  <h1 className="text-3xl font-extrabold text-white tracking-tight">Verify Security Code</h1>
+                  <p className="text-slate-400 text-sm mt-2 font-medium">
+                    Provide the 6-digit OTP code and choose your new password.
+                  </p>
+                </div>
+
+                <form onSubmit={handleOTPVerifySubmit} className="space-y-6">
+                  {error && (
+                    <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 font-semibold flex items-center space-x-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                      </svg>
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  {infoMessage && (
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-xs text-blue-400 font-semibold flex items-center space-x-2">
+                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span>{infoMessage}</span>
+                    </div>
+                  )}
+
+                  {/* OTP Code Input */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">OTP Security Code</label>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                      placeholder="e.g. 489254"
+                      className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 text-center tracking-widest font-mono text-lg transition-all"
+                    />
+                  </div>
+
+                  {/* New Password Input */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">New Password</label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? 'text' : 'password'}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl pl-4 pr-11 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        {showNewPassword ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                  >
+                    {isLoading ? 'Verifying OTP & Resetting...' : 'Verify OTP & Reset Password'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => { setView('login'); setError(''); setInfoMessage(''); }}
+                    className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                  >
+                    ← Back to Login
+                  </button>
+                </form>
+              </>
+            )}
 
           </div>
 
@@ -291,96 +643,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               <div>[AUTH] Handshake verification passed: OK</div>
               <div>[CLIENT] Session token generated successfully</div>
               <div className="animate-pulse text-orange-500/80">[ENV] Unlocking modules: overview, expiry, strategic_sandbox</div>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Simulated Google Consent Modal */}
-      {showGoogleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-sm bg-[#0d0d0f] border border-[#1e1e24] rounded-2xl p-6 shadow-2xl space-y-6 relative">
-            
-            {/* Modal Close */}
-            <button
-              onClick={() => !googleLoading && setShowGoogleModal(false)}
-              disabled={googleLoading}
-              className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-30 cursor-pointer"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Google Logo and Title */}
-            <div className="flex flex-col items-center space-y-2 text-center pt-2">
-              <svg className="w-8 h-8" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-1.14 2.78-2.4 3.63v3.02h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.02c-1.08.72-2.45 1.16-4.05 1.16-3.11 0-5.74-2.11-6.68-4.96H1.21v3.11C3.18 21.88 7.39 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.32 14.27c-.24-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.62H1.21C.44 8.16 0 9.88 0 11.7c0 1.82.44 3.54 1.21 5.08l4.11-3.11z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.39 0 3.18 2.12 1.21 5.62l4.11 3.11c.94-2.85 3.57-4.98 6.68-4.98z"
-                />
-              </svg>
-              <h2 className="text-base font-bold text-white">Sign in with Google</h2>
-              <p className="text-xs text-slate-400">to continue to <span className="text-orange-500 font-semibold">BusiMind Engine</span></p>
-            </div>
-
-            {/* Account Selector */}
-            {googleLoading ? (
-              <div className="py-8 flex flex-col items-center justify-center space-y-4">
-                <svg className="animate-spin h-8 w-8 text-orange-500" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span className="text-xs text-slate-400 font-medium">Authorizing Google profile...</span>
-              </div>
-            ) : (
-              <div className="space-y-2 max-h-56 overflow-y-auto">
-                <button
-                  onClick={selectGoogleAccount}
-                  className="w-full flex items-center space-x-3 p-3 bg-[#111113] hover:bg-[#161619] border border-[#1e1e24] hover:border-slate-700 rounded-xl transition-all text-left group cursor-pointer"
-                >
-                  <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-xs font-bold text-white">
-                    S
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-200 truncate group-hover:text-orange-400 transition-colors">Saad Abdullah</p>
-                    <p className="text-[10px] text-slate-500 truncate">saad489254@gmail.com</p>
-                  </div>
-                  <svg className="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-
-                <button
-                  onClick={() => alert("Please sign in with Saad's account for this demo.")}
-                  className="w-full flex items-center space-x-3 p-3 bg-[#0a0a0c] hover:bg-[#111113] border border-[#141418] rounded-xl transition-all text-left group opacity-60 hover:opacity-100 cursor-pointer"
-                >
-                  <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-300">
-                    G
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-slate-300 truncate">Use another account</p>
-                  </div>
-                </button>
-              </div>
-            )}
-
-            {/* Disclaimer */}
-            <div className="text-[10px] text-slate-500 leading-relaxed text-center">
-              To proceed, Google will share your name, email address, language preference, and profile picture with RetailMind AI.
             </div>
 
           </div>

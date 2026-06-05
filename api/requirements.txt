@@ -4,3 +4,5 @@ pydantic
 python-dotenv
 langchain-core
 langchain-groq
+google-auth
+
