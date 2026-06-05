@@ -1,0 +1,32 @@
+{
+    "composite_resin": {
+        "name": "Composite Resin Syringes",
+        "stock": 25,
+        "unit": "syringes",
+        "low_threshold": 8
+    },
+    "sterile_gloves": {
+        "name": "Sterile Surgical Gloves",
+        "stock": 5.75,
+        "unit": "boxes (100pcs)",
+        "low_threshold": 3
+    },
+    "cotton_rolls": {
+        "name": "Dental Cotton Rolls",
+        "stock": 14.3,
+        "unit": "packs (500pcs)",
+        "low_threshold": 5
+    },
+    "lidocaine": {
+        "name": "Lidocaine Anesthetic Vials",
+        "stock": 31,
+        "unit": "vials",
+        "low_threshold": 10
+    },
+    "dental_cement": {
+        "name": "Glass Ionomer Dental Cement",
+        "stock": 7.9,
+        "unit": "jars",
+        "low_threshold": 3
+    }
+}
