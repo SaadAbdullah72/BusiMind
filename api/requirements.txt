@@ -5,9 +5,4 @@ python-dotenv
 langchain
 langchain-groq
 langchain-community
-chromadb
-duckduckgo-search
-PyPDF2
-sentence-transformers
 python-multipart
-
