@@ -16,7 +16,8 @@ def get_llm():
         api_key=os.getenv("GROQ_API_KEY")
     )
 
-INVENTORY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.json")
+import tempfile
+INVENTORY_FILE = os.path.join(tempfile.gettempdir(), "retailmind_inventory.json")
 
 # Helpers for inventory persistence
 def load_inventory():
