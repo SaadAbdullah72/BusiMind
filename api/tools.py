@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime
-from langchain.tools import tool
+from langchain_core.tools import tool
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 from mock_data import INITIAL_INVENTORY, COMPETITOR_PRICES
