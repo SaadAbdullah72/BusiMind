@@ -39,14 +39,16 @@ def handle_query(request: QueryRequest):
 
 
 
+class UploadRequest(BaseModel):
+    filename: str
+    content: str
+
 @app.post("/api/upload")
-async def handle_upload(file: UploadFile = File(...)):
+def handle_upload(request: UploadRequest):
     global active_csv_content
     try:
-        contents = await file.read()
-        decoded = contents.decode("utf-8")
-        active_csv_content = decoded
-        return {"status": "success", "message": f"Successfully loaded {file.filename}."}
+        active_csv_content = request.content
+        return {"status": "success", "message": f"Successfully loaded {request.filename}."}
     except Exception as e:
         return {"status": "error", "message": f"Failed to parse file: {str(e)}"}
 

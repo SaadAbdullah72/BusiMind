@@ -45,26 +45,34 @@ export default function App() {
     if (!file) return;
     setUploading(true);
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if (data.status === 'success') {
-        alert(`${file.name} uploaded successfully! Now run the Diagnostic Scan to process it.`);
-      } else {
-        alert('Upload failed: ' + data.message);
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const text = event.target?.result as string;
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, content: text })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          alert(`${file.name} uploaded successfully! Now run the Diagnostic Scan to process it.`);
+        } else {
+          alert('Upload failed: ' + data.message);
+        }
+      } catch (err) {
+        alert('Error uploading file to API.');
+      } finally {
+        setUploading(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
       }
-    } catch (err) {
-      alert('Error uploading file to API.');
-    } finally {
+    };
+    reader.onerror = () => {
+      alert('Error reading file');
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
-    }
+    };
+    reader.readAsText(file);
   };
 
   const runDiagnosticScan = () => {
