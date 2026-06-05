@@ -7,7 +7,7 @@ export default function PricingGuard({ pricingData }: any) {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
             Competitor Pricing Guard
           </h2>
           <p className="text-slate-400 text-sm mt-1">Audit and match prices to maintain lowest price promise.</p>
@@ -39,9 +39,9 @@ export default function PricingGuard({ pricingData }: any) {
                   <p className="text-xs text-slate-500 mb-1">Our Price</p>
                   <p className="text-xl font-bold text-slate-200">{item.our_price} PKR</p>
                 </div>
-                <div className="p-3 bg-slate-800/50 rounded-xl border border-sky-900/50">
-                  <p className="text-xs text-sky-500 mb-1">{item.competitor_name}</p>
-                  <p className="text-xl font-bold text-sky-400">{item.competitor_price} PKR</p>
+                <div className="p-3 bg-slate-800/50 rounded-xl border border-orange-900/50">
+                  <p className="text-xs text-orange-500 mb-1">{item.competitor_name}</p>
+                  <p className="text-xl font-bold text-orange-400">{item.competitor_price} PKR</p>
                 </div>
               </div>
               

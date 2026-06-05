@@ -7,6 +7,7 @@ import ExpiryDesk from './components/ExpiryDesk';
 import PricingGuard from './components/PricingGuard';
 import ProcurementCenter from './components/ProcurementCenter';
 import RetailSandbox from './components/RetailSandbox';
+import LoginScreen from './components/LoginScreen';
 
 // Default initial state
 const defaultKPIs = {
@@ -27,12 +28,16 @@ const defaultSWOT = {
 };
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
+  const [userEmail, setUserEmail] = useState(() => localStorage.getItem('userEmail'));
+
   const [activeTab, setActiveTab] = useState<'dashboard' | 'expiry' | 'pricing' | 'procurement' | 'sandbox'>('dashboard');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
   const [expiryData, setExpiryData] = useState<any>(null);
   const [pricingData, setPricingData] = useState<any>(null);
   const [procurementData, setProcurementData] = useState<any>(null);
+
 
   const [uploading, setUploading] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -108,6 +113,22 @@ export default function App() {
     };
   };
 
+  if (!isLoggedIn) {
+    return <LoginScreen onLoginSuccess={(email) => {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', email);
+      setIsLoggedIn(true);
+      setUserEmail(email);
+    }} />;
+  }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    setIsLoggedIn(false);
+    setUserEmail(null);
+  };
+
   return (
     <div 
       className="min-h-screen text-slate-100 flex flex-col font-sans antialiased"
@@ -116,19 +137,19 @@ export default function App() {
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
-        backgroundColor: '#0f172a',
+        backgroundColor: '#050505',
       }}
     >
-      <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px] z-0"></div>
+      <div className="absolute inset-0 bg-[#050505]/85 backdrop-blur-[2px] z-0"></div>
       
       {/* Top Header */}
-      <header className="bg-slate-900/60 backdrop-blur-md border-b border-slate-800/80 px-6 py-4 flex items-center justify-between shadow-lg sticky top-0 z-40 relative">
+      <header className="bg-[#0c0c0e]/80 backdrop-blur-md border-b border-[#1c1c22]/80 px-6 py-4 flex items-center justify-between shadow-lg sticky top-0 z-40 relative">
         <div className="flex items-center space-x-3.5">
-          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 overflow-hidden">
+          <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/10 overflow-hidden">
              <img src="/retailmind_logo.png" alt="RetailMind Logo" className="w-full h-full object-cover" />
           </div>
           <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent leading-none">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent leading-none">
               RetailMind AI
             </h1>
             <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase block mt-1">
@@ -137,15 +158,22 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-wrap gap-2 md:flex-nowrap">
+          {userEmail && (
+            <div className="hidden md:flex items-center space-x-2 px-3 py-1.5 bg-[#121216] border border-[#1e1e24] rounded-xl">
+              <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></div>
+              <span className="text-xs text-slate-300 font-medium">{userEmail}</span>
+            </div>
+          )}
+
           {progress && (
-            <div className="px-4 py-2 bg-slate-800/80 border border-cyan-500/30 rounded-xl shadow-lg flex items-center space-x-3">
-              <svg className="animate-spin h-4 w-4 text-cyan-400" viewBox="0 0 24 24">
+            <div className="px-4 py-2 bg-[#121216] border border-orange-500/30 rounded-xl shadow-lg flex items-center space-x-3">
+              <svg className="animate-spin h-4 w-4 text-orange-400" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               <span className="text-xs text-slate-300 font-medium">
-                <span className="text-cyan-400 font-bold">[{progress.agent}]</span> {progress.status}
+                <span className="text-orange-400 font-bold">[{progress.agent}]</span> {progress.status}
               </span>
             </div>
           )}
@@ -160,13 +188,13 @@ export default function App() {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading || scanning}
-            className="px-4 py-2.5 bg-slate-800/80 hover:bg-slate-700 disabled:opacity-50 border border-slate-700 hover:border-slate-500 rounded-xl text-xs font-semibold transition-all shadow-md flex items-center space-x-2 text-slate-200"
+            className="px-4 py-2.5 bg-[#121216] hover:bg-[#1b1b22] disabled:opacity-50 border border-[#1e1e24] hover:border-slate-600 rounded-xl text-xs font-semibold transition-all shadow-md flex items-center space-x-2 text-slate-200 cursor-pointer"
           >
             {uploading ? (
               <span>Uploading Data...</span>
             ) : (
               <>
-                <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                 </svg>
                 <span>Upload POS Logs</span>
@@ -182,22 +210,29 @@ export default function App() {
               <span className="text-xs text-emerald-300 font-semibold">{uploadedFile}</span>
             </div>
           )}
+
+          <button
+            onClick={handleSignOut}
+            className="px-3.5 py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-xl text-xs font-bold transition-all text-red-400 hover:text-red-300 cursor-pointer"
+          >
+            Sign Out
+          </button>
         </div>
       </header>
 
       {/* Main Core Layout */}
       <div className="flex flex-1 overflow-hidden relative z-10">
         {/* Sidebar Nav */}
-        <aside className="w-64 bg-slate-900/60 backdrop-blur-xl border-r border-slate-800/80 p-5 flex flex-col justify-between shrink-0 shadow-2xl">
+        <aside className="w-64 bg-[#0c0c0e]/60 backdrop-blur-xl border-r border-[#1c1c22]/80 p-5 flex flex-col justify-between shrink-0 shadow-2xl">
           <div className="space-y-6">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">Intelligence Modules</span>
             <nav className="space-y-2">
               <button
                 onClick={() => setActiveTab('dashboard')}
-                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'dashboard'
-                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'border border-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -206,10 +241,10 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('expiry')}
-                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'expiry'
-                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'border border-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -218,10 +253,10 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('pricing')}
-                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'pricing'
-                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'border border-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"></path></svg>
@@ -230,10 +265,10 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('procurement')}
-                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'procurement'
-                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'border border-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -242,10 +277,10 @@ export default function App() {
 
               <button
                 onClick={() => setActiveTab('sandbox')}
-                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'sandbox'
-                    ? 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'border border-transparent text-slate-400 hover:bg-slate-800/80 hover:text-slate-200'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -254,14 +289,14 @@ export default function App() {
             </nav>
           </div>
 
-          <div className="bg-slate-900/40 border border-slate-700/50 rounded-2xl p-4.5 mt-auto">
+          <div className="bg-[#121216]/60 border border-[#1e1e24] rounded-2xl p-4.5 mt-auto">
              <div className="text-xs text-slate-400 mb-2 font-medium">Inventory Health</div>
-             <div className="w-full bg-slate-800 rounded-full h-2 mb-1">
-               <div className="bg-gradient-to-r from-emerald-400 to-cyan-400 h-2 rounded-full" style={{ width: '85%' }}></div>
+             <div className="w-full bg-[#1b1b22] rounded-full h-2 mb-1">
+               <div className="bg-gradient-to-r from-orange-500 to-amber-400 h-2 rounded-full" style={{ width: '85%' }}></div>
              </div>
              <div className="text-[10px] text-slate-500 flex justify-between">
                <span>Optimal</span>
-               <span className="text-cyan-400 font-bold">85%</span>
+               <span className="text-orange-400 font-bold">85%</span>
              </div>
           </div>
         </aside>

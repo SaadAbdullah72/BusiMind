@@ -4,7 +4,7 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning }:
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
             Supermarket Operations
           </h2>
           <p className="text-slate-400 text-sm mt-1">Live KPI and strategic analysis.</p>
@@ -12,7 +12,7 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning }:
         <button
           onClick={onScanComplete}
           disabled={scanning}
-          className="px-6 py-2.5 bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/30 transition-all disabled:opacity-50 flex items-center space-x-2"
+          className="px-6 py-2.5 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 transition-all disabled:opacity-50 flex items-center space-x-2"
         >
           {scanning ? (
             <span className="flex items-center space-x-2">
@@ -40,7 +40,7 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning }:
             <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd"/></svg>
           </div>
           <p className="text-sm font-semibold text-slate-400 mb-1">Total Revenue</p>
-          <p className="text-3xl font-bold text-sky-400">{kpis.total_revenue}</p>
+          <p className="text-3xl font-bold text-orange-400">{kpis.total_revenue}</p>
           <p className="text-xs text-slate-500 mt-2">{kpis.total_transactions} transactions today</p>
         </div>
 
@@ -88,14 +88,14 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning }:
           </ul>
         </div>
         <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <h3 className="text-sky-400 font-bold mb-3 flex items-center space-x-2">
+          <h3 className="text-orange-400 font-bold mb-3 flex items-center space-x-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
             <span>Opportunities</span>
           </h3>
           <ul className="space-y-2">
             {swot.opportunities.map((o: string, i: number) => (
               <li key={i} className="text-sm text-slate-300 flex items-start space-x-2">
-                <span className="text-sky-500 mt-0.5">•</span>
+                <span className="text-orange-500 mt-0.5">•</span>
                 <span>{o}</span>
               </li>
             ))}

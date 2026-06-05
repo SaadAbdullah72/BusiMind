@@ -7,7 +7,7 @@ export default function ExpiryDesk({ expiryData }: any) {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
             Expiry & Waste Optimizer
           </h2>
           <p className="text-slate-400 text-sm mt-1">Identify items nearing expiry and deploy promotions.</p>
@@ -16,13 +16,13 @@ export default function ExpiryDesk({ expiryData }: any) {
 
       <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-6 shadow-lg">
         <h3 className="text-lg font-bold text-white mb-4">Suggested Promotion Campaign</h3>
-        <div className="bg-gradient-to-r from-sky-500/10 to-indigo-500/10 border border-sky-500/20 rounded-xl p-4 flex items-start space-x-4">
+        <div className="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-xl p-4 flex items-start space-x-4">
           <div className="text-3xl">🎉</div>
           <div>
             <p className="text-slate-200 font-medium leading-relaxed italic">
               "{expiryData.suggested_promotional_ad}"
             </p>
-            <button className="mt-3 px-4 py-1.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-400 text-xs font-semibold rounded-lg transition-colors">
+            <button className="mt-3 px-4 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 text-xs font-semibold rounded-lg transition-colors">
               Deploy to SMS & Display Boards
             </button>
           </div>

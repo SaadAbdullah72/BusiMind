@@ -29,7 +29,7 @@ export default function RetailSandbox() {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
             Strategy Sandbox Simulator
           </h2>
           <p className="text-slate-400 text-sm mt-1">Simulate financial and operational impacts of managerial decisions.</p>
@@ -44,56 +44,56 @@ export default function RetailSandbox() {
               type="text" 
               value={decision}
               onChange={(e) => setDecision(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-sky-500 transition-colors"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-orange-500 transition-colors"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-2">
               <label className="text-sm font-semibold text-slate-300">Budget Allocation (PKR)</label>
-              <span className="text-sky-400 text-sm font-bold">{budget.toLocaleString()}</span>
+              <span className="text-orange-400 text-sm font-bold">{budget.toLocaleString()}</span>
             </div>
             <input 
               type="range" 
               min="0" max="500000" step="10000"
               value={budget}
               onChange={(e) => setBudget(Number(e.target.value))}
-              className="w-full accent-sky-500"
+              className="w-full accent-orange-500"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-2">
               <label className="text-sm font-semibold text-slate-300">Extra Staff Allocated</label>
-              <span className="text-sky-400 text-sm font-bold">{staffIncrease} people</span>
+              <span className="text-orange-400 text-sm font-bold">{staffIncrease} people</span>
             </div>
             <input 
               type="range" 
               min="0" max="10" step="1"
               value={staffIncrease}
               onChange={(e) => setStaffIncrease(Number(e.target.value))}
-              className="w-full accent-sky-500"
+              className="w-full accent-orange-500"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-2">
               <label className="text-sm font-semibold text-slate-300">Shift Hours Adjusted</label>
-              <span className="text-sky-400 text-sm font-bold">{shiftHours} hrs</span>
+              <span className="text-orange-400 text-sm font-bold">{shiftHours} hrs</span>
             </div>
             <input 
               type="range" 
               min="0" max="100" step="5"
               value={shiftHours}
               onChange={(e) => setShiftHours(Number(e.target.value))}
-              className="w-full accent-sky-500"
+              className="w-full accent-orange-500"
             />
           </div>
 
           <button 
             onClick={runSimulation}
             disabled={loading}
-            className="w-full py-3 bg-gradient-to-r from-sky-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 mt-4"
+            className="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 mt-4"
           >
             {loading ? 'Running AI Simulation...' : 'Simulate Operational Impact'}
           </button>
@@ -114,7 +114,7 @@ export default function RetailSandbox() {
               </div>
               <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
                 <p className="text-xs text-slate-400 mb-1">Queue Wait Time</p>
-                <p className="text-lg font-bold text-sky-400">{result.wait_time_impact}</p>
+                <p className="text-lg font-bold text-orange-400">{result.wait_time_impact}</p>
               </div>
               <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 col-span-2">
                 <p className="text-xs text-slate-400 mb-1">Projected Weekly Revenue Impact</p>
