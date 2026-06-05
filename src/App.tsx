@@ -37,6 +37,7 @@ export default function App() {
   const [uploading, setUploading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState<any>(null);
+  const [uploadedFile, setUploadedFile] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +57,7 @@ export default function App() {
         });
         const data = await res.json();
         if (data.status === 'success') {
-          alert(`${file.name} uploaded successfully! Now run the Diagnostic Scan to process it.`);
+          setUploadedFile(file.name);
         } else {
           alert('Upload failed: ' + data.message);
         }
@@ -172,6 +173,15 @@ export default function App() {
               </>
             )}
           </button>
+
+          {uploadedFile && (
+            <div className="px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center space-x-2 animate-pulse">
+              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span className="text-xs text-emerald-300 font-semibold">{uploadedFile}</span>
+            </div>
+          )}
         </div>
       </header>
 
