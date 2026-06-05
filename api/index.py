@@ -1,15 +1,24 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# RetailMind AI — Unified Vercel Serverless API
+# All code in one file to avoid Vercel module isolation issues
+# ══════════════════════════════════════════════════════════════════════════════
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
 import os
 import json
+import io
+import csv
+import time
+import tempfile
 import traceback
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# ── App Setup ──────────────────────────────────────────────
+# ── FastAPI App ───────────────────────────────────────────────────────────────
 app = FastAPI(title="RetailMind AI API")
 
 app.add_middleware(
@@ -20,7 +29,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Mock default CSV (small) ──────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# MOCK DATA (from mock_data.py)
+# ══════════════════════════════════════════════════════════════════════════════
 DEFAULT_CSV = """TransactionId,Timestamp,ItemName,Quantity,PricePaid,PaymentMethod,CustomerLoyaltyId
 T1001,14:02,Dalda Cooking Oil 5L,2,4500,Card,L9281
 T1002,14:15,Nestle Milkpak 1L,6,1800,Cash,L1203
@@ -32,9 +43,317 @@ T1007,17:05,Dalda Cooking Oil 5L,1,2250,Card,L4820
 T1008,17:40,Yogurt Pack 1kg,5,1500,Cash,L1203
 """
 
+INITIAL_INVENTORY = {
+    "dalda_oil": {
+        "name": "Dalda Cooking Oil 5L", "category": "Pantry", "stock": 45, "unit": "tins",
+        "cost_price": 1850, "retail_price": 2250, "expiry_date": "2027-02-15",
+        "low_threshold": 15, "sales_velocity_daily": 8, "supplier": "Dalda Foods Ltd", "supplier_lead_days": 3
+    },
+    "surf_excel": {
+        "name": "Surf Excel 1kg", "category": "Household", "stock": 35, "unit": "packs",
+        "cost_price": 340, "retail_price": 460, "expiry_date": "2028-05-10",
+        "low_threshold": 10, "sales_velocity_daily": 5, "supplier": "Unilever Pakistan", "supplier_lead_days": 4
+    },
+    "nestle_milkpak": {
+        "name": "Nestle Milkpak 1L", "category": "Dairy", "stock": 8, "unit": "cartons",
+        "cost_price": 240, "retail_price": 300, "expiry_date": "2026-06-12",
+        "low_threshold": 25, "sales_velocity_daily": 15, "supplier": "Nestle Pakistan Ltd", "supplier_lead_days": 2
+    },
+    "yogurt_pack": {
+        "name": "Yogurt Pack 1kg", "category": "Dairy", "stock": 38, "unit": "cups",
+        "cost_price": 200, "retail_price": 300, "expiry_date": "2026-06-09",
+        "low_threshold": 10, "sales_velocity_daily": 6, "supplier": "Nestle Pakistan Ltd", "supplier_lead_days": 1
+    },
+    "tapal_danedar": {
+        "name": "Tapal Danedar 900g", "category": "Beverages", "stock": 4, "unit": "boxes",
+        "cost_price": 1100, "retail_price": 1350, "expiry_date": "2027-11-20",
+        "low_threshold": 15, "sales_velocity_daily": 7, "supplier": "Tapal Tea Ltd", "supplier_lead_days": 3
+    }
+}
+
+COMPETITOR_PRICES = {
+    "dalda_oil": {"our_price": 2250, "competitor_price": 2130, "competitor_name": "Metro Cash & Carry", "cost_price": 1850},
+    "surf_excel": {"our_price": 460, "competitor_price": 425, "competitor_name": "Carrefour Supermarket", "cost_price": 340},
+    "nestle_milkpak": {"our_price": 300, "competitor_price": 300, "competitor_name": "Metro Cash & Carry", "cost_price": 240},
+    "yogurt_pack": {"our_price": 300, "competitor_price": 310, "competitor_name": "Chase Up Grocery", "cost_price": 200},
+    "tapal_danedar": {"our_price": 1350, "competitor_price": 1320, "competitor_name": "Metro Cash & Carry", "cost_price": 1100}
+}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TOOLS (from tools.py) — LLM & Inventory helpers
+# ══════════════════════════════════════════════════════════════════════════════
+INVENTORY_FILE = os.path.join(tempfile.gettempdir(), "retailmind_inventory.json")
+
+def get_llm():
+    from langchain_groq import ChatGroq
+    return ChatGroq(
+        temperature=0.2,
+        model_name="llama3-70b-8192",
+        api_key=os.getenv("GROQ_API_KEY")
+    )
+
+_llm_instance = None
+def _get_llm():
+    global _llm_instance
+    if _llm_instance is None:
+        _llm_instance = get_llm()
+    return _llm_instance
+
+def load_inventory():
+    if not os.path.exists(INVENTORY_FILE):
+        with open(INVENTORY_FILE, "w") as f:
+            json.dump(INITIAL_INVENTORY, f, indent=4)
+        return INITIAL_INVENTORY
+    try:
+        with open(INVENTORY_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return INITIAL_INVENTORY
+
+def save_inventory(inv):
+    with open(INVENTORY_FILE, "w") as f:
+        json.dump(inv, f, indent=4)
+
+# Initialize inventory on cold start
+load_inventory()
+
+# ── Tool Functions ────────────────────────────────────────────────────────────
+def analyze_expiry_risk(current_date: str) -> dict:
+    inv = load_inventory()
+    curr_dt = datetime.strptime(current_date, "%Y-%m-%d")
+    risky_items = []
+    for key, item in inv.items():
+        exp_dt = datetime.strptime(item["expiry_date"], "%Y-%m-%d")
+        days_left = (exp_dt - curr_dt).days
+        if 0 <= days_left <= 10:
+            expected_sales = item["sales_velocity_daily"] * days_left
+            waste_volume = max(0, item["stock"] - expected_sales)
+            potential_loss = waste_volume * item["cost_price"]
+            if waste_volume > 0:
+                risky_items.append({
+                    "key": key, "name": item["name"], "stock": item["stock"],
+                    "days_left": days_left, "waste_units": waste_volume,
+                    "potential_loss": potential_loss, "expiry_date": item["expiry_date"]
+                })
+    llm = _get_llm()
+    prompt = (
+        f"You are the Creative Marketing Manager at RetailMind Supermarket.\n"
+        f"We have the following items nearing expiry that will be wasted unless sold:\n"
+        f"{json.dumps(risky_items, indent=2)}\n\n"
+        f"Draft a short, catchy, and professional dynamic discount promo message or Buy One Get One (BOGO) bundle "
+        f"advertisement to clear these products before they expire. Keep it under 180 characters."
+    )
+    try:
+        response = llm.invoke(prompt)
+        promo_text = response.content.strip()
+    except Exception:
+        promo_text = "Special Clearing Discount: 30% Off on dairy and fresh essentials today only!"
+    return {"evaluation_date": current_date, "items_at_risk": risky_items, "suggested_promotional_ad": promo_text}
+
+def audit_competitor_pricing() -> dict:
+    inv = load_inventory()
+    price_deviations = []
+    for key, comp_data in COMPETITOR_PRICES.items():
+        item = inv.get(key)
+        if not item:
+            continue
+        our_price = item["retail_price"]
+        comp_price = comp_data["competitor_price"]
+        cost_price = item["cost_price"]
+        if our_price > comp_price:
+            difference = our_price - comp_price
+            margin_after = comp_price - cost_price
+            is_profitable = margin_after > 0
+            price_deviations.append({
+                "key": key, "name": item["name"], "our_price": our_price,
+                "competitor_price": comp_price, "competitor_name": comp_data["competitor_name"],
+                "difference": difference, "cost_price": cost_price,
+                "new_recommended_price": comp_price if is_profitable else our_price,
+                "margin_reducton": difference if is_profitable else 0,
+                "status": "Price Match Profitable" if is_profitable else "Price Match Unprofitable"
+            })
+    llm = _get_llm()
+    prompt = (
+        f"You are the Pricing Strategist at RetailMind Supermarket.\n"
+        f"We found the following price mismatches where competitors are cheaper:\n"
+        f"{json.dumps(price_deviations, indent=2)}\n\n"
+        f"Provide a brief, professional summary of our pricing strategy regarding these items."
+    )
+    try:
+        response = llm.invoke(prompt)
+        pricing_notes = response.content.strip()
+    except Exception:
+        pricing_notes = "Maintain price match where cost margin allows."
+    return {"deviations": price_deviations, "pricing_strategy_summary": pricing_notes}
+
+def generate_purchase_order(product_key: str, order_quantity: int) -> dict:
+    inv = load_inventory()
+    item = inv.get(product_key)
+    if not item:
+        return {"error": f"Product key '{product_key}' not found in inventory."}
+    cost_price = item["cost_price"]
+    total_cost = cost_price * order_quantity
+    llm = _get_llm()
+    prompt = (
+        f"You are the Procurement Director at RetailMind Supermarket.\n"
+        f"Write a formal purchase order email to our supplier rep for {item['supplier']}.\n"
+        f"Order details:\n- Product: {item['name']}\n- Quantity: {order_quantity} {item['unit']}\n"
+        f"- Cost Price per unit: {cost_price} PKR\n- Total Cost: {total_cost} PKR\n"
+        f"- Lead Delivery Time expected: {item['supplier_lead_days']} days\n\n"
+        f"Keep the email short, professional, and clear."
+    )
+    try:
+        response = llm.invoke(prompt)
+        email_draft = response.content.strip()
+    except Exception:
+        email_draft = f"Subject: Purchase Order for {item['name']}\n\nDear Sales Rep,\n\nPlease process our order for {order_quantity} units of {item['name']}.\n\nBest regards,\nProcurement Dept."
+    po_number = f"PO-2026-{datetime.now().strftime('%M%S')}"
+    return {
+        "po_number": po_number, "supplier": item["supplier"], "product_name": item["name"],
+        "order_quantity": order_quantity, "unit": item["unit"], "cost_per_unit": cost_price,
+        "total_cost_pkr": total_cost, "lead_delivery_days": item["supplier_lead_days"],
+        "supplier_email_draft": email_draft
+    }
+
+def check_inventory_supplies(treatments_performed: str) -> dict:
+    inv = load_inventory()
+    sales_list = [s.strip().lower() for s in treatments_performed.split(",") if s.strip()]
+    deductions = {}
+    for s in sales_list:
+        deductions[s] = deductions.get(s, 0) + 1
+    alerts = []
+    updated_inv = {}
+    for key, item in inv.items():
+        dec = deductions.get(key, 0)
+        new_stock = max(0, item["stock"] - dec)
+        item["stock"] = new_stock
+        updated_inv[key] = item
+        if new_stock <= item["low_threshold"]:
+            alerts.append(f"Low Stock Alert: {item['name']} is at {new_stock} {item['unit']} (Safety Limit: {item['low_threshold']})")
+    save_inventory(updated_inv)
+    return {"sales_processed": sales_list, "deductions_applied": deductions, "current_stock": updated_inv, "alerts": alerts}
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AGENT (from agent.py) — Diagnostic pipeline
+# ══════════════════════════════════════════════════════════════════════════════
+def run_diagnostics_stream(csv_content: str):
+    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Parsing uploaded daily POS transaction logs...'})}\n\n"
+    time.sleep(0.5)
+
+    f = io.StringIO(csv_content.strip())
+    reader = csv.DictReader(f)
+    transactions = list(reader)
+
+    total_transactions = len(transactions)
+    total_revenue = 0
+    item_sales = {}
+    for row in transactions:
+        qty = int(row.get("Quantity", 1))
+        price = int(row.get("PricePaid", 0))
+        item = row.get("ItemName", "").strip()
+        total_revenue += price
+        item_sales[item] = item_sales.get(item, 0) + qty
+
+    most_sold_item = max(item_sales, key=item_sales.get) if item_sales else "None"
+
+    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': f'POS Audited. {total_transactions} transactions. Revenue: {total_revenue} PKR. Bestseller: {most_sold_item}.'})}\n\n"
+    time.sleep(0.5)
+
+    # Expiry Risk
+    yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': 'Scanning shelf inventory for upcoming product expiry dates...'})}\n\n"
+    expiry_data = analyze_expiry_risk("2026-06-05")
+    num_items = len(expiry_data['items_at_risk'])
+    yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': f'Found {num_items} categories nearing expiry. Discount campaign drafted.'})}\n\n"
+
+    # Pricing Guard
+    yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': 'Comparing pricing against competitor databases...'})}\n\n"
+    pricing_data = audit_competitor_pricing()
+    num_gaps = len(pricing_data['deviations'])
+    yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': f'Found {num_gaps} price gaps. Match recommendations calculated.'})}\n\n"
+
+    # Inventory update
+    yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': 'Updating current stock levels...'})}\n\n"
+    key_mapping = {
+        "dalda cooking oil 5l": "dalda_oil", "surf excel 1kg": "surf_excel",
+        "nestle milkpak 1l": "nestle_milkpak", "yogurt pack 1kg": "yogurt_pack",
+        "tapal danedar 900g": "tapal_danedar"
+    }
+    sales_list = []
+    for row in transactions:
+        item = row.get("ItemName", "").strip().lower()
+        key = key_mapping.get(item)
+        if key:
+            sales_list.append(key)
+    inv_res = check_inventory_supplies(", ".join(sales_list))
+    num_alerts = len(inv_res['alerts'])
+    yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': f'Inventory updated. Low stock alerts: {num_alerts}.'})}\n\n"
+
+    # Procurement
+    yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': 'Generating restock purchase orders...'})}\n\n"
+    reorder_pos = []
+    for alert in inv_res["alerts"]:
+        for key in ["nestle_milkpak", "tapal_danedar"]:
+            if key in alert:
+                po = generate_purchase_order(key, 30)
+                reorder_pos.append(po)
+    yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': f'Auto-drafted {len(reorder_pos)} Purchase Orders.'})}\n\n"
+
+    # SWOT
+    yield f"data: {json.dumps({'agent': 'Retail Advisor', 'status': 'Synthesizing SWOT matrix and strategic actions...'})}\n\n"
+    swot_prompt = (
+        f"You are the Lead Retail Operations Advisor at RetailMind AI.\n"
+        f"Review today's supermarket daily diagnostic report:\n"
+        f"- Total Sales Revenue: {total_revenue} PKR\n"
+        f"- Expiring Items: {json.dumps(expiry_data['items_at_risk'], indent=2)}\n"
+        f"- Price Deviations: {json.dumps(pricing_data['deviations'], indent=2)}\n"
+        f"- Inventory Warnings: {json.dumps(inv_res['alerts'], indent=2)}\n"
+        f"- Auto Procurement Orders drafted: {json.dumps(reorder_pos, indent=2)}\n\n"
+        f"Generate a SWOT analysis and suggest 3 high-priority action steps.\n"
+        f"Return ONLY valid JSON with keys: strengths, weaknesses, opportunities, threats, action_steps (all lists of strings).\n"
+        f"No markdown wrappers."
+    )
+    try:
+        response = _get_llm().invoke(swot_prompt)
+        swot_content = response.content.strip()
+        if swot_content.startswith("```json"):
+            swot_content = swot_content[7:]
+        if swot_content.endswith("```"):
+            swot_content = swot_content[:-3]
+        swot_data = json.loads(swot_content.strip())
+    except Exception:
+        swot_data = {
+            "strengths": ["Healthy daily sales revenue.", "Bestsellers moving fast."],
+            "weaknesses": ["Price matching pressure on Cooking Oil.", "Nestle Milkpak stocks below safety levels."],
+            "opportunities": ["Run dynamic discount BOGO campaign on expiring Yogurt cups.", "Reduce Dalda Oil price to match Metro."],
+            "threats": ["Inventory expiry write-offs if Yogurt packs are unsold.", "Supply delays for tea products."],
+            "action_steps": ["Deploy dynamic Yogurt discounts", "Confirm Dalda price match at POS", "Approve Nestlé purchase orders"]
+        }
+
+    final_payload = {
+        "kpis": {
+            "total_revenue": f"{total_revenue} PKR",
+            "total_transactions": total_transactions,
+            "bestseller": most_sold_item,
+            "waste_risk_cost": f"{sum(item['potential_loss'] for item in expiry_data['items_at_risk'])} PKR",
+            "low_stock_count": len(inv_res["alerts"]),
+            "average_basket_value": f"{round(total_revenue / total_transactions)} PKR" if total_transactions > 0 else "0 PKR"
+        },
+        "expiry": expiry_data,
+        "pricing": pricing_data,
+        "inventory": inv_res,
+        "procurement": reorder_pos,
+        "swot": swot_data
+    }
+    yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# GLOBAL STATE
+# ══════════════════════════════════════════════════════════════════════════════
 active_csv_content = DEFAULT_CSV
 
-# ── Pydantic Models (inline to avoid import issues) ──────
+# ══════════════════════════════════════════════════════════════════════════════
+# API ROUTES
+# ══════════════════════════════════════════════════════════════════════════════
 class UploadRequest(BaseModel):
     filename: str
     content: str
@@ -52,29 +371,20 @@ class QueryResponse(BaseModel):
     response: str
     sources: list = []
 
-# ── Health Check ──────────────────────────────────────────
 @app.get("/")
 def read_root():
     return {"message": "RetailMind AI API is running"}
 
 @app.get("/api/health")
 def health_check():
-    """Debug endpoint to check if imports work"""
-    status = {"app": "ok", "imports": {}}
+    status = {"app": "ok", "groq_key_set": bool(os.getenv("GROQ_API_KEY"))}
     try:
-        from tools import get_llm, load_inventory
-        status["imports"]["tools"] = "ok"
+        from langchain_groq import ChatGroq
+        status["langchain_groq"] = "ok"
     except Exception as e:
-        status["imports"]["tools"] = str(e)
-    try:
-        from agent import process_query, run_diagnostics_stream
-        status["imports"]["agent"] = "ok"
-    except Exception as e:
-        status["imports"]["agent"] = str(e)
-    status["groq_key_set"] = bool(os.getenv("GROQ_API_KEY"))
+        status["langchain_groq"] = str(e)
     return status
 
-# ── Upload (zero heavy imports needed) ───────────────────
 @app.post("/api/upload")
 def handle_upload(request: UploadRequest):
     global active_csv_content
@@ -82,52 +392,28 @@ def handle_upload(request: UploadRequest):
         active_csv_content = request.content
         return {"status": "success", "message": f"Successfully loaded {request.filename}."}
     except Exception as e:
-        return JSONResponse(
-            status_code=500,
-            content={"status": "error", "message": str(e), "trace": traceback.format_exc()}
-        )
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
-# ── Stream Diagnostics (lazy import) ─────────────────────
 @app.get("/api/stream")
 def stream_diagnostics():
     global active_csv_content
-    from agent import run_diagnostics_stream
     return StreamingResponse(
         run_diagnostics_stream(active_csv_content),
         media_type="text/event-stream"
     )
 
-# ── Query (lazy import) ──────────────────────────────────
-@app.post("/api/query", response_model=QueryResponse)
-def handle_query(request: QueryRequest):
-    from agent import process_query
-    result = process_query(request.query)
-    return QueryResponse(response=result["response"], sources=result.get("sources", []))
-
-# ── Inventory (lazy import) ──────────────────────────────
 @app.get("/api/inventory")
-def get_inventory():
-    from tools import load_inventory
+def get_inventory_route():
     return load_inventory()
 
 @app.post("/api/inventory/reset")
 def reset_inventory():
-    from tools import load_inventory, save_inventory
-    from mock_data import INITIAL_INVENTORY
     save_inventory(INITIAL_INVENTORY)
     return INITIAL_INVENTORY
 
-@app.post("/api/inventory/consume")
-def consume_inventory(request: dict):
-    from tools import check_inventory_supplies
-    result_str = check_inventory_supplies.invoke({"treatments_performed": request.get("treatments", "")})
-    return json.loads(result_str)
-
-# ── Simulate (lazy import) ───────────────────────────────
 @app.post("/api/simulate")
 def handle_simulation(request: SimulationRequest):
-    from tools import get_llm
-    llm = get_llm()
+    llm = _get_llm()
     prompt = (
         f"You are the Operations Analyst at RetailMind Supermarket.\n"
         f"Simulate the following operational decision:\n"
@@ -135,15 +421,10 @@ def handle_simulation(request: SimulationRequest):
         f"Budget Allocation: {request.budget} PKR\n"
         f"Hours added/shifted: {request.shift_hours} hours\n"
         f"Staff hired/allocated: {request.staff_increase} people\n\n"
-        f"Forecast the impact of this change on supermarket operations and customer throughput.\n"
-        f"Please return your response in a structured JSON string with the following keys:\n"
-        f"1. 'feasibility_score': Integer from 0 to 100\n"
-        f"2. 'wait_time_impact': String describing projected checkout wait time change\n"
-        f"3. 'revenue_impact': String describing weekly financial ROI projection\n"
-        f"4. 'pros': List of strings outlining advantages\n"
-        f"5. 'cons': List of strings outlining risks/downsides\n"
-        f"6. 'implementation_steps': List of strings outlining step-by-step rollout plan\n\n"
-        f"Return ONLY valid JSON. No markdown wrapper, no extra text."
+        f"Forecast the impact on operations and customer throughput.\n"
+        f"Return ONLY valid JSON with keys: feasibility_score (int 0-100), wait_time_impact (string), "
+        f"revenue_impact (string), pros (list), cons (list), implementation_steps (list).\n"
+        f"No markdown wrapper."
     )
     try:
         response = llm.invoke(prompt)
@@ -155,10 +436,8 @@ def handle_simulation(request: SimulationRequest):
         data = json.loads(content.strip())
     except Exception:
         data = {
-            "feasibility_score": 50,
-            "wait_time_impact": "Unknown",
-            "revenue_impact": "Undetermined",
-            "pros": ["Direct action taken."],
+            "feasibility_score": 50, "wait_time_impact": "Unknown",
+            "revenue_impact": "Undetermined", "pros": ["Direct action taken."],
             "cons": ["Potential overhead expense."],
             "implementation_steps": ["Review strategy.", "Audit budget."]
         }
