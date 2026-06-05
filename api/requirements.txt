@@ -4,5 +4,4 @@ pydantic
 python-dotenv
 langchain
 langchain-groq
-langchain-community
-python-multipart
+langchain-core

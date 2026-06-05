@@ -18,8 +18,13 @@ from tools import (
 
 load_dotenv()
 
-# Setup primary LLM
-llm = get_llm()
+# Lazy LLM initialization - avoids crash if GROQ_API_KEY is missing at import time
+_llm = None
+def _get_llm():
+    global _llm
+    if _llm is None:
+        _llm = get_llm()
+    return _llm
 
 # Define tools for standard conversational agent
 tools = [analyze_expiry_risk, audit_competitor_pricing, generate_purchase_order]
@@ -27,7 +32,7 @@ tools = [analyze_expiry_risk, audit_competitor_pricing, generate_purchase_order]
 def process_query(query: str) -> dict:
     try:
         # Bind tools to the LLM
-        llm_with_tools = llm.bind_tools(tools)
+        llm_with_tools = _get_llm().bind_tools(tools)
         ai_msg = llm_with_tools.invoke(query)
         
         # Check if the model wants to call a tool
@@ -57,7 +62,7 @@ def process_query(query: str) -> dict:
                 f"'{result}'\n\n"
                 f"Please synthesize this into a polite, professional, and helpful reply for the user in Markdown format."
             )
-            final_res = llm.invoke(synthesis_prompt)
+            final_res = _get_llm().invoke(synthesis_prompt)
             return {
                 "response": final_res.content.strip(),
                 "sources": []
@@ -198,7 +203,7 @@ def run_diagnostics_stream(csv_content: str):
     )
     
     try:
-        response = llm.invoke(swot_prompt)
+        response = _get_llm().invoke(swot_prompt)
         swot_content = response.content.strip()
         if swot_content.startswith("```json"):
             swot_content = swot_content[7:]
