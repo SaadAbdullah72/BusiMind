@@ -8,19 +8,23 @@ interface Aisle {
 
 interface StoreLayoutMapProps {
   layoutConfig: Aisle[];
+  recommendations: any[];
   hoveredRec: any;
   overflowCategories?: string[];
   extraLinesNeeded?: number;
+  onHoverRecChange?: (rec: any) => void;
 }
 
 export default function StoreLayoutMap({ 
   layoutConfig, 
+  recommendations = [], 
   hoveredRec, 
   overflowCategories = [], 
-  extraLinesNeeded = 0 
+  extraLinesNeeded = 0,
+  onHoverRecChange
 }: StoreLayoutMapProps) {
   const [viewMode, setViewMode] = useState<'placement' | 'heatmap'>('placement');
-  const [lineCoords, setLineCoords] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
+  const [aisleCenters, setAisleCenters] = useState<{ [id: string]: { x: number; y: number } }>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Default layout if none configured
@@ -29,40 +33,37 @@ export default function StoreLayoutMap({
     { id: '2', name: 'Line 2', slots: ['Milk', 'Yogurt', 'Soap', 'Detergent'] }
   ];
 
-  // Calculate coordinates of line connecting source and target aisles on recommendation hover
+  // Calculate coordinates of all aisle centers for drawing paths
   useEffect(() => {
-    if (!hoveredRec) {
-      setLineCoords(null);
-      return;
-    }
-
-    const { source_aisle_id, target_aisle_id } = hoveredRec;
-    if (!source_aisle_id || !target_aisle_id) {
-      setLineCoords(null);
-      return;
-    }
-
-    const timer = setTimeout(() => {
+    const updateCenters = () => {
       const parent = containerRef.current;
-      const srcEl = document.getElementById(`aisle-${source_aisle_id}`);
-      const targetEl = document.getElementById(`aisle-${target_aisle_id}`);
+      if (!parent) return;
+      const parentRect = parent.getBoundingClientRect();
+      
+      const centers: { [id: string]: { x: number; y: number } } = {};
+      activeLayout.forEach(aisle => {
+        const el = document.getElementById(`aisle-${aisle.id}`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          centers[aisle.id] = {
+            x: rect.left - parentRect.left + rect.width / 2,
+            y: rect.top - parentRect.top + rect.height / 2
+          };
+        }
+      });
+      setAisleCenters(centers);
+    };
 
-      if (parent && srcEl && targetEl) {
-        const parentRect = parent.getBoundingClientRect();
-        const srcRect = srcEl.getBoundingClientRect();
-        const targetRect = targetEl.getBoundingClientRect();
+    updateCenters();
+    // Use a small timeout to let the DOM settle before measuring
+    const timer = setTimeout(updateCenters, 300);
 
-        setLineCoords({
-          x1: srcRect.left - parentRect.left + srcRect.width / 2,
-          y1: srcRect.top - parentRect.top + srcRect.height / 2,
-          x2: targetRect.left - parentRect.left + targetRect.width / 2,
-          y2: targetRect.top - parentRect.top + targetRect.height / 2
-        });
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [hoveredRec, activeLayout]);
+    window.addEventListener('resize', updateCenters);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateCenters);
+    };
+  }, [activeLayout, layoutConfig]);
 
   const getCategoryColor = (cat: string) => {
     if (!cat) return 'bg-[#18181c]/60 border-slate-800 text-slate-500';
@@ -79,7 +80,6 @@ export default function StoreLayoutMap({
   const getSalesHeatClass = (cat: string) => {
     if (!cat) return 'bg-slate-950/80 border-slate-900 opacity-20 text-slate-600';
     const c = cat.toLowerCase();
-    // Cooking Oil and Tea have extremely high sales velocity in POS datasets
     if (c.includes('oil') || c.includes('tea')) {
       return 'bg-red-500/20 border-red-500/60 shadow-lg shadow-red-500/10 text-red-200';
     }
@@ -106,7 +106,7 @@ export default function StoreLayoutMap({
             </svg>
             Interactive 2D Layout Map
           </h3>
-          <p className="text-[10px] text-slate-400 mt-0.5">Top-down view of shelf allocations & AI placements.</p>
+          <p className="text-[10px] text-slate-400 mt-0.5">Supermarket floor affinity visualization (Dotted paths show co-occurring items).</p>
         </div>
 
         {/* View Switcher Toggle */}
@@ -151,7 +151,7 @@ export default function StoreLayoutMap({
       {/* Grid Floorplan container */}
       <div 
         ref={containerRef}
-        className="flex-1 relative border border-[#1e1e24] bg-[#070709] rounded-xl p-6 min-h-[340px] flex items-center justify-center"
+        className="flex-1 relative border border-[#1e1e24] bg-[#070709] rounded-xl p-6 min-h-[360px] flex items-center justify-center"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-2xl relative z-10">
           {activeLayout.map((aisle) => {
@@ -218,28 +218,84 @@ export default function StoreLayoutMap({
           })}
         </div>
 
-        {/* Animated Connector Curve SVG Layer */}
-        {lineCoords && (
-          <svg className="absolute inset-0 pointer-events-none z-20 w-full h-full">
-            <defs>
-              <linearGradient id="gradient-line" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#f97316" />
-                <stop offset="100%" stopColor="#10b981" />
-              </linearGradient>
-            </defs>
-            <path 
-              d={`M ${lineCoords.x1} ${lineCoords.y1} Q ${(lineCoords.x1 + lineCoords.x2) / 2} ${Math.min(lineCoords.y1, lineCoords.y2) - 50} ${lineCoords.x2} ${lineCoords.y2}`} 
-              fill="none" 
-              stroke="url(#gradient-line)" 
-              strokeWidth="3.5" 
-              strokeDasharray="6 4" 
-              className="animate-[dash_1s_linear_infinite]"
-              style={{
-                filter: 'drop-shadow(0px 0px 4px rgba(249, 115, 22, 0.4))'
-              }}
-            />
-          </svg>
-        )}
+        {/* Animated Connector Curve SVG Layer for all recommendations */}
+        <svg className="absolute inset-0 pointer-events-none z-20 w-full h-full">
+          <defs>
+            <linearGradient id="gradient-line-active" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#10b981" />
+            </linearGradient>
+          </defs>
+          {recommendations.map((rec, idx) => {
+            const { source_aisle_id, target_aisle_id } = rec;
+            if (!source_aisle_id || !target_aisle_id) return null;
+            
+            const pt1 = aisleCenters[source_aisle_id];
+            const pt2 = aisleCenters[target_aisle_id];
+            if (!pt1 || !pt2) return null;
+
+            const isHovered = hoveredRec && 
+              hoveredRec.source_aisle_id === source_aisle_id && 
+              hoveredRec.target_aisle_id === target_aisle_id;
+
+            return (
+              <path 
+                key={idx}
+                d={`M ${pt1.x} ${pt1.y} Q ${(pt1.x + pt2.x) / 2} ${Math.min(pt1.y, pt2.y) - 45} ${pt2.x} ${pt2.y}`} 
+                fill="none" 
+                stroke={isHovered ? "url(#gradient-line-active)" : "#475569"} 
+                strokeWidth={isHovered ? "3.5" : "1.5"} 
+                strokeDasharray={isHovered ? "6 4" : "4 4"} 
+                className={isHovered ? "animate-[dash_1s_linear_infinite]" : "opacity-40"}
+                style={{
+                  filter: isHovered ? 'drop-shadow(0px 0px 4px rgba(249, 115, 22, 0.4))' : 'none',
+                  transition: 'stroke 0.3s, stroke-width 0.3s, opacity 0.3s'
+                }}
+              />
+            );
+          })}
+        </svg>
+
+        {/* Floating Midpoint Labels for all recommendations */}
+        {recommendations.map((rec, idx) => {
+          const { source_aisle_id, target_aisle_id } = rec;
+          if (!source_aisle_id || !target_aisle_id) return null;
+          
+          const pt1 = aisleCenters[source_aisle_id];
+          const pt2 = aisleCenters[target_aisle_id];
+          if (!pt1 || !pt2) return null;
+
+          // Compute midpoint with control point adjustment (Q curve midpoint)
+          const ctrlX = (pt1.x + pt2.x) / 2;
+          const ctrlY = Math.min(pt1.y, pt2.y) - 45;
+          const midX = (pt1.x + 2 * ctrlX + pt2.x) / 4;
+          const midY = (pt1.y + 2 * ctrlY + pt2.y) / 4;
+
+          const isHovered = hoveredRec && 
+            hoveredRec.source_aisle_id === source_aisle_id && 
+            hoveredRec.target_aisle_id === target_aisle_id;
+
+          const shortA = rec.item_a ? rec.item_a.split(' ')[0] : 'Item A';
+          const shortB = rec.item_b ? rec.item_b.split(' ')[0] : 'Item B';
+
+          return (
+            <div 
+              key={idx}
+              style={{ left: midX, top: midY - 10 }}
+              onMouseEnter={() => onHoverRecChange && onHoverRecChange(rec)}
+              onMouseLeave={() => onHoverRecChange && onHoverRecChange(null)}
+              className={`absolute z-30 -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg text-[9.5px] font-bold border transition-all duration-300 pointer-events-auto shadow-md flex items-center gap-1 cursor-pointer select-none ${
+                isHovered 
+                  ? 'bg-gradient-to-r from-orange-600 to-emerald-600 border-indigo-400 text-white scale-105 opacity-100 shadow-indigo-500/30' 
+                  : 'bg-[#121216]/95 border-slate-700/50 text-slate-400 opacity-60 hover:opacity-100 hover:scale-105'
+              }`}
+            >
+              <span className="text-orange-400">{shortB}</span>
+              <span className="text-[8px] opacity-40">➕</span>
+              <span className="text-emerald-400">{shortA}</span>
+            </div>
+          );
+        })}
       </div>
 
       {/* Embedded CSS styling for line path animation */}

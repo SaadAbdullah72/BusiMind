@@ -184,9 +184,11 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
         <div className="lg:col-span-2 h-full">
           <StoreLayoutMap 
             layoutConfig={layoutConfig} 
+            recommendations={layoutRecommendations}
             hoveredRec={hoveredRec} 
             overflowCategories={overflowCategories}
             extraLinesNeeded={extraLinesNeeded}
+            onHoverRecChange={setHoveredRec}
           />
         </div>
 

@@ -470,6 +470,61 @@ def analyze_purchase_patterns(email: str) -> list:
                 "item_b": "Lipton Tea"
             }
         ]
+
+    def find_aisle_id_for_item(item_name: str):
+        if not item_name:
+            return None
+        item_lower = item_name.lower()
+        
+        # Step 1: Find category of the item from inventory
+        item_cat = None
+        for key, inv_item in inventory_items.items():
+            if inv_item.get("name") and inv_item["name"].lower() == item_lower:
+                item_cat = inv_item.get("category")
+                break
+        
+        if not item_cat:
+            # Try substring search in inventory names
+            for key, inv_item in inventory_items.items():
+                if inv_item.get("name") and (item_lower in inv_item["name"].lower() or inv_item["name"].lower() in item_lower):
+                    item_cat = inv_item.get("category")
+                    break
+                    
+        if not item_cat:
+            # Fallback for common items if category is not found in inventory
+            if "oil" in item_lower or "dalda" in item_lower:
+                item_cat = "Cooking Oil"
+            elif "tea" in item_lower or "lipton" in item_lower:
+                item_cat = "Tea"
+            elif "milk" in item_lower or "nestle" in item_lower:
+                item_cat = "Milk"
+            elif "soap" in item_lower or "lux" in item_lower:
+                item_cat = "Soap"
+            elif "detergent" in item_lower or "surf" in item_lower:
+                item_cat = "Detergent"
+            elif "yogurt" in item_lower:
+                item_cat = "Yogurt"
+            elif "flour" in item_lower:
+                item_cat = "Flour"
+            elif "sugar" in item_lower:
+                item_cat = "Sugar"
+
+        if not item_cat:
+            return None
+            
+        # Step 2: Find which aisle contains this category
+        for aisle in layout_config:
+            slots = aisle.get("slots", [])
+            for slot in slots:
+                if slot and slot.lower() == item_cat.lower():
+                    return aisle.get("id")
+        return None
+
+    # Map aisle IDs programmatically to guarantee matches
+    for rec in recommendations:
+        rec["source_aisle_id"] = find_aisle_id_for_item(rec.get("item_b"))
+        rec["target_aisle_id"] = find_aisle_id_for_item(rec.get("item_a"))
+
     return recommendations
 
 def run_diagnostics_stream(email: str):
