@@ -132,8 +132,8 @@ export default function App() {
                 )}
               </svg>
             </button>
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
-               <div className="logo-scene w-10 h-10 md:w-12 md:h-12">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-transparent rounded-xl flex items-center justify-center" style={{ perspective: '1200px' }}>
+               <div className="logo-scene w-10 h-10 md:w-12 md:h-12" style={{ transformStyle: 'preserve-3d' }}>
                  <div className="logo-3d-object">
                    {/* Edges */}
                    {Array.from({ length: 6 }).map((_, i) => (

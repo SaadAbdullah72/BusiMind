@@ -632,15 +632,40 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         <div className="absolute inset-0 bg-[#050505]/90 backdrop-blur-md flex flex-col items-center justify-center z-50 transition-opacity duration-300 animate-fadeIn">
           <div className="space-y-6 text-center max-w-sm px-6">
             
-            {/* Spinning glowing portal */}
-            <div className="relative w-24 h-24 mx-auto">
-              <div className="absolute inset-0 border-4 border-orange-500/10 rounded-full"></div>
-              <div className="absolute inset-0 border-4 border-t-orange-500 border-r-amber-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-3 border border-orange-500/30 border-dashed rounded-full animate-reverse-spin"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-6 h-6 text-orange-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V5a2 2 0 00-2-2H5a2 2 0 00-2 2v6a9 9 0 001.8 5.4L5 18.28" />
-                </svg>
+            {/* 3D Rotating Logo Loader */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="logo-scene relative" style={{ width: '100px', height: '100px', perspective: '1200px' }}>
+                <div className="logo-glow"></div>
+                <div className="logo-3d-object" style={{ transformStyle: 'preserve-3d' }}>
+                  {/* Edges */}
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={`loader-edge-${i}`} className="logo-face" style={{ transform: `translateZ(${i - 5}px)` }}>
+                      <div className="w-[80px] h-[80px] rounded-full border-[3px] border-orange-600 bg-transparent" />
+                    </div>
+                  ))}
+
+                  {/* Front */}
+                  <div className="logo-face" style={{ transform: 'translateZ(6px)' }}>
+                    <div className="w-[80px] h-[80px] rounded-full border-2 border-orange-400 bg-gradient-to-br from-[#121215] to-[#050505] shadow-[0_0_20px_rgba(249,115,22,0.8),inset_0_0_10px_rgba(249,115,22,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
+                       <div className="absolute inset-0 bg-orange-500/10 blur-xl rounded-full"></div>
+                       <svg className="w-8 h-8 text-orange-400 mb-1 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.2">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                       <span className="text-[8px] font-black text-white tracking-widest uppercase z-10" style={{ textShadow: '0 0 10px rgba(249,115,22,1)' }}>Retail AI</span>
+                    </div>
+                  </div>
+                  
+                  {/* Back */}
+                  <div className="logo-face" style={{ transform: 'translateZ(-6px) rotateY(180deg)' }}>
+                    <div className="w-[80px] h-[80px] rounded-full border-2 border-orange-400 bg-gradient-to-br from-[#121215] to-[#050505] shadow-[0_0_20px_rgba(249,115,22,0.8),inset_0_0_10px_rgba(249,115,22,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
+                       <div className="absolute inset-0 bg-orange-500/10 blur-xl rounded-full"></div>
+                       <svg className="w-8 h-8 text-orange-400 mb-1 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.2">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                       <span className="text-[8px] font-black text-white tracking-widest uppercase z-10" style={{ textShadow: '0 0 10px rgba(249,115,22,1)' }}>Retail AI</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
