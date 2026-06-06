@@ -170,9 +170,10 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
       });
       const data = await res.json();
       
+      const errorDetail = typeof data.error === 'object' ? JSON.stringify(data.error) : (data.error || 'Server error');
       const aiMessageText = res.ok 
         ? data.response 
-        : `Sorry, there was an error: ${data.error || 'Server error'}`;
+        : `Sorry, there was an error: ${errorDetail}`;
         
       const aiMessageObj: Message = { sender: 'ai', text: aiMessageText };
       
