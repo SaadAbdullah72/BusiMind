@@ -106,6 +106,22 @@ app.add_middleware(
 # ══════════════════════════════════════════════════════════════════════════════
 # DATA LOADERS (MongoDB)
 # ══════════════════════════════════════════════════════════════════════════════
+def safe_int(val, default=0):
+    try:
+        if val is None:
+            return default
+        return int(float(str(val).strip()))
+    except (ValueError, TypeError):
+        return default
+
+def safe_float(val, default=0.0):
+    try:
+        if val is None:
+            return default
+        return float(str(val).strip())
+    except (ValueError, TypeError):
+        return default
+
 def load_inventory(email: str):
     if inventory_collection is None:
         return {}
@@ -122,15 +138,15 @@ def load_inventory(email: str):
                 inv[key] = {
                     "name": row.get("ItemName", ""),
                     "category": row.get("Category", "General"),
-                    "stock": int(float(row.get("Stock", 0))),
+                    "stock": safe_int(row.get("Stock"), 0),
                     "unit": row.get("Unit", "units"),
-                    "cost_price": float(row.get("CostPrice", 0)),
-                    "retail_price": float(row.get("RetailPrice", 0)),
+                    "cost_price": safe_float(row.get("CostPrice"), 0.0),
+                    "retail_price": safe_float(row.get("RetailPrice"), 0.0),
                     "expiry_date": row.get("ExpiryDate", ""),
-                    "low_threshold": int(float(row.get("LowThreshold", 10))),
-                    "sales_velocity_daily": int(float(row.get("SalesVelocityDaily", 1))),
+                    "low_threshold": safe_int(row.get("LowThreshold"), 10),
+                    "sales_velocity_daily": safe_int(row.get("SalesVelocityDaily"), 1),
                     "supplier": row.get("Supplier", "Unknown"),
-                    "supplier_lead_days": int(float(row.get("SupplierLeadDays", 3)))
+                    "supplier_lead_days": safe_int(row.get("SupplierLeadDays"), 3)
                 }
     return inv
 
@@ -172,7 +188,7 @@ def load_competitors(email: str):
         key = row.get("ItemName", "").strip().lower()
         if key:
             comp[key] = {
-                "competitor_price": float(row.get("CompetitorPrice", 0)),
+                "competitor_price": safe_float(row.get("CompetitorPrice"), 0.0),
                 "competitor_name": row.get("CompetitorName", "Competitor")
             }
     return comp
@@ -292,113 +308,127 @@ def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
 # AGENT (from agent.py) — Diagnostic pipeline
 # ══════════════════════════════════════════════════════════════════════════════
 def run_diagnostics_stream(email: str):
-    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
-    time.sleep(0.5)
-
-    records = list(pos_collection.find({"email": email})) if pos_collection else []
-    transactions = []
-    for r in records:
-        transactions.extend(r.get("data", []))
-    
-    if not transactions:
-        yield f"data: {json.dumps({'agent': 'Error', 'status': 'No POS data uploaded. Please upload files in Data Sync Hub.'})}\n\n"
-        return
-
-    total_transactions = len(transactions)
-    total_revenue = 0
-    item_sales = {}
-    for row in transactions:
-        qty = int(row.get("Quantity", 1))
-        price = int(row.get("PricePaid", 0))
-        item = row.get("ItemName", "").strip()
-        total_revenue += price
-        item_sales[item] = item_sales.get(item, 0) + qty
-
-    most_sold_item = max(item_sales, key=item_sales.get) if item_sales else "None"
-
-    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': f'POS Audited. {total_transactions} transactions. Revenue: {total_revenue} PKR. Bestseller: {most_sold_item}.'})}\n\n"
-    time.sleep(0.5)
-
-    # Expiry Risk
-    yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': 'Scanning shelf inventory for upcoming product expiry dates...'})}\n\n"
-    expiry_data = analyze_expiry_risk(email, "2026-06-05")
-    num_items = len(expiry_data['items_at_risk'])
-    yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': f'Found {num_items} categories nearing expiry. Discount campaign drafted.'})}\n\n"
-
-    # Pricing Guard
-    yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': 'Comparing pricing against competitor databases...'})}\n\n"
-    pricing_data = audit_competitor_pricing(email)
-    num_gaps = len(pricing_data['deviations'])
-    yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': f'Found {num_gaps} price gaps. Match recommendations calculated.'})}\n\n"
-
-    # Inventory update
-    yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': 'Updating current stock levels...'})}\n\n"
-    sales_list = []
-    for row in transactions:
-        item = row.get("ItemName", "").strip().lower()
-        sales_list.append(item)
-    inv_res = check_inventory_supplies(email, ", ".join(sales_list))
-    num_alerts = len(inv_res['alerts'])
-    yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': f'Inventory updated. Low stock alerts: {num_alerts}.'})}\n\n"
-
-    # Procurement
-    yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': 'Generating restock purchase orders...'})}\n\n"
-    reorder_pos = []
-    for alert in inv_res["alerts"]:
-        # Find item in alert text to trigger PO
-        for key, item in load_inventory(email).items():
-            if item["name"] in alert:
-                po = generate_purchase_order(email, key, 30)
-                reorder_pos.append(po)
-    yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': f'Auto-drafted {len(reorder_pos)} Purchase Orders.'})}\n\n"
-
-    # SWOT
-    yield f"data: {json.dumps({'agent': 'Retail Advisor', 'status': 'Synthesizing SWOT matrix and strategic actions...'})}\n\n"
-    swot_prompt = (
-        f"You are the Lead Retail Operations Advisor at RetailMind AI.\n"
-        f"Review today's supermarket daily diagnostic report:\n"
-        f"- Total Sales Revenue: {total_revenue} PKR\n"
-        f"- Expiring Items: {json.dumps(expiry_data['items_at_risk'], indent=2)}\n"
-        f"- Price Deviations: {json.dumps(pricing_data['deviations'], indent=2)}\n"
-        f"- Inventory Warnings: {json.dumps(inv_res['alerts'], indent=2)}\n"
-        f"- Auto Procurement Orders drafted: {json.dumps(reorder_pos, indent=2)}\n\n"
-        f"Generate a SWOT analysis and suggest 3 high-priority action steps.\n"
-        f"Return ONLY valid JSON with keys: strengths, weaknesses, opportunities, threats, action_steps (all lists of strings).\n"
-        f"No markdown wrappers."
-    )
     try:
-        response = _get_llm().invoke(swot_prompt)
-        swot_content = response.content.strip()
-        if swot_content.startswith("```json"):
-            swot_content = swot_content[7:]
-        if swot_content.endswith("```"):
-            swot_content = swot_content[:-3]
-        swot_data = json.loads(swot_content.strip())
-    except Exception:
-        swot_data = {
-            "strengths": ["Healthy daily sales revenue.", "Bestsellers moving fast."],
-            "weaknesses": ["Price matching pressure on Cooking Oil.", "Nestle Milkpak stocks below safety levels."],
-            "opportunities": ["Run dynamic discount BOGO campaign on expiring Yogurt cups.", "Reduce Dalda Oil price to match Metro."],
-            "threats": ["Inventory expiry write-offs if Yogurt packs are unsold.", "Supply delays for tea products."],
-            "action_steps": ["Deploy dynamic Yogurt discounts", "Confirm Dalda price match at POS", "Approve Nestlé purchase orders"]
-        }
+        yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
+        time.sleep(0.5)
 
-    final_payload = {
-        "kpis": {
-            "total_revenue": f"{total_revenue} PKR",
-            "total_transactions": total_transactions,
-            "bestseller": most_sold_item,
-            "waste_risk_cost": f"{sum(item['potential_loss'] for item in expiry_data['items_at_risk'])} PKR",
-            "low_stock_count": len(inv_res["alerts"]),
-            "average_basket_value": f"{round(total_revenue / total_transactions)} PKR" if total_transactions > 0 else "0 PKR"
-        },
-        "expiry": expiry_data,
-        "pricing": pricing_data,
-        "inventory": inv_res,
-        "procurement": reorder_pos,
-        "swot": swot_data
-    }
-    yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
+        if pos_collection is None:
+            yield f"data: {json.dumps({'agent': 'Error', 'status': 'Database not connected.'})}\n\n"
+            return
+
+        records = list(pos_collection.find({"email": email}))
+        transactions = []
+        for r in records:
+            transactions.extend(r.get("data", []))
+        
+        if not transactions:
+            yield f"data: {json.dumps({'agent': 'Error', 'status': 'No POS data uploaded. Please upload files in Data Sync Hub.'})}\n\n"
+            return
+
+        total_transactions = len(transactions)
+        total_revenue = 0
+        item_sales = {}
+        for row in transactions:
+            qty = safe_int(row.get("Quantity"), 1)
+            price = safe_int(row.get("PricePaid"), 0)
+            item = row.get("ItemName", "").strip()
+            total_revenue += price
+            if item:
+                item_sales[item] = item_sales.get(item, 0) + qty
+
+        most_sold_item = max(item_sales, key=item_sales.get) if item_sales else "None"
+
+        yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': f'POS Audited. {total_transactions} transactions. Revenue: {total_revenue} PKR. Bestseller: {most_sold_item}.'})}\n\n"
+        time.sleep(0.5)
+
+        # Expiry Risk
+        yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': 'Scanning shelf inventory for upcoming product expiry dates...'})}\n\n"
+        expiry_data = analyze_expiry_risk(email, "2026-06-05")
+        num_items = len(expiry_data.get('items_at_risk', []))
+        yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': f'Found {num_items} categories nearing expiry. Discount campaign drafted.'})}\n\n"
+
+        # Pricing Guard
+        yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': 'Comparing pricing against competitor databases...'})}\n\n"
+        pricing_data = audit_competitor_pricing(email)
+        num_gaps = len(pricing_data.get('deviations', []))
+        yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': f'Found {num_gaps} price gaps. Match recommendations calculated.'})}\n\n"
+
+        # Inventory update
+        yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': 'Updating current stock levels...'})}\n\n"
+        sales_list = []
+        for row in transactions:
+            item = row.get("ItemName", "").strip().lower()
+            if item:
+                sales_list.append(item)
+        inv_res = check_inventory_supplies(email, ", ".join(sales_list))
+        num_alerts = len(inv_res.get('alerts', []))
+        yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': f'Inventory updated. Low stock alerts: {num_alerts}.'})}\n\n"
+
+        # Procurement
+        yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': 'Generating restock purchase orders...'})}\n\n"
+        reorder_pos = []
+        alerts_list = inv_res.get("alerts", [])
+        inventory_items = load_inventory(email)
+        for alert in alerts_list:
+            # Find item in alert text to trigger PO
+            for key, item in inventory_items.items():
+                if item.get("name") and item["name"] in alert:
+                    po = generate_purchase_order(email, key, 30)
+                    if "error" not in po:
+                        reorder_pos.append(po)
+        yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': f'Auto-drafted {len(reorder_pos)} Purchase Orders.'})}\n\n"
+
+        # SWOT
+        yield f"data: {json.dumps({'agent': 'Retail Advisor', 'status': 'Synthesizing SWOT matrix and strategic actions...'})}\n\n"
+        swot_prompt = (
+            f"You are the Lead Retail Operations Advisor at RetailMind AI.\n"
+            f"Review today's supermarket daily diagnostic report:\n"
+            f"- Total Sales Revenue: {total_revenue} PKR\n"
+            f"- Expiring Items: {json.dumps(expiry_data.get('items_at_risk', []), indent=2)}\n"
+            f"- Price Deviations: {json.dumps(pricing_data.get('deviations', []), indent=2)}\n"
+            f"- Inventory Warnings: {json.dumps(inv_res.get('alerts', []), indent=2)}\n"
+            f"- Auto Procurement Orders drafted: {json.dumps(reorder_pos, indent=2)}\n\n"
+            f"Generate a SWOT analysis and suggest 3 high-priority action steps.\n"
+            f"Return ONLY valid JSON with keys: strengths, weaknesses, opportunities, threats, action_steps (all lists of strings).\n"
+            f"No markdown wrappers."
+        )
+        try:
+            response = _get_llm().invoke(swot_prompt)
+            swot_content = response.content.strip()
+            if swot_content.startswith("```json"):
+                swot_content = swot_content[7:]
+            if swot_content.endswith("```"):
+                swot_content = swot_content[:-3]
+            swot_data = json.loads(swot_content.strip())
+        except Exception:
+            swot_data = {
+                "strengths": ["Healthy daily sales revenue.", "Bestsellers moving fast."],
+                "weaknesses": ["Price matching pressure on Cooking Oil.", "Nestle Milkpak stocks below safety levels."],
+                "opportunities": ["Run dynamic discount BOGO campaign on expiring Yogurt cups.", "Reduce Dalda Oil price to match Metro."],
+                "threats": ["Inventory expiry write-offs if Yogurt packs are unsold.", "Supply delays for tea products."],
+                "action_steps": ["Deploy dynamic Yogurt discounts", "Confirm Dalda price match at POS", "Approve Nestlé purchase orders"]
+            }
+
+        final_payload = {
+            "kpis": {
+                "total_revenue": f"{total_revenue} PKR",
+                "total_transactions": total_transactions,
+                "bestseller": most_sold_item,
+                "waste_risk_cost": f"{sum(item.get('potential_loss', 0) for item in expiry_data.get('items_at_risk', []))} PKR",
+                "low_stock_count": len(inv_res.get("alerts", [])),
+                "average_basket_value": f"{round(total_revenue / total_transactions)} PKR" if total_transactions > 0 else "0 PKR"
+            },
+            "expiry": expiry_data,
+            "pricing": pricing_data,
+            "inventory": inv_res,
+            "procurement": reorder_pos,
+            "swot": swot_data
+        }
+        yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        yield f"data: {json.dumps({'agent': 'Error', 'status': f'Server Error: {str(e)}'})}\n\n"
 
 # ══════════════════════════════════════════════════════════════════════════════
 

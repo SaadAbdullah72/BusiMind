@@ -46,7 +46,12 @@ export default function App() {
     
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.status === 'complete') {
+      if (data.agent === 'Error') {
+        alert(`Diagnostic Scan Error: ${data.status}`);
+        setScanning(false);
+        setProgress(null);
+        eventSource.close();
+      } else if (data.status === 'complete') {
         setKpis(data.result.kpis);
         setSwot(data.result.swot);
         
