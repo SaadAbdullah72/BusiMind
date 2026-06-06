@@ -15,7 +15,7 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
   const fetchInbox = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/support/inbox?email=${encodeURIComponent(userEmail)}`);
+      const res = await fetch(`/api/support/live-inbox`);
       const data = await res.json();
       setEmails(data);
     } catch (err) {
@@ -27,22 +27,8 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
 
   useEffect(() => {
     fetchInbox();
-  }, [userEmail]);
+  }, []);
 
-  const seedEmails = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/support/seed', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: userEmail })
-      });
-      await fetchInbox();
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
 
   const processAll = async () => {
     setProcessing(true);
@@ -57,10 +43,15 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
       }
       setSelectedEmail(email); // Show currently processing
       try {
-        const res = await fetch('/api/support/resolve', {
+        const res = await fetch('/api/support/resolve-live', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: userEmail, message: email.body, message_id: email.message_id })
+          body: JSON.stringify({ 
+            message_id: email.message_id, 
+            message: email.body, 
+            sender: email.sender,
+            subject: email.subject
+          })
         });
         const data = await res.json();
         
@@ -88,11 +79,11 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
             <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/30">
               <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
             </div>
-            <h2 className="font-bold text-slate-100">Customer Inbox ({emails.length})</h2>
+            <h2 className="font-bold text-slate-100">Live Gmail Inbox ({emails.length})</h2>
           </div>
           <div className="flex space-x-2">
-            <button onClick={seedEmails} disabled={loading || processing} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-medium transition-colors border border-slate-700 disabled:opacity-50">
-              Load 100 Dummies
+            <button onClick={fetchInbox} disabled={loading || processing} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-medium transition-colors border border-slate-700 disabled:opacity-50">
+              {loading ? 'Fetching...' : 'Fetch Live Emails'}
             </button>
             <button onClick={processAll} disabled={loading || processing || emails.length === 0} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs rounded-lg font-medium transition-colors shadow-lg shadow-blue-500/20 disabled:opacity-50">
               {processing ? `Processing ${progress}%` : 'Run AI Automation'}
@@ -103,7 +94,7 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
         <div className="flex-1 overflow-y-auto bg-[#0a0a0c]">
           {emails.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-slate-500">
-              <p>Inbox is empty. Click "Load 100 Dummies".</p>
+              <p>Inbox is empty. Click "Fetch Live Emails" to pull from Gmail via IMAP.</p>
             </div>
           )}
           {emails.map((email) => (
@@ -154,7 +145,10 @@ export default function SupportEngine({ userEmail }: SupportEngineProps) {
               
               {/* Original Message */}
               <div className="bg-[#121216] border border-slate-700/50 rounded-xl p-4">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 block">Incoming Email</span>
+                <div className="flex items-center justify-between mb-2">
+                   <span className="text-xs font-bold text-slate-400 uppercase tracking-widest block">Incoming Live Email</span>
+                   <span className="text-[10px] text-slate-500 font-mono">{selectedEmail.sender}</span>
+                </div>
                 <p className="text-sm text-slate-200">"{selectedEmail.body}"</p>
               </div>
 

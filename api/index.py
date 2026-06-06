@@ -45,6 +45,13 @@ else:
     pos_collection = None
     emails_collection = None
 
+import imaplib
+import email as email_lib
+from email.header import decode_header
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 import bcrypt
 
 SMTP_EMAIL = os.getenv("SMTP_EMAIL")
@@ -605,6 +612,168 @@ def resolve_customer_support(request: SupportRequest):
         "database_context": db_context,
         "auto_reply": auto_reply,
         "action_taken": "Forwarded to Staff (WhatsApp/Slack)" if intent == "complaint" else "Auto-Reply Sent via Email Node"
+    }
+
+@app.get("/api/support/live-inbox")
+def get_live_inbox():
+    smtp_email = os.getenv("SMTP_EMAIL")
+    smtp_pass = os.getenv("SMTP_PASSWORD")
+    if not smtp_email or not smtp_pass:
+        return []
+    
+    try:
+        mail = imaplib.IMAP4_SSL("imap.gmail.com")
+        mail.login(smtp_email, smtp_pass)
+        mail.select("inbox")
+        
+        # Search for unread emails with our special subject filter
+        status, messages = mail.search(None, '(UNSEEN SUBJECT "bueiness queirues")')
+        email_ids = messages[0].split()
+        
+        results = []
+        for e_id in email_ids[-20:]: # Get latest 20 to be safe
+            status, msg_data = mail.fetch(e_id, '(RFC822)')
+            for response_part in msg_data:
+                if isinstance(response_part, tuple):
+                    msg = email_lib.message_from_bytes(response_part[1])
+                    subject, encoding = decode_header(msg["Subject"])[0]
+                    if isinstance(subject, bytes):
+                        try:
+                            subject = subject.decode(encoding or "utf-8")
+                        except:
+                            subject = subject.decode("utf-8", errors="ignore")
+                            
+                    sender = msg.get("From")
+                    body = ""
+                    if msg.is_multipart():
+                        for part in msg.walk():
+                            content_type = part.get_content_type()
+                            content_disposition = str(part.get("Content-Disposition"))
+                            if content_type == "text/plain" and "attachment" not in content_disposition:
+                                try:
+                                    body = part.get_payload(decode=True).decode()
+                                    break
+                                except:
+                                    pass
+                    else:
+                        try:
+                            body = msg.get_payload(decode=True).decode()
+                        except:
+                            pass
+                    
+                    results.append({
+                        "message_id": e_id.decode(),
+                        "subject": subject,
+                        "body": body.strip(),
+                        "sender": sender,
+                        "status": "unread"
+                    })
+        mail.close()
+        mail.logout()
+        # Reverse to show newest first
+        return results[::-1]
+    except Exception as e:
+        print("IMAP Error:", e)
+        return []
+
+class LiveResolveRequest(BaseModel):
+    message_id: str
+    message: str
+    sender: str
+    subject: str
+
+@app.post("/api/support/resolve-live")
+def resolve_live_email(req: LiveResolveRequest):
+    llm = _get_llm()
+    # Step 1: Classifier
+    classify_prompt = (
+        f"Analyze this email: '{req.message}'.\n"
+        f"Classify strictly into 'order_status', 'faq', or 'complaint'.\n"
+        f"Extract Transaction ID (TXXXX). If none, output 'none'.\n"
+        f"Return ONLY JSON: {{\"intent\": \"category\", \"extracted_id\": \"id\"}}"
+    )
+    try:
+        res = llm.invoke(classify_prompt).content.strip()
+        if res.startswith("```json"): res = res[7:]
+        if res.endswith("```"): res = res[:-3]
+        classification = json.loads(res.strip())
+        intent = classification.get("intent", "faq")
+        extracted_id = classification.get("extracted_id", "none")
+    except:
+        intent, extracted_id = "faq", "none"
+
+    db_context = "No specific DB context."
+    if intent == "order_status" and extracted_id != "none" and pos_collection:
+        # Search all users for this transaction ID just in case
+        records = pos_collection.find({})
+        for r in records:
+            if "data" in r:
+                for row in r["data"]:
+                    if row.get("TransactionId", "").strip().lower() == extracted_id.lower():
+                        db_context = f"Found Order Data: {row}"
+                        break
+    
+    reply_prompt = (
+        f"Customer says: '{req.message}'\n"
+        f"DB Data: {db_context}\n"
+        f"Write a professional email reply in Roman Urdu.\n"
+        f"If 'complaint' category, tell them it's forwarded to trustvault3.help@gmail.com and we will fix it ASAP."
+    )
+    try:
+        auto_reply = llm.invoke(reply_prompt).content.strip()
+    except:
+        auto_reply = "We have received your query and will reply shortly."
+
+    # Email Action via SMTP
+    smtp_email = os.getenv("SMTP_EMAIL")
+    smtp_pass = os.getenv("SMTP_PASSWORD")
+    action_taken = "Auto-Reply Sent"
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(smtp_email, smtp_pass)
+
+        if intent == "complaint":
+            # Forward to staff
+            msg = MIMEMultipart()
+            msg['From'] = smtp_email
+            msg['To'] = "trustvault3.help@gmail.com"
+            msg['Subject'] = f"ESCALATED: {req.subject}"
+            body = f"Customer Email: {req.sender}\nCustomer Message:\n{req.message}\n\nAI Drafted Reply sent to user:\n{auto_reply}"
+            msg.attach(MIMEText(body, 'plain'))
+            server.send_message(msg)
+            action_taken = "Forwarded to Staff (trustvault3.help@gmail.com)"
+
+        # Send reply back to customer
+        reply_msg = MIMEMultipart()
+        reply_msg['From'] = smtp_email
+        reply_msg['To'] = req.sender
+        reply_msg['Subject'] = f"Re: {req.subject}"
+        reply_msg.attach(MIMEText(auto_reply, 'plain'))
+        server.send_message(reply_msg)
+        
+        server.quit()
+
+        # Mark as read in IMAP
+        try:
+            mail = imaplib.IMAP4_SSL("imap.gmail.com")
+            mail.login(smtp_email, smtp_pass)
+            mail.select("inbox")
+            mail.store(req.message_id, '+FLAGS', '\\Seen')
+            mail.logout()
+        except Exception as e:
+            print("Failed to mark as read:", e)
+
+    except Exception as e:
+        action_taken = f"SMTP Error: {e}"
+
+    return {
+        "intent": intent.upper(),
+        "extracted_id": extracted_id,
+        "database_context": db_context,
+        "auto_reply": auto_reply,
+        "action_taken": action_taken
     }
 
 @app.get("/api/stream")

@@ -9,6 +9,7 @@ import ProcurementCenter from './components/ProcurementCenter';
 import RetailSandbox from './components/RetailSandbox';
 import LoginScreen from './components/LoginScreen';
 import DataSyncHub from './components/DataSyncHub';
+import SupportEngine from './components/SupportEngine';
 
 // Default initial state
 const defaultKPIs = {
@@ -32,7 +33,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userEmail, setUserEmail] = useState(() => localStorage.getItem('userEmail'));
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'expiry' | 'pricing' | 'procurement' | 'sandbox' | 'datasync'>('datasync');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'expiry' | 'pricing' | 'procurement' | 'sandbox' | 'datasync' | 'support'>('support');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
   const [expiryData, setExpiryData] = useState<any>(null);
@@ -216,6 +217,18 @@ export default function App() {
               </button>
 
               <button
+                onClick={() => setActiveTab('support')}
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                  activeTab === 'support'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                <span>Support Engine AI</span>
+              </button>
+
+              <button
                 onClick={() => setActiveTab('sandbox')}
                 className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === 'sandbox'
@@ -263,6 +276,7 @@ export default function App() {
             {activeTab === 'expiry' && <ExpiryDesk expiryData={expiryData} />}
             {activeTab === 'pricing' && <PricingGuard pricingData={pricingData} />}
             {activeTab === 'procurement' && <ProcurementCenter procurementData={procurementData} />}
+            {activeTab === 'support' && <SupportEngine userEmail={userEmail || ''} />}
             {activeTab === 'sandbox' && <RetailSandbox />}
           </div>
         </main>
