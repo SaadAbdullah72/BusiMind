@@ -46,7 +46,8 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    # bcrypt limits passwords to 72 bytes. Truncate to prevent crashes.
+    return pwd_context.hash(password[:72])
 
 def send_otp_email(to_email: str, otp: str):
     if not SMTP_EMAIL or not SMTP_PASSWORD:
