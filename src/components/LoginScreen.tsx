@@ -285,11 +285,11 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen w-full relative z-10">
         
         {/* Left Visual Area - Cyborg Visual */}
-        <div className="lg:col-span-7 relative hidden lg:flex flex-col justify-between p-12 overflow-hidden border-r border-[#1a1a1a]/40">
+        <div className="lg:col-span-7 relative flex flex-col justify-between p-8 md:p-12 overflow-hidden border-b lg:border-b-0 lg:border-r border-[#1a1a1a]/40 min-h-[45vh] lg:min-h-0">
           
           {/* Top text overlay */}
-          <div className="relative z-20 max-w-lg mt-6">
-            <h2 className="text-4xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
+          <div className="relative z-20 max-w-lg mt-2 lg:mt-6">
+            <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
               Into Successful<br />
               <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-orange-400 bg-clip-text text-transparent">
                 Business.
