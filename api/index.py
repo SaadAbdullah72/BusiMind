@@ -24,9 +24,11 @@ from passlib.context import CryptContext
 
 load_dotenv()
 
+import certifi
+
 MONGO_URI = os.getenv("MONGO_URI")
 if MONGO_URI:
-    mongo_client = MongoClient(MONGO_URI)
+    mongo_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
     db = mongo_client["RetailMind"]
     users_collection = db["users"]
     otps_collection = db["otps"]
