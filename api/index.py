@@ -571,11 +571,12 @@ def seed_dummy_emails(payload: dict):
 
 @app.post("/api/support/send-mock-emails")
 def send_mock_live_emails(payload: dict = None):
+    customer_email = os.getenv("CUSTOMER_EMAIL")
+    customer_pass = os.getenv("CUSTOMER_PASSWORD")
     smtp_email = os.getenv("SMTP_EMAIL")
-    smtp_pass = os.getenv("SMTP_PASSWORD")
 
-    if not smtp_email or not smtp_pass:
-        return JSONResponse(status_code=500, content={"status": "error", "message": "Credentials not found in .env"})
+    if not customer_email or not customer_pass or not smtp_email:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Customer or SMTP Credentials not found in .env"})
 
     queries = [
         # Solvable by PDF
@@ -595,13 +596,12 @@ def send_mock_live_emails(payload: dict = None):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(smtp_email, smtp_pass)
+        server.login(customer_email, customer_pass)
         
         for i, query in enumerate(queries):
             msg = MIMEMultipart()
-            msg['From'] = smtp_email
+            msg['From'] = customer_email
             msg['To'] = smtp_email
-            msg['Reply-To'] = f"mock_customer_{i+1}@gmail.com"
             msg['Subject'] = f"Business Queries: Test Customer Question #{i+1}"
             
             msg.attach(MIMEText(query, 'plain'))
@@ -719,7 +719,7 @@ def get_live_inbox():
                     if "business queries" not in subject.lower():
                         continue
                             
-                    sender = msg.get("Reply-To") or msg.get("From")
+                    sender = msg.get("From")
                     body = ""
                     if msg.is_multipart():
                         for part in msg.walk():
