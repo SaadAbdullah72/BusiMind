@@ -315,24 +315,92 @@ def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
 # ══════════════════════════════════════════════════════════════════════════════
 # AGENT (from agent.py) — Diagnostic pipeline
 # ══════════════════════════════════════════════════════════════════════════════
-def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
-    categories = list(set([item.get("category", "General") for item in inventory_items.values() if item.get("category")]))
-    if not categories:
-        categories = ["Cooking Oil", "Tea", "Flour", "Sugar", "Milk", "Yogurt", "Soap", "Detergent", "Soft Drinks", "Snacks"]
 
-    # Calculate sales frequency per category
+def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
+    # 1. Map item names to categories
+    item_to_category = {}
+    for key, inv_item in inventory_items.items():
+        if inv_item.get("name") and inv_item.get("category"):
+            item_to_category[inv_item["name"].lower().strip()] = inv_item["category"]
+
+    # 2. Extract transaction baskets in terms of categories
+    baskets = {}
+    for row in transactions:
+        tx_id = row.get("TransactionId")
+        item_name = row.get("ItemName", "").strip().lower()
+        if tx_id and item_name:
+            category = item_to_category.get(item_name)
+            if not category:
+                # Fallback for common items if category is not found in inventory
+                if "oil" in item_name or "dalda" in item_name:
+                    category = "Cooking Oil"
+                elif "tea" in item_name or "lipton" in item_name:
+                    category = "Tea"
+                elif "milk" in item_name or "nestle" in item_name:
+                    category = "Milk"
+                elif "soap" in item_name or "lux" in item_name:
+                    category = "Soap"
+                elif "detergent" in item_name or "surf" in item_name:
+                    category = "Detergent"
+                elif "yogurt" in item_name:
+                    category = "Yogurt"
+                elif "flour" in item_name:
+                    category = "Flour"
+                elif "sugar" in item_name:
+                    category = "Sugar"
+                else:
+                    category = "General"
+            
+            if tx_id not in baskets:
+                baskets[tx_id] = set()
+            baskets[tx_id].add(category)
+
+    # 3. Compute category pair co-occurrence frequencies
+    category_co_occurrences = {}
+    for categories_set in baskets.values():
+        cat_list = list(categories_set)
+        for i in range(len(cat_list)):
+            for j in range(i + 1, len(cat_list)):
+                pair = tuple(sorted([cat_list[i], cat_list[j]]))
+                category_co_occurrences[pair] = category_co_occurrences.get(pair, 0) + 1
+
+    # 4. Calculate sales frequency per category
     category_sales = {}
     for row in transactions:
         item_name = row.get("ItemName", "").strip().lower()
-        item_cat = "General"
-        for key, inv_item in inventory_items.items():
-            if inv_item.get("name") and inv_item["name"].lower() == item_name:
-                item_cat = inv_item.get("category", "General")
-                break
+        item_cat = item_to_category.get(item_name)
+        if not item_cat:
+            if "oil" in item_name or "dalda" in item_name:
+                item_cat = "Cooking Oil"
+            elif "tea" in item_name or "lipton" in item_name:
+                item_cat = "Tea"
+            elif "milk" in item_name or "nestle" in item_name:
+                item_cat = "Milk"
+            elif "soap" in item_name or "lux" in item_name:
+                item_cat = "Soap"
+            elif "detergent" in item_name or "surf" in item_name:
+                item_cat = "Detergent"
+            elif "yogurt" in item_name:
+                item_cat = "Yogurt"
+            elif "flour" in item_name:
+                item_cat = "Flour"
+            elif "sugar" in item_name:
+                item_cat = "Sugar"
+            else:
+                item_cat = "General"
         qty = safe_int(row.get("Quantity"), 1)
         category_sales[item_cat] = category_sales.get(item_cat, 0) + qty
 
     # Sort categories by sales volume, fallback to alphabetical
+    categories = list(set([item.get("category", "General") for item in inventory_items.values() if item.get("category")]))
+    if not categories:
+        categories = ["Cooking Oil", "Tea", "Flour", "Sugar", "Milk", "Yogurt", "Soap", "Detergent", "Soft Drinks", "Snacks"]
+
+    # Fill in any missing known categories from sales
+    for cat in category_sales.keys():
+        if cat not in categories:
+            categories.append(cat)
+
     categories.sort(key=lambda c: category_sales.get(c, 0), reverse=True)
 
     # Retrieve layout config (Aisles count & Slots per aisle)
@@ -353,15 +421,47 @@ def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
     import math
     extra_lines_needed = math.ceil(len(overflow_categories) / slots_per_aisle) if overflow_categories and slots_per_aisle > 0 else 0
 
+    # 5. Greedy layout placement: place co-occurring items next to each other
+    placed = set()
+    grid = [[None for _ in range(slots_per_aisle)] for _ in range(aisles_count)]
+
+    for i in range(aisles_count):
+        for j in range(slots_per_aisle):
+            best_cand = None
+            if j == 0:
+                # First slot: pick highest sales volume unplaced category
+                for cat in fitted_categories:
+                    if cat not in placed:
+                        best_cand = cat
+                        break
+            else:
+                # Subsequent slot: pick unplaced category with highest co-occurrence with previous slot
+                prev_cat = grid[i][j-1]
+                best_score = -1
+                for cat in fitted_categories:
+                    if cat not in placed:
+                        pair = tuple(sorted([prev_cat, cat]))
+                        score = category_co_occurrences.get(pair, 0)
+                        if score > best_score:
+                            best_score = score
+                            best_cand = cat
+                
+                # If no co-occurrence info or best score is 0, fallback to highest sales volume
+                if best_score <= 0 or best_cand is None:
+                    for cat in fitted_categories:
+                        if cat not in placed:
+                            best_cand = cat
+                            break
+            
+            if best_cand:
+                grid[i][j] = best_cand
+                placed.add(best_cand)
+
     fitted_layout = []
     for i in range(aisles_count):
         aisle_slots = []
         for j in range(slots_per_aisle):
-            idx = i * slots_per_aisle + j
-            if idx < len(fitted_categories):
-                aisle_slots.append(fitted_categories[idx])
-            else:
-                aisle_slots.append("")
+            aisle_slots.append(grid[i][j] if grid[i][j] else "")
         fitted_layout.append({
             "id": str(i + 1),
             "name": f"Line {i + 1}",

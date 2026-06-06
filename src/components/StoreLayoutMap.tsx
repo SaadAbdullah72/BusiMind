@@ -23,7 +23,6 @@ export default function StoreLayoutMap({
   extraLinesNeeded = 0,
   onHoverRecChange
 }: StoreLayoutMapProps) {
-  // Removed viewMode: only placement map is shown
   const [aisleCenters, setAisleCenters] = useState<{ [id: string]: { x: number; y: number } }>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -77,9 +76,6 @@ export default function StoreLayoutMap({
     return 'bg-slate-900/60 border-slate-700/40 text-slate-300';
   };
 
-  // Heatmap styling removed – always use category colors.
-  // If you need future heatmap support, re‑introduce getSalesHeatClass.
-
   const isAisleHighlighted = (aisleId: string) => {
     if (!hoveredRec) return false;
     return hoveredRec.source_aisle_id === aisleId || hoveredRec.target_aisle_id === aisleId;
@@ -99,8 +95,6 @@ export default function StoreLayoutMap({
           </h3>
           <p className="text-[10px] text-slate-400 mt-0.5">Supermarket floor affinity visualization (Dotted paths show co-occurring items).</p>
         </div>
-
-        {/* View mode toggle removed – only placement view is kept */}
       </div>
 
       {/* Overflow Warning Banner */}
