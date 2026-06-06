@@ -117,21 +117,21 @@ def load_inventory(email: str):
         if "data" not in record:
             continue
         for row in record["data"]:
-        key = row.get("ItemName", "").strip().lower()
-        if key:
-            inv[key] = {
-                "name": row.get("ItemName", ""),
-                "category": row.get("Category", "General"),
-                "stock": int(float(row.get("Stock", 0))),
-                "unit": row.get("Unit", "units"),
-                "cost_price": float(row.get("CostPrice", 0)),
-                "retail_price": float(row.get("RetailPrice", 0)),
-                "expiry_date": row.get("ExpiryDate", ""),
-                "low_threshold": int(float(row.get("LowThreshold", 10))),
-                "sales_velocity_daily": int(float(row.get("SalesVelocityDaily", 1))),
-                "supplier": row.get("Supplier", "Unknown"),
-                "supplier_lead_days": int(float(row.get("SupplierLeadDays", 3)))
-            }
+            key = row.get("ItemName", "").strip().lower()
+            if key:
+                inv[key] = {
+                    "name": row.get("ItemName", ""),
+                    "category": row.get("Category", "General"),
+                    "stock": int(float(row.get("Stock", 0))),
+                    "unit": row.get("Unit", "units"),
+                    "cost_price": float(row.get("CostPrice", 0)),
+                    "retail_price": float(row.get("RetailPrice", 0)),
+                    "expiry_date": row.get("ExpiryDate", ""),
+                    "low_threshold": int(float(row.get("LowThreshold", 10))),
+                    "sales_velocity_daily": int(float(row.get("SalesVelocityDaily", 1))),
+                    "supplier": row.get("Supplier", "Unknown"),
+                    "supplier_lead_days": int(float(row.get("SupplierLeadDays", 3)))
+                }
     return inv
 
 def save_inventory(email: str, inv: dict):
