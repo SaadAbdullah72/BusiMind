@@ -246,7 +246,7 @@ def get_llm():
     from langchain_groq import ChatGroq
     return ChatGroq(
         temperature=0.2,
-        model_name="llama3-8b-8192",
+        model_name="llama-3.1-8b-instant",
         api_key=os.getenv("GROQ_API_KEY")
     )
 
@@ -1428,7 +1428,7 @@ def resolve_live_email(req: LiveResolveRequest):
     
     staff_email = settings.get("staff_email")
     if not staff_email or str(staff_email).strip() == "":
-        staff_email = "trustvault3.help@gmail.com"
+        return {"action_taken": "Error: Staff Email not configured in Settings"}
     action_taken = "Auto-Reply Sent"
 
     try:
