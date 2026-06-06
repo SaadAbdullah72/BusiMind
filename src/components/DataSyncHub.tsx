@@ -158,15 +158,29 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           <h3 className="text-md font-bold text-slate-200">2. Business Policy (PDF)</h3>
           <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple PDFs for the AI to use as context.</p>
           
-          <div className="w-full text-left mb-4 space-y-2">
-            {policies.map(p => (
-              <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50">
-                <span className="text-xs text-slate-300 truncate w-3/4">{p.filename}</span>
-                <button onClick={() => deletePolicy(p.doc_id)} className="text-red-400 hover:text-red-300 p-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button>
-              </div>
-            ))}
+          <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
+              {policies.length === 0 ? (
+                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                  No policies uploaded yet.
+                </div>
+              ) : (
+                policies.map(p => (
+                  <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-purple-500/30">
+                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={p.filename || 'Business Policy Document'}>
+                      📄 {p.filename || 'Business Policy Document'}
+                    </span>
+                    <button 
+                      onClick={() => deletePolicy(p.doc_id)} 
+                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      title="Delete document"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
 
           <div className="flex w-full mt-auto">
