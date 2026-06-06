@@ -1335,8 +1335,10 @@ def store_chatbot(req: ChatbotRequest):
             f"=== USER QUERY ===\n{query}\n\n"
             f"Please answer the user's query clearly, professionally, and accurately using the provided store data and policies. "
             f"If the information is not present in the files, let the user know that it is not available in their uploaded files. "
-            f"Support Roman Urdu if the user writes in Roman Urdu or Urdu. Keep formatting neat and use Markdown where helpful. "
-            f"Always keep responses concise but complete and professional."
+            f"You MUST answer the query strictly in elegant, professional business English. If the user asks a question in Roman Urdu, Urdu, or any other language, you must understand it but respond strictly in English. "
+            f"Do NOT use Roman Urdu, Urdu, or any language other than English in your response under any circumstances. "
+            f"Keep formatting neat and use Markdown where helpful. "
+            f"Always keep responses concise but complete, polite, and professional."
         )
         
         response = _get_llm().invoke(chatbot_prompt)
