@@ -148,9 +148,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         setIsLoading(false);
         setView('otp-verify');
         setInfoMessage('Enter the 6-digit OTP code sent to your email.');
-        // Show simulated notification alert at top of page
-        setSimulatedNotification(`📧 [SIMULATION] OTP sent to ${resetEmail}: ${data.otp}`);
-        setTimeout(() => setSimulatedNotification(null), 15000); // clear after 15s
       } else {
         setError(data.message || 'Email not found.');
         setIsLoading(false);
@@ -217,47 +214,48 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 flex flex-col font-sans antialiased relative overflow-hidden select-none">
       <style>{`
-        .logo-3d-container {
-          perspective: 800px;
+        .logo-scene {
+          perspective: 1200px;
+          width: 150px;
+          height: 150px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1rem;
         }
-        .logo-3d-sphere {
+        .logo-3d-object {
           position: relative;
-          width: 52px;
-          height: 52px;
+          width: 100%;
+          height: 100%;
           transform-style: preserve-3d;
-          animation: logo-spin-y 8s linear infinite;
+          animation: continuous-spin 10s linear infinite;
         }
-        .logo-3d-ring {
+        @keyframes continuous-spin {
+          0% { transform: rotateY(0deg) rotateX(10deg); }
+          100% { transform: rotateY(360deg) rotateX(10deg); }
+        }
+        .logo-face {
           position: absolute;
           inset: 0;
-          border: 1.5px solid rgba(249, 115, 22, 0.3);
-          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          backface-visibility: visible;
           transform-style: preserve-3d;
         }
-        .logo-3d-ring-1 { transform: rotateY(0deg); border-color: rgba(249, 115, 22, 0.65); filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.25)); }
-        .logo-3d-ring-2 { transform: rotateY(45deg); }
-        .logo-3d-ring-3 { transform: rotateY(90deg); border-color: rgba(249, 115, 22, 0.65); filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.25)); }
-        .logo-3d-ring-4 { transform: rotateY(135deg); }
-        .logo-3d-ring-h { transform: rotateX(90deg); border-color: rgba(251, 191, 36, 0.5); filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.2)); }
-        .logo-3d-core {
+        .logo-glow {
           position: absolute;
-          width: 14px;
-          height: 14px;
-          background: radial-gradient(circle, #ff7a1a 0%, #c45a00 100%);
-          border-radius: 50%;
-          left: 50%;
-          top: 50%;
-          transform: translate3d(-50%, -50%, 0);
-          box-shadow: 0 0 14px 4px rgba(249, 115, 22, 0.8);
-          animation: core-pulse 2s ease-in-out infinite alternate;
+          width: 150%;
+          height: 150%;
+          background: radial-gradient(circle, rgba(249,115,22,0.3) 0%, transparent 65%);
+          top: -25%;
+          left: -25%;
+          pointer-events: none;
+          animation: pulse-glow 3s ease-in-out infinite alternate;
         }
-        @keyframes logo-spin-y {
-          0% { transform: rotateY(0deg) rotateX(15deg); }
-          100% { transform: rotateY(360deg) rotateX(15deg); }
-        }
-        @keyframes core-pulse {
-          0% { transform: translate3d(-50%, -50%, 0) scale(0.92); opacity: 0.8; }
-          100% { transform: translate3d(-50%, -50%, 0) scale(1.08); opacity: 1; }
+        @keyframes pulse-glow {
+          0% { opacity: 0.5; transform: scale(0.95); }
+          100% { opacity: 1; transform: scale(1.05); }
         }
       `}</style>
       
@@ -329,15 +327,38 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             
             {/* 3D Rotating Logo */}
             <div className="flex flex-col items-center">
-              <div className="logo-3d-container w-20 h-20 flex items-center justify-center relative">
-                <div className="absolute inset-0 bg-orange-500/5 rounded-full blur-xl pointer-events-none"></div>
-                <div className="logo-3d-sphere">
-                  <div className="logo-3d-ring logo-3d-ring-1"></div>
-                  <div className="logo-3d-ring logo-3d-ring-2"></div>
-                  <div className="logo-3d-ring logo-3d-ring-3"></div>
-                  <div className="logo-3d-ring logo-3d-ring-4"></div>
-                  <div className="logo-3d-ring logo-3d-ring-h"></div>
-                  <div className="logo-3d-core"></div>
+              <div className="logo-scene relative">
+                <div className="logo-glow"></div>
+                <div className="logo-3d-object">
+                  {/* Front floating layer */}
+                  <div className="logo-face" style={{ transform: 'translateZ(20px)' }}>
+                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_15px_rgba(249,115,22,1)]">
+                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="url(#orange-grad)" strokeWidth="5" className="opacity-100"/>
+                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="url(#amber-grad)" opacity="0.15" stroke="#fbbf24" strokeWidth="2"/>
+                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="#fbbf24" strokeWidth="2.5" strokeDasharray="3 3" opacity="0.8"/>
+                      <circle cx="50" cy="50" r="10" fill="#fff" className="animate-pulse shadow-[0_0_25px_#fff]"/>
+                      <defs>
+                        <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#f97316" />
+                          <stop offset="100%" stopColor="#ea580c" />
+                        </linearGradient>
+                        <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#fbbf24" />
+                          <stop offset="100%" stopColor="#f59e0b" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                  
+                  {/* Back floating layer (gives hologram depth) */}
+                  <div className="logo-face" style={{ transform: 'translateZ(-20px) rotateY(180deg)' }}>
+                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]">
+                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="rgba(249,115,22,0.4)" strokeWidth="3"/>
+                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="none" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5"/>
+                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5" strokeDasharray="3 3"/>
+                      <circle cx="50" cy="50" r="5" fill="rgba(255,255,255,0.4)"/>
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
