@@ -9,6 +9,25 @@ export default function SupportEngine() {
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [results, setResults] = useState<Record<string, any>>({});
   const [progress, setProgress] = useState(0);
+  const [sendingTest, setSendingTest] = useState(false);
+
+  const sendTestEmails = async () => {
+    setSendingTest(true);
+    try {
+      const res = await fetch('/api/support/send-mock-emails', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message);
+        fetchInbox();
+      } else {
+        alert(data.message || 'Error sending test emails');
+      }
+    } catch (err) {
+      alert('Network error while sending test emails.');
+    } finally {
+      setSendingTest(false);
+    }
+  };
 
   const fetchInbox = async () => {
     setLoading(true);
@@ -82,10 +101,13 @@ export default function SupportEngine() {
             <h2 className="font-bold text-slate-100">Live Gmail Inbox ({emails.length})</h2>
           </div>
           <div className="flex space-x-2">
-            <button onClick={fetchInbox} disabled={loading || processing} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-medium transition-colors border border-slate-700 disabled:opacity-50">
+            <button onClick={sendTestEmails} disabled={loading || processing || sendingTest} className="px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/40 text-purple-400 text-xs rounded-lg font-medium transition-colors border border-purple-500/30 disabled:opacity-50">
+              {sendingTest ? 'Sending...' : 'Send 10 Test Emails'}
+            </button>
+            <button onClick={fetchInbox} disabled={loading || processing || sendingTest} className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs rounded-lg font-medium transition-colors border border-slate-700 disabled:opacity-50">
               {loading ? 'Fetching...' : 'Fetch Live Emails'}
             </button>
-            <button onClick={processAll} disabled={loading || processing || emails.length === 0} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs rounded-lg font-medium transition-colors shadow-lg shadow-blue-500/20 disabled:opacity-50">
+            <button onClick={processAll} disabled={loading || processing || sendingTest || emails.length === 0} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs rounded-lg font-medium transition-colors shadow-lg shadow-blue-500/20 disabled:opacity-50">
               {processing ? `Processing ${progress}%` : 'Run AI Automation'}
             </button>
           </div>
