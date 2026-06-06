@@ -274,31 +274,10 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         <div className="lg:col-span-5 flex flex-col justify-center px-6 py-8 md:py-12 md:px-16 lg:px-20 bg-[#070708] relative">
           
           <div className="max-w-md w-full mx-auto space-y-6 md:space-y-8">
-                  {/* Rotating Logo */}
+            {/* Rotating Logo */}
             <div className="flex flex-col items-center">
-                      <defs>
-                        <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#f97316" />
-                          <stop offset="100%" stopColor="#ea580c" />
-                        </linearGradient>
-                        <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#fbbf24" />
-                          <stop offset="100%" stopColor="#f59e0b" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </div>
-                  
-                  {/* Back floating layer (gives hologram depth) */}
-                  <div className="logo-face" style={{ transform: 'translateZ(-20px) rotateY(180deg)' }}>
-                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]">
-                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="rgba(249,115,22,0.4)" strokeWidth="3"/>
-                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="none" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5"/>
-                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5" strokeDasharray="3 3"/>
-                      <circle cx="50" cy="50" r="5" fill="rgba(255,255,255,0.4)"/>
-                    </svg>
-                  </div>
-                </div>
+              <div className="w-32 h-32 mb-6 rounded-full overflow-hidden border border-slate-700/50 shadow-[0_0_30px_rgba(255,255,255,0.05)] bg-[#030303]">
+                 <img src="/logo-corporate.png" alt="RetailMind Corporate Logo" className="w-full h-full object-cover animate-spin-slow" />
               </div>
             </div>
 

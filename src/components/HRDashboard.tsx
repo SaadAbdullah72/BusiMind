@@ -186,14 +186,13 @@ export default function HRDashboard() {
           <div className="lg:col-span-2 bg-[#0c0c0e]/60 backdrop-blur-md border border-[#1a1a24]/80 rounded-2xl overflow-hidden">
             {/* Search + Filter Bar */}
             <div className="p-4 border-b border-[#1a1a24]/60 flex items-center gap-3">
-                <input
-                  type="text"
-                  placeholder="Search by name or role..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full bg-[#121216]/60 border border-[#1a1a24]/80 rounded-xl px-4 py-2 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none focus:border-slate-500/40 focus:bg-[#121216] transition-all"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Search by name or role..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full bg-[#121216]/60 border border-[#1a1a24]/80 rounded-xl px-4 py-2 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none focus:border-slate-500/40 focus:bg-[#121216] transition-all"
+              />
               <select
                 value={filterDept}
                 onChange={e => setFilterDept(e.target.value)}
@@ -264,64 +263,16 @@ export default function HRDashboard() {
                       <div className={`w-2 h-2 rounded-full ${
                         emp.status === 'active' ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' :
                         emp.status === 'leave'  ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]' :
-                  {filtered.map(emp => {
-                    const dc = deptColors[emp.dept] || deptColors['Operations'];
-                    const isSelected = selectedEmp?.id === emp.id;
-                    return (
-                      <div
-                        key={emp.id}
-                        onClick={() => setSelectedEmp(isSelected ? null : emp)}
-                        className={`grid grid-cols-12 gap-2 px-4 py-3 cursor-pointer transition-all duration-200 ${
-                          isSelected
-                            ? 'bg-violet-500/5 border-l-2 border-l-violet-500/60'
-                            : 'hover:bg-[#121216]/30'
-                        }`}
-                      >
-                        {/* Name + Avatar */}
-                        <div className="col-span-4 flex items-center gap-2.5">
-                          <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${avatarColors[emp.avatar]} flex items-center justify-center text-[10px] font-black text-white shadow-md shrink-0`}>
-                            {emp.avatar}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-slate-200 truncate">{emp.name}</p>
-                            <p className="text-[9px] text-slate-500 truncate">{emp.role}</p>
-                          </div>
-                        </div>
-                        {/* Dept */}
-                        <div className="col-span-3 flex items-center">
-                          <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold ${dc.bg} ${dc.text} border ${dc.border}`}>
-                            {emp.dept}
-                          </span>
-                        </div>
-                        {/* Shift */}
-                        <div className="col-span-2 flex items-center">
-                          <span className="text-[10px] text-slate-400 font-semibold">{emp.shift}</span>
-                        </div>
-                        {/* Attendance bar */}
-                        <div className="col-span-2 flex items-center gap-1.5">
-                          <div className="flex-1 bg-[#1b1b22] rounded-full h-1">
-                            <div
-                              className={`h-1 rounded-full ${emp.attendance >= 90 ? 'bg-emerald-500' : emp.attendance >= 80 ? 'bg-amber-500' : 'bg-red-500'}`}
-                              style={{ width: `${emp.attendance}%` }}
-                            />
-                          </div>
-                          <span className="text-[9px] font-bold text-slate-500 w-7 text-right">{emp.attendance}%</span>
-                        </div>
-                        {/* Status dot */}
-                        <div className="col-span-1 flex items-center justify-center">
-                          <div className={`w-2 h-2 rounded-full ${
-                            emp.status === 'active' ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]' :
-                            emp.status === 'leave'  ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]' :
-                            'bg-slate-600'
-                          }`} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                        'bg-slate-600'
+                      }`} />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </div>
+      </div>
 
           {/* Employee Detail Panel */}
           <div className="bg-[#0c0c0e]/60 backdrop-blur-md border border-[#1a1a24]/80 rounded-2xl overflow-hidden flex flex-col">

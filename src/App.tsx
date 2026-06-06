@@ -107,11 +107,6 @@ export default function App() {
   };
 
   return (
-    <div 
-      className="min-h-screen text-slate-100 flex flex-col font-sans antialiased relative overflow-hidden"
-      style={{
-        backgroundImage: 'url(/retailmind_bg.png)',
-        backgroundSize: 'cover',
     <div className="min-h-screen bg-[#030303] text-slate-200 font-sans relative overflow-hidden flex flex-col" style={{
       backgroundImage: "url('/bg-corporate.png')",
       backgroundSize: 'cover',
@@ -262,6 +257,16 @@ export default function App() {
                   onClick={() => { setActiveTab('settings'); setIsMobileMenuOpen(false); }} 
                   className={`w-full text-left px-4 py-2.5 rounded-lg transition-all cursor-pointer text-xs font-semibold ${
                     activeTab === 'settings' 
+                      ? 'bg-slate-800 text-slate-100' 
+                      : 'text-slate-400 hover:bg-[#121216] hover:text-slate-200'
+                  }`}
+                >
+                  Settings
+                </button>
+              </nav>
+            </div>
+          </div>
+          <div className="mt-8 bg-[#0c0c0e]/80 p-4 border border-[#1a1a24]/80 rounded-xl">
              <div className="text-[10px] text-slate-500 mb-2 font-bold uppercase tracking-wider">Inventory Health</div>
              <div className="w-full bg-[#1b1b22] rounded-full h-1.5 mb-1.5">
                <div className="bg-gradient-to-r from-orange-500 to-amber-400 h-1.5 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.4)]" style={{ width: '85%' }}></div>
