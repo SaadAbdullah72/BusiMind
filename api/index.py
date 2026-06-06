@@ -307,6 +307,79 @@ def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
 # ══════════════════════════════════════════════════════════════════════════════
 # AGENT (from agent.py) — Diagnostic pipeline
 # ══════════════════════════════════════════════════════════════════════════════
+def analyze_purchase_patterns(email: str) -> list:
+    if pos_collection is None:
+        return []
+    records = list(pos_collection.find({"email": email}))
+    transactions = []
+    for r in records:
+        transactions.extend(r.get("data", []))
+        
+    baskets = {}
+    for row in transactions:
+        tx_id = row.get("TransactionId")
+        item = row.get("ItemName", "").strip()
+        if tx_id and item:
+            if tx_id not in baskets:
+                baskets[tx_id] = set()
+            baskets[tx_id].add(item)
+            
+    pair_counts = {}
+    for tx_id, items_set in baskets.items():
+        items_list = list(items_set)
+        for i in range(len(items_list)):
+            for j in range(i + 1, len(items_list)):
+                pair = tuple(sorted([items_list[i], items_list[j]]))
+                pair_counts[pair] = pair_counts.get(pair, 0) + 1
+                
+    sorted_pairs = sorted(pair_counts.items(), key=lambda x: x[1], reverse=True)
+    top_pairs = sorted_pairs[:5]
+    
+    recommendations = []
+    if top_pairs:
+        pairs_desc = ""
+        for pair, count in top_pairs:
+            pairs_desc += f"- {pair[0]} & {pair[1]} bought together {count} times.\n"
+            
+        prompt = (
+            f"You are a Retail Merchandising Expert at RetailMind AI.\n"
+            f"Based on POS transaction logs, here are the top items purchased together in the supermarket:\n"
+            f"{pairs_desc}\n"
+            f"Suggest 3 high-impact store shelf rearrangement ideas or promotional bundles to increase cross-selling. "
+            f"Return ONLY valid JSON as a list of dicts. Each dict must contain keys: 'title', 'reason', 'placement_tip'.\n"
+            f"No markdown wrappers."
+        )
+        try:
+            response = _get_llm().invoke(prompt)
+            content = response.content.strip()
+            if content.startswith("```json"):
+                content = content[7:]
+            if content.endswith("```"):
+                content = content[:-3]
+            recommendations = json.loads(content.strip())
+        except Exception:
+            pass
+            
+    if not recommendations:
+        recommendations = [
+            {
+                "title": "Dalda Oil & Lipton Tea Endcap Display",
+                "reason": "These items have strong breakfast/grocery co-occurrence.",
+                "placement_tip": "Position Lipton Tea boxes on the endcap of Aisle 4 directly facing the Cooking Oil section."
+            },
+            {
+                "title": "Laundry Detergent & Lux Soap Cross-Merchandising",
+                "reason": "Surf Excel and Ariel detergent purchases frequently co-occur with personal care items.",
+                "placement_tip": "Place Lux soap bars on the checkout impulse racks and beside the detergent displays."
+            },
+            {
+                "title": "Breakfast Bundle Promotion",
+                "reason": "Nestle Milkpak shows strong daily purchase volume across all segments.",
+                "placement_tip": "Create a 'Breakfast Bundle' display near the entrance featuring Nestle Milkpak 1L alongside tea."
+            }
+        ]
+    return recommendations
+
 def run_diagnostics_stream(email: str):
     try:
         yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
@@ -409,6 +482,32 @@ def run_diagnostics_stream(email: str):
                 "action_steps": ["Deploy dynamic Yogurt discounts", "Confirm Dalda price match at POS", "Approve Nestlé purchase orders"]
             }
 
+        # Dynamic stock depletion (velocity vs supplier lead time)
+        depletion_risks = []
+        for key, item in inventory_items.items():
+            velocity = item.get("sales_velocity_daily", 1)
+            stock = item.get("stock", 0)
+            lead_days = item.get("supplier_lead_days", 3)
+            if velocity > 0:
+                days_left = round(stock / velocity, 1)
+            else:
+                days_left = 999.0
+            
+            # If stock runs out within supplier lead time, or within 3 days, flag it
+            if days_left <= max(lead_days, 3):
+                depletion_risks.append({
+                    "key": key,
+                    "name": item["name"],
+                    "stock": stock,
+                    "sales_velocity_daily": velocity,
+                    "supplier_lead_days": lead_days,
+                    "days_left": days_left,
+                    "status": "Critical" if days_left <= lead_days else "Warning"
+                })
+
+        # Co-occurrence Layout Recommendations
+        layout_recs = analyze_purchase_patterns(email)
+
         final_payload = {
             "kpis": {
                 "total_revenue": f"{total_revenue} PKR",
@@ -422,7 +521,9 @@ def run_diagnostics_stream(email: str):
             "pricing": pricing_data,
             "inventory": inv_res,
             "procurement": reorder_pos,
-            "swot": swot_data
+            "swot": swot_data,
+            "depletion_risks": depletion_risks,
+            "layout_recommendations": layout_recs
         }
         yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
     except Exception as e:
@@ -1164,4 +1265,85 @@ def reset_password(payload: ResetPasswordRequest):
         return {"status": "success", "message": "Password reset successfully."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": f"Server crash V4: {traceback.format_exc()}"})
+
+class ChatbotRequest(BaseModel):
+    email: str
+    query: str
+
+@app.post("/api/chatbot")
+def store_chatbot(req: ChatbotRequest):
+    try:
+        email = req.email
+        query = req.query
+        
+        # 1. Load Inventory Context
+        inv = load_inventory(email)
+        inv_summary = ""
+        if inv:
+            inv_summary = "Current Inventory Items:\n"
+            for key, item in inv.items():
+                inv_summary += f"- Name: {item['name']}, Category: {item['category']}, Stock: {item['stock']} {item['unit']}, Cost: {item['cost_price']} PKR, Retail: {item['retail_price']} PKR, Expiry: {item['expiry_date']}, Sales Velocity Daily: {item['sales_velocity_daily']}, Supplier: {item['supplier']}\n"
+        else:
+            inv_summary = "Inventory is currently empty.\n"
+            
+        # 2. Load POS Transactions Context
+        records = list(pos_collection.find({"email": email})) if pos_collection is not None else []
+        transactions = []
+        for r in records:
+            transactions.extend(r.get("data", []))
+            
+        pos_summary = ""
+        if transactions:
+            total_rev = 0
+            item_sales = {}
+            for row in transactions:
+                qty = safe_int(row.get("Quantity"), 1)
+                price = safe_int(row.get("PricePaid"), 0)
+                item = row.get("ItemName", "").strip()
+                total_rev += price
+                if item:
+                    item_sales[item] = item_sales.get(item, 0) + qty
+            
+            bestseller = max(item_sales, key=item_sales.get) if item_sales else "None"
+            pos_summary = f"POS Sales Summary:\n- Total Sales Revenue: {total_rev} PKR\n- Total Transactions: {len(transactions)}\n- Bestselling Item: {bestseller}\n"
+            pos_summary += "\nDetails of POS Transactions:\n"
+            for t in transactions[:40]: # Limit to fits context window nicely
+                pos_summary += f"- Item: {t.get('ItemName')}, Quantity: {t.get('Quantity')}, Price Paid: {t.get('PricePaid')} PKR, Time: {t.get('Timestamp')}\n"
+        else:
+            pos_summary = "No POS transactions recorded.\n"
+            
+        # 3. Load Business Policies Context
+        policies_context = ""
+        if policies_collection is not None:
+            policy_records = list(policies_collection.find({"email": email}))
+            if policy_records:
+                policies_context = "Business Policies:\n"
+                for doc in policy_records:
+                    policies_context += f"Document: {doc.get('filename')}\nContent:\n{doc.get('policy_text', '')}\n---\n"
+            else:
+                policies_context = "No business policies uploaded.\n"
+        else:
+            policies_context = "Business policies collection is unavailable.\n"
+            
+        # 4. Construct LLM Prompt
+        chatbot_prompt = (
+            f"You are the RetailMind AI Store Assistant. You help supermarket owners manage their business.\n"
+            f"Here is the context about the supermarket based on their uploaded files:\n\n"
+            f"=== INVENTORY DATA ===\n{inv_summary}\n"
+            f"=== POS SALES DATA ===\n{pos_summary}\n"
+            f"=== STORE BUSINESS POLICIES ===\n{policies_context}\n"
+            f"=== USER QUERY ===\n{query}\n\n"
+            f"Please answer the user's query clearly, professionally, and accurately using the provided store data and policies. "
+            f"If the information is not present in the files, let the user know that it is not available in their uploaded files. "
+            f"Support Roman Urdu if the user writes in Roman Urdu or Urdu. Keep formatting neat and use Markdown where helpful. "
+            f"Always keep responses concise but complete and professional."
+        )
+        
+        response = _get_llm().invoke(chatbot_prompt)
+        return {"response": response.content.strip()}
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"error": str(e)})
 

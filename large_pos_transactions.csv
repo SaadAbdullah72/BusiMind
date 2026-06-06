@@ -1,0 +1,2501 @@
+TransactionId,Timestamp,ItemName,Quantity,PricePaid,PaymentMethod,CustomerLoyaltyId
+T10000,20:26,Dalda Cooking Oil 5L,1,2250,Card,L4253
+T10000,20:26,Lipton Yellow Label 380g,1,680,Card,L4253
+T10001,03:34,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10001,03:34,Lipton Yellow Label 380g,1,680,Cash,None
+T10002,23:11,Dalda Cooking Oil 5L,2,4500,Card,L4680
+T10002,23:11,Lipton Yellow Label 380g,1,680,Card,L4680
+T10003,22:15,Dalda Cooking Oil 5L,1,2250,Card,None
+T10003,22:15,Lipton Yellow Label 380g,1,680,Card,None
+T10004,06:44,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10004,06:44,Lipton Yellow Label 380g,2,1360,Cash,None
+T10005,06:29,Dalda Cooking Oil 5L,1,2250,Cash,L1934
+T10005,06:29,Lipton Yellow Label 380g,1,680,Cash,L1934
+T10006,22:21,Dalda Cooking Oil 5L,1,2250,Cash,L7475
+T10006,22:21,Lipton Yellow Label 380g,1,680,Cash,L7475
+T10007,15:48,Nestle Milkpak 1L,5,1300,Cash,L4635
+T10007,15:48,Olper's Cream 200ml,2,360,Cash,L4635
+T10008,22:28,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5047
+T10008,22:28,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L5047
+T10009,02:02,Dalda Cooking Oil 5L,1,2250,Cash,L2648
+T10009,02:02,Lipton Yellow Label 380g,2,1360,Cash,L2648
+T10009,02:02,Surf Excel 1kg,1,460,Cash,L2648
+T10010,20:47,Dalda Cooking Oil 5L,1,2250,Card,None
+T10011,02:27,Dalda Cooking Oil 5L,2,4500,Card,L4267
+T10011,02:27,Lipton Yellow Label 380g,1,680,Card,L4267
+T10012,17:22,Lux Soap 150g,2,260,Mobile Wallet,None
+T10012,17:22,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T10012,17:22,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T10013,14:29,Nestle Milkpak 1L,3,780,Cash,L8167
+T10013,14:29,Lipton Yellow Label 380g,1,680,Cash,L8167
+T10014,22:43,National Chilli Powder 200g,2,420,Cash,L3337
+T10015,02:52,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10015,02:52,Lipton Yellow Label 380g,2,1360,Cash,None
+T10016,04:32,Dalda Cooking Oil 5L,2,4500,Card,L7322
+T10016,04:32,Lipton Yellow Label 380g,1,680,Card,L7322
+T10016,04:32,Shan Biryani Masala 50g,1,90,Card,L7322
+T10017,02:35,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9719
+T10017,02:35,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9719
+T10018,19:24,Surf Excel 1kg,1,460,Card,None
+T10018,19:24,Ariel Detergent 2kg,1,950,Card,None
+T10018,19:24,Lux Soap 150g,3,390,Card,None
+T10019,21:05,Dalda Cooking Oil 5L,1,2250,Card,L5339
+T10019,21:05,Lipton Yellow Label 380g,2,1360,Card,L5339
+T10020,16:56,Lipton Yellow Label 380g,2,1360,Cash,L7475
+T10021,10:24,Nestle Milkpak 1L,1,260,Cash,L8862
+T10021,10:24,Coca Cola 1.5L,2,300,Cash,L8862
+T10022,13:16,Dalda Cooking Oil 5L,2,4500,Cash,L7807
+T10022,13:16,Lipton Yellow Label 380g,1,680,Cash,L7807
+T10023,14:59,Nestle Milkpak 1L,1,260,Mobile Wallet,L4253
+T10023,14:59,Ariel Detergent 2kg,2,1900,Mobile Wallet,L4253
+T10024,09:50,Nestle Milkpak 1L,5,1300,Card,None
+T10024,09:50,Lipton Yellow Label 380g,2,1360,Card,None
+T10025,13:09,Nestle Milkpak 1L,1,260,Card,None
+T10025,13:09,Coca Cola 1.5L,1,150,Card,None
+T10026,00:22,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8143
+T10026,00:22,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8143
+T10027,08:14,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5913
+T10027,08:14,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5913
+T10027,08:14,National Chilli Powder 200g,1,210,Mobile Wallet,L5913
+T10028,11:18,Lipton Yellow Label 380g,1,680,Card,None
+T10029,09:10,Nestle Milkpak 1L,1,260,Card,None
+T10029,09:10,Lipton Yellow Label 380g,2,1360,Card,None
+T10030,21:27,Nestle Milkpak 1L,2,520,Mobile Wallet,L6021
+T10030,21:27,Lipton Yellow Label 380g,1,680,Mobile Wallet,L6021
+T10031,21:22,Lux Soap 150g,1,130,Card,L2648
+T10031,21:22,Ariel Detergent 2kg,2,1900,Card,L2648
+T10031,21:22,Dalda Cooking Oil 5L,2,4500,Card,L2648
+T10032,21:44,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10032,21:44,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10033,10:14,Dalda Cooking Oil 5L,2,4500,Card,L7367
+T10033,10:14,Lipton Yellow Label 380g,1,680,Card,L7367
+T10034,04:34,Dalda Cooking Oil 5L,1,2250,Card,None
+T10034,04:34,Lipton Yellow Label 380g,1,680,Card,None
+T10035,09:50,Surf Excel 1kg,2,920,Mobile Wallet,L6664
+T10036,23:28,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5886
+T10036,23:28,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L5886
+T10037,20:03,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9105
+T10037,20:03,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9105
+T10037,20:03,Nestle Milkpak 1L,1,260,Mobile Wallet,L9105
+T10038,01:52,Nestle Milkpak 1L,3,780,Cash,L7313
+T10038,01:52,Coca Cola 1.5L,2,300,Cash,L7313
+T10039,17:46,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T10039,17:46,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10040,02:23,Ariel Detergent 2kg,2,1900,Cash,L7367
+T10040,02:23,Nestle Milkpak 1L,2,520,Cash,L7367
+T10040,02:23,Lipton Yellow Label 380g,2,1360,Cash,L7367
+T10041,18:44,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10041,18:44,Lipton Yellow Label 380g,1,680,Cash,None
+T10041,18:44,Shan Biryani Masala 50g,1,90,Cash,None
+T10042,05:41,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10042,05:41,Lipton Yellow Label 380g,2,1360,Cash,None
+T10043,20:58,Nestle Milkpak 1L,6,1560,Mobile Wallet,L9144
+T10043,20:58,Shan Biryani Masala 50g,1,90,Mobile Wallet,L9144
+T10044,18:22,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1934
+T10044,18:22,Nestle Milkpak 1L,2,520,Mobile Wallet,L1934
+T10044,18:22,Ariel Detergent 2kg,1,950,Mobile Wallet,L1934
+T10045,02:47,Nestle Milkpak 1L,2,520,Card,None
+T10045,02:47,Olper's Cream 200ml,2,360,Card,None
+T10046,23:45,Dalda Cooking Oil 5L,2,4500,Cash,L2150
+T10046,23:45,Lipton Yellow Label 380g,1,680,Cash,L2150
+T10047,18:22,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T10047,18:22,Shan Biryani Masala 50g,1,90,Mobile Wallet,None
+T10047,18:22,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10048,23:48,Surf Excel 1kg,2,920,Card,L2726
+T10048,23:48,Ariel Detergent 2kg,1,950,Card,L2726
+T10048,23:48,Lux Soap 150g,1,130,Card,L2726
+T10049,06:16,Surf Excel 1kg,1,460,Cash,L9840
+T10049,06:16,Lux Soap 150g,1,130,Cash,L9840
+T10050,05:48,Dalda Cooking Oil 5L,1,2250,Card,L6643
+T10050,05:48,Lipton Yellow Label 380g,1,680,Card,L6643
+T10050,05:48,Shan Biryani Masala 50g,1,90,Card,L6643
+T10051,21:48,Nestle Milkpak 1L,1,260,Mobile Wallet,L4384
+T10051,21:48,Olper's Cream 200ml,2,360,Mobile Wallet,L4384
+T10052,23:51,Dalda Cooking Oil 5L,2,4500,Cash,L3337
+T10052,23:51,Lipton Yellow Label 380g,2,1360,Cash,L3337
+T10053,03:07,Surf Excel 1kg,1,460,Card,L6829
+T10053,03:07,Ariel Detergent 2kg,1,950,Card,L6829
+T10053,03:07,Lux Soap 150g,2,260,Card,L6829
+T10054,14:58,Surf Excel 1kg,2,920,Cash,L1751
+T10054,14:58,Ariel Detergent 2kg,1,950,Cash,L1751
+T10055,01:37,Nestle Milkpak 1L,2,520,Card,None
+T10055,01:37,Surf Excel 1kg,2,920,Card,None
+T10056,22:59,Coca Cola 1.5L,1,150,Cash,L8359
+T10057,00:44,Coca Cola 1.5L,2,300,Card,L2133
+T10057,00:44,Dalda Cooking Oil 5L,1,2250,Card,L2133
+T10057,00:44,Lipton Yellow Label 380g,2,1360,Card,L2133
+T10058,19:44,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6169
+T10059,18:07,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10059,18:07,Lux Soap 150g,2,260,Mobile Wallet,None
+T10060,02:16,Dalda Cooking Oil 5L,2,4500,Cash,L4384
+T10061,17:38,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10061,17:38,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10061,17:38,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10062,18:06,Nestle Milkpak 1L,1,260,Card,L5039
+T10062,18:06,Coca Cola 1.5L,1,150,Card,L5039
+T10063,07:44,Nestle Milkpak 1L,2,520,Cash,None
+T10063,07:44,Shan Biryani Masala 50g,1,90,Cash,None
+T10064,15:00,Nestle Milkpak 1L,6,1560,Mobile Wallet,L7676
+T10064,15:00,Ariel Detergent 2kg,2,1900,Mobile Wallet,L7676
+T10065,04:16,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5339
+T10065,04:16,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L5339
+T10066,02:33,Nestle Milkpak 1L,2,520,Card,L5651
+T10066,02:33,Surf Excel 1kg,1,460,Card,L5651
+T10067,12:02,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4384
+T10067,12:02,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4384
+T10067,12:02,Nestle Milkpak 1L,1,260,Mobile Wallet,L4384
+T10068,18:17,Dalda Cooking Oil 5L,2,4500,Card,L8359
+T10068,18:17,Lipton Yellow Label 380g,1,680,Card,L8359
+T10069,16:42,Nestle Milkpak 1L,4,1040,Cash,L4851
+T10069,16:42,Lipton Yellow Label 380g,2,1360,Cash,L4851
+T10070,21:06,Surf Excel 1kg,2,920,Card,None
+T10070,21:06,Ariel Detergent 2kg,1,950,Card,None
+T10070,21:06,Lux Soap 150g,2,260,Card,None
+T10071,03:42,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10071,03:42,Lipton Yellow Label 380g,1,680,Cash,None
+T10071,03:42,Lux Soap 150g,1,130,Cash,None
+T10072,06:31,Nestle Milkpak 1L,1,260,Card,None
+T10072,06:31,Shan Biryani Masala 50g,2,180,Card,None
+T10073,09:25,Coca Cola 1.5L,1,150,Card,L6488
+T10074,07:55,Surf Excel 1kg,2,920,Mobile Wallet,L4296
+T10074,07:55,Ariel Detergent 2kg,1,950,Mobile Wallet,L4296
+T10074,07:55,Lux Soap 150g,3,390,Mobile Wallet,L4296
+T10075,22:50,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10075,22:50,Lipton Yellow Label 380g,2,1360,Cash,None
+T10076,10:42,Nestle Milkpak 1L,3,780,Cash,L9719
+T10076,10:42,Ariel Detergent 2kg,2,1900,Cash,L9719
+T10077,08:16,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6021
+T10077,08:16,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6021
+T10078,17:53,Nestle Milkpak 1L,2,520,Card,L5564
+T10078,17:53,Coca Cola 1.5L,2,300,Card,L5564
+T10079,11:04,Dalda Cooking Oil 5L,1,2250,Card,None
+T10079,11:04,Lipton Yellow Label 380g,1,680,Card,None
+T10080,06:49,Nestle Milkpak 1L,1,260,Cash,L2723
+T10080,06:49,National Chilli Powder 200g,2,420,Cash,L2723
+T10080,06:49,Lipton Yellow Label 380g,2,1360,Cash,L2723
+T10081,22:08,Dalda Cooking Oil 5L,2,4500,Cash,L1696
+T10081,22:08,Lipton Yellow Label 380g,1,680,Cash,L1696
+T10082,23:38,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2648
+T10082,23:38,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2648
+T10083,01:06,Nestle Milkpak 1L,4,1040,Mobile Wallet,L1328
+T10083,01:06,Shan Biryani Masala 50g,2,180,Mobile Wallet,L1328
+T10084,10:58,Dalda Cooking Oil 5L,2,4500,Card,L1751
+T10084,10:58,Lipton Yellow Label 380g,1,680,Card,L1751
+T10085,04:44,Nestle Milkpak 1L,3,780,Mobile Wallet,L9719
+T10085,04:44,Surf Excel 1kg,1,460,Mobile Wallet,L9719
+T10086,15:19,Olper's Cream 200ml,1,180,Card,L5652
+T10087,00:59,Nestle Milkpak 1L,1,260,Cash,L6829
+T10087,00:59,Shan Biryani Masala 50g,1,90,Cash,L6829
+T10088,23:37,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10088,23:37,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10089,04:52,Nestle Milkpak 1L,1,260,Cash,L5047
+T10089,04:52,Surf Excel 1kg,2,920,Cash,L5047
+T10090,11:18,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2373
+T10090,11:18,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2373
+T10090,11:18,Lux Soap 150g,1,130,Mobile Wallet,L2373
+T10091,10:45,Nestle Milkpak 1L,4,1040,Cash,L4877
+T10091,10:45,Coca Cola 1.5L,2,300,Cash,L4877
+T10092,04:56,Coca Cola 1.5L,2,300,Cash,L8167
+T10093,07:16,Nestle Milkpak 1L,6,1560,Cash,L9719
+T10093,07:16,Lipton Yellow Label 380g,2,1360,Cash,L9719
+T10094,21:13,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4851
+T10094,21:13,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4851
+T10095,15:21,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L3721
+T10095,15:21,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L3721
+T10095,15:21,Ariel Detergent 2kg,1,950,Mobile Wallet,L3721
+T10096,11:30,Nestle Milkpak 1L,5,1300,Card,None
+T10096,11:30,Coca Cola 1.5L,1,150,Card,None
+T10097,06:10,Surf Excel 1kg,2,920,Cash,None
+T10097,06:10,Ariel Detergent 2kg,1,950,Cash,None
+T10097,06:10,Lux Soap 150g,1,130,Cash,None
+T10098,01:53,Coca Cola 1.5L,1,150,Mobile Wallet,L9105
+T10098,01:53,Shan Biryani Masala 50g,2,180,Mobile Wallet,L9105
+T10098,01:53,Lux Soap 150g,1,130,Mobile Wallet,L9105
+T10099,12:57,Nestle Milkpak 1L,1,260,Card,L1171
+T10099,12:57,Surf Excel 1kg,1,460,Card,L1171
+T10100,03:15,Surf Excel 1kg,2,920,Cash,None
+T10100,03:15,Ariel Detergent 2kg,1,950,Cash,None
+T10101,17:19,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10102,09:21,Nestle Milkpak 1L,3,780,Card,L8359
+T10102,09:21,Dalda Cooking Oil 5L,2,4500,Card,L8359
+T10103,00:30,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1781
+T10103,00:30,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1781
+T10104,02:11,Shan Biryani Masala 50g,1,90,Card,L9471
+T10104,02:11,Lipton Yellow Label 380g,1,680,Card,L9471
+T10104,02:11,Dalda Cooking Oil 5L,2,4500,Card,L9471
+T10105,15:21,Dalda Cooking Oil 5L,1,2250,Card,L5192
+T10105,15:21,Lipton Yellow Label 380g,2,1360,Card,L5192
+T10106,23:10,Surf Excel 1kg,1,460,Card,L1328
+T10106,23:10,Ariel Detergent 2kg,1,950,Card,L1328
+T10107,03:28,Nestle Milkpak 1L,3,780,Card,L6664
+T10107,03:28,Ariel Detergent 2kg,1,950,Card,L6664
+T10108,08:35,Nestle Milkpak 1L,2,520,Card,L7313
+T10109,02:20,Nestle Milkpak 1L,1,260,Cash,None
+T10109,02:20,Ariel Detergent 2kg,1,950,Cash,None
+T10110,04:14,Nestle Milkpak 1L,1,260,Card,L1934
+T10110,04:14,Surf Excel 1kg,2,920,Card,L1934
+T10111,04:25,Nestle Milkpak 1L,6,1560,Card,L9790
+T10112,13:50,Lipton Yellow Label 380g,2,1360,Cash,L8743
+T10112,13:50,Surf Excel 1kg,2,920,Cash,L8743
+T10112,13:50,National Chilli Powder 200g,2,420,Cash,L8743
+T10113,23:29,Dalda Cooking Oil 5L,1,2250,Cash,L2295
+T10113,23:29,Lipton Yellow Label 380g,1,680,Cash,L2295
+T10114,02:53,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10115,18:34,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9144
+T10115,18:34,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9144
+T10116,21:23,Surf Excel 1kg,2,920,Cash,L7313
+T10116,21:23,Ariel Detergent 2kg,1,950,Cash,L7313
+T10116,21:23,Lux Soap 150g,1,130,Cash,L7313
+T10117,02:16,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10117,02:16,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10117,02:16,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10118,15:22,Dalda Cooking Oil 5L,1,2250,Card,L8359
+T10118,15:22,Lipton Yellow Label 380g,2,1360,Card,L8359
+T10118,15:22,Shan Biryani Masala 50g,1,90,Card,L8359
+T10119,02:26,Surf Excel 1kg,2,920,Mobile Wallet,L2458
+T10119,02:26,Ariel Detergent 2kg,1,950,Mobile Wallet,L2458
+T10120,07:25,Surf Excel 1kg,1,460,Card,L9105
+T10120,07:25,Ariel Detergent 2kg,1,950,Card,L9105
+T10121,18:46,Surf Excel 1kg,1,460,Cash,L3337
+T10121,18:46,Ariel Detergent 2kg,1,950,Cash,L3337
+T10122,09:29,Nestle Milkpak 1L,2,520,Mobile Wallet,L9957
+T10122,09:29,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9957
+T10123,05:45,Surf Excel 1kg,1,460,Cash,None
+T10123,05:45,Ariel Detergent 2kg,1,950,Cash,None
+T10123,05:45,Lux Soap 150g,2,260,Cash,None
+T10124,00:01,Nestle Milkpak 1L,4,1040,Cash,None
+T10124,00:01,Olper's Cream 200ml,1,180,Cash,None
+T10125,17:30,Shan Biryani Masala 50g,1,90,Cash,None
+T10125,17:30,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10125,17:30,National Chilli Powder 200g,2,420,Cash,None
+T10126,10:59,Nestle Milkpak 1L,6,1560,Card,L8496
+T10126,10:59,Lipton Yellow Label 380g,2,1360,Card,L8496
+T10127,14:06,Ariel Detergent 2kg,1,950,Mobile Wallet,L7807
+T10127,14:06,Lux Soap 150g,1,130,Mobile Wallet,L7807
+T10128,09:41,Surf Excel 1kg,1,460,Cash,L1751
+T10128,09:41,Ariel Detergent 2kg,1,950,Cash,L1751
+T10129,17:23,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10129,17:23,Lux Soap 150g,2,260,Cash,None
+T10129,17:23,Nestle Milkpak 1L,2,520,Cash,None
+T10130,05:56,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10130,05:56,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10131,15:59,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10131,15:59,Lipton Yellow Label 380g,2,1360,Cash,None
+T10132,22:37,Surf Excel 1kg,2,920,Card,L7475
+T10132,22:37,Ariel Detergent 2kg,1,950,Card,L7475
+T10133,21:46,Dalda Cooking Oil 5L,1,2250,Cash,L8359
+T10133,21:46,Lipton Yellow Label 380g,1,680,Cash,L8359
+T10134,23:58,Nestle Milkpak 1L,6,1560,Cash,None
+T10134,23:58,Lux Soap 150g,2,260,Cash,None
+T10135,12:55,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10135,12:55,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10135,12:55,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10136,06:12,Shan Biryani Masala 50g,1,90,Cash,L8143
+T10136,06:12,Lipton Yellow Label 380g,1,680,Cash,L8143
+T10136,06:12,Olper's Cream 200ml,1,180,Cash,L8143
+T10137,04:41,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10137,04:41,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10137,04:41,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T10138,07:32,Nestle Milkpak 1L,3,780,Cash,None
+T10138,07:32,Shan Biryani Masala 50g,2,180,Cash,None
+T10139,03:42,Surf Excel 1kg,1,460,Card,None
+T10139,03:42,Ariel Detergent 2kg,1,950,Card,None
+T10140,19:45,Surf Excel 1kg,2,920,Mobile Wallet,L1171
+T10140,19:45,Ariel Detergent 2kg,1,950,Mobile Wallet,L1171
+T10140,19:45,Lux Soap 150g,1,130,Mobile Wallet,L1171
+T10141,22:44,Nestle Milkpak 1L,1,260,Cash,None
+T10141,22:44,Coca Cola 1.5L,2,300,Cash,None
+T10142,03:22,Dalda Cooking Oil 5L,1,2250,Card,L1171
+T10142,03:22,Lipton Yellow Label 380g,2,1360,Card,L1171
+T10143,23:03,Surf Excel 1kg,1,460,Mobile Wallet,L2133
+T10143,23:03,Ariel Detergent 2kg,1,950,Mobile Wallet,L2133
+T10144,17:00,Dalda Cooking Oil 5L,2,4500,Cash,L1342
+T10144,17:00,Shan Biryani Masala 50g,1,90,Cash,L1342
+T10145,06:19,Dalda Cooking Oil 5L,1,2250,Cash,L4125
+T10145,06:19,Lipton Yellow Label 380g,2,1360,Cash,L4125
+T10146,20:35,Nestle Milkpak 1L,4,1040,Cash,L9144
+T10146,20:35,Olper's Cream 200ml,1,180,Cash,L9144
+T10147,21:09,Surf Excel 1kg,2,920,Cash,L7322
+T10147,21:09,Ariel Detergent 2kg,1,950,Cash,L7322
+T10148,07:18,Coca Cola 1.5L,1,150,Card,L2648
+T10148,07:18,Nestle Milkpak 1L,1,260,Card,L2648
+T10148,07:18,Shan Biryani Masala 50g,1,90,Card,L2648
+T10149,03:36,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2099
+T10149,03:36,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2099
+T10149,03:36,Lux Soap 150g,1,130,Mobile Wallet,L2099
+T10150,04:34,Surf Excel 1kg,1,460,Mobile Wallet,L8535
+T10150,04:34,Ariel Detergent 2kg,1,950,Mobile Wallet,L8535
+T10151,02:48,Olper's Cream 200ml,2,360,Mobile Wallet,L5710
+T10151,02:48,Ariel Detergent 2kg,1,950,Mobile Wallet,L5710
+T10152,00:58,Dalda Cooking Oil 5L,2,4500,Card,L4635
+T10152,00:58,Lipton Yellow Label 380g,2,1360,Card,L4635
+T10153,11:50,Dalda Cooking Oil 5L,2,4500,Card,L7621
+T10153,11:50,Lipton Yellow Label 380g,1,680,Card,L7621
+T10154,14:42,Nestle Milkpak 1L,3,780,Card,L2726
+T10154,14:42,Lipton Yellow Label 380g,2,1360,Card,L2726
+T10155,18:49,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10155,18:49,Lipton Yellow Label 380g,2,1360,Cash,None
+T10156,19:13,Nestle Milkpak 1L,5,1300,Cash,None
+T10156,19:13,Lipton Yellow Label 380g,1,680,Cash,None
+T10157,16:18,Surf Excel 1kg,1,460,Card,L3396
+T10157,16:18,Ariel Detergent 2kg,1,950,Card,L3396
+T10158,05:26,Dalda Cooking Oil 5L,1,2250,Card,L1934
+T10158,05:26,Lipton Yellow Label 380g,1,680,Card,L1934
+T10159,13:23,Surf Excel 1kg,2,920,Cash,None
+T10159,13:23,Ariel Detergent 2kg,1,950,Cash,None
+T10159,13:23,Lux Soap 150g,3,390,Cash,None
+T10160,04:01,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10160,04:01,Lipton Yellow Label 380g,1,680,Cash,None
+T10161,13:48,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4753
+T10161,13:48,Lipton Yellow Label 380g,1,680,Mobile Wallet,L4753
+T10162,19:40,Nestle Milkpak 1L,6,1560,Mobile Wallet,L2904
+T10162,19:40,Olper's Cream 200ml,2,360,Mobile Wallet,L2904
+T10163,12:33,Nestle Milkpak 1L,2,520,Card,L2726
+T10163,12:33,Dalda Cooking Oil 5L,2,4500,Card,L2726
+T10164,10:16,Nestle Milkpak 1L,1,260,Card,L7921
+T10164,10:16,Shan Biryani Masala 50g,2,180,Card,L7921
+T10165,13:53,Nestle Milkpak 1L,1,260,Mobile Wallet,L2295
+T10165,13:53,Surf Excel 1kg,1,460,Mobile Wallet,L2295
+T10166,09:18,Shan Biryani Masala 50g,1,90,Cash,L6488
+T10166,09:18,Nestle Milkpak 1L,1,260,Cash,L6488
+T10167,16:47,Nestle Milkpak 1L,5,1300,Card,L1751
+T10167,16:47,Olper's Cream 200ml,2,360,Card,L1751
+T10168,05:16,Nestle Milkpak 1L,6,1560,Cash,L7322
+T10168,05:16,Surf Excel 1kg,2,920,Cash,L7322
+T10169,16:33,Surf Excel 1kg,1,460,Mobile Wallet,L3721
+T10169,16:33,Ariel Detergent 2kg,1,950,Mobile Wallet,L3721
+T10169,16:33,Lux Soap 150g,1,130,Mobile Wallet,L3721
+T10170,21:35,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10170,21:35,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10170,21:35,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10171,10:56,Lux Soap 150g,1,130,Mobile Wallet,None
+T10172,12:45,Surf Excel 1kg,2,920,Cash,L6643
+T10172,12:45,Ariel Detergent 2kg,1,950,Cash,L6643
+T10172,12:45,Lux Soap 150g,3,390,Cash,L6643
+T10173,04:39,Lux Soap 150g,1,130,Mobile Wallet,None
+T10173,04:39,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10173,04:39,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10174,14:49,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10174,14:49,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10174,14:49,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10175,11:24,Dalda Cooking Oil 5L,1,2250,Cash,L6488
+T10175,11:24,Lipton Yellow Label 380g,1,680,Cash,L6488
+T10176,12:13,Dalda Cooking Oil 5L,2,4500,Cash,L5047
+T10177,15:07,Dalda Cooking Oil 5L,1,2250,Card,L2295
+T10177,15:07,Lipton Yellow Label 380g,1,680,Card,L2295
+T10178,11:22,Dalda Cooking Oil 5L,2,4500,Card,None
+T10178,11:22,Lipton Yellow Label 380g,1,680,Card,None
+T10178,11:22,Lux Soap 150g,1,130,Card,None
+T10179,06:48,Dalda Cooking Oil 5L,2,4500,Cash,L5039
+T10179,06:48,Lipton Yellow Label 380g,1,680,Cash,L5039
+T10180,00:31,Dalda Cooking Oil 5L,1,2250,Cash,L4253
+T10180,00:31,Lipton Yellow Label 380g,2,1360,Cash,L4253
+T10181,02:07,Surf Excel 1kg,1,460,Cash,L2648
+T10181,02:07,Ariel Detergent 2kg,1,950,Cash,L2648
+T10182,17:42,Dalda Cooking Oil 5L,1,2250,Card,L7313
+T10182,17:42,Lipton Yellow Label 380g,1,680,Card,L7313
+T10183,05:03,Dalda Cooking Oil 5L,1,2250,Cash,L1696
+T10183,05:03,Lipton Yellow Label 380g,1,680,Cash,L1696
+T10184,10:39,Nestle Milkpak 1L,5,1300,Cash,L9790
+T10184,10:39,Lipton Yellow Label 380g,1,680,Cash,L9790
+T10185,22:01,Nestle Milkpak 1L,1,260,Cash,L7313
+T10186,04:51,Dalda Cooking Oil 5L,1,2250,Card,L8280
+T10186,04:51,Lipton Yellow Label 380g,1,680,Card,L8280
+T10186,04:51,Olper's Cream 200ml,1,180,Card,L8280
+T10187,12:30,Surf Excel 1kg,1,460,Mobile Wallet,L8496
+T10187,12:30,Ariel Detergent 2kg,1,950,Mobile Wallet,L8496
+T10188,00:52,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10189,04:45,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L3898
+T10189,04:45,Lipton Yellow Label 380g,1,680,Mobile Wallet,L3898
+T10190,18:36,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10190,18:36,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10191,00:46,National Chilli Powder 200g,2,420,Cash,L2458
+T10192,22:32,Nestle Milkpak 1L,1,260,Card,L4753
+T10192,22:32,Coca Cola 1.5L,2,300,Card,L4753
+T10193,23:20,Dalda Cooking Oil 5L,1,2250,Card,None
+T10193,23:20,Lipton Yellow Label 380g,2,1360,Card,None
+T10194,16:55,Dalda Cooking Oil 5L,1,2250,Cash,L9144
+T10194,16:55,Lipton Yellow Label 380g,2,1360,Cash,L9144
+T10195,23:21,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10195,23:21,Lipton Yellow Label 380g,2,1360,Cash,None
+T10196,15:47,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10196,15:47,Lipton Yellow Label 380g,1,680,Cash,None
+T10196,15:47,Coca Cola 1.5L,1,150,Cash,None
+T10197,20:22,Shan Biryani Masala 50g,1,90,Cash,None
+T10197,20:22,Lux Soap 150g,2,260,Cash,None
+T10197,20:22,Coca Cola 1.5L,2,300,Cash,None
+T10198,13:19,Nestle Milkpak 1L,5,1300,Mobile Wallet,L5564
+T10199,00:08,Surf Excel 1kg,1,460,Card,None
+T10199,00:08,Ariel Detergent 2kg,1,950,Card,None
+T10200,19:34,Dalda Cooking Oil 5L,2,4500,Cash,L9840
+T10200,19:34,Lipton Yellow Label 380g,1,680,Cash,L9840
+T10200,19:34,National Chilli Powder 200g,1,210,Cash,L9840
+T10201,15:44,Surf Excel 1kg,2,920,Cash,None
+T10201,15:44,Ariel Detergent 2kg,1,950,Cash,None
+T10202,16:50,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10202,16:50,Coca Cola 1.5L,2,300,Mobile Wallet,None
+T10203,19:26,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10203,19:26,Lipton Yellow Label 380g,2,1360,Cash,None
+T10204,08:32,Nestle Milkpak 1L,1,260,Cash,L7807
+T10204,08:32,Lux Soap 150g,2,260,Cash,L7807
+T10205,05:21,Nestle Milkpak 1L,3,780,Mobile Wallet,None
+T10205,05:21,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10206,23:07,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10206,23:07,Lux Soap 150g,1,130,Mobile Wallet,None
+T10207,23:41,Surf Excel 1kg,1,460,Cash,L1467
+T10207,23:41,Ariel Detergent 2kg,1,950,Cash,L1467
+T10208,16:15,Shan Biryani Masala 50g,1,90,Card,L4753
+T10208,16:15,Ariel Detergent 2kg,2,1900,Card,L4753
+T10209,00:02,Dalda Cooking Oil 5L,2,4500,Cash,L7313
+T10209,00:02,Lipton Yellow Label 380g,1,680,Cash,L7313
+T10210,15:16,Nestle Milkpak 1L,6,1560,Card,L9957
+T10210,15:16,Surf Excel 1kg,1,460,Card,L9957
+T10211,11:56,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6169
+T10211,11:56,Lipton Yellow Label 380g,1,680,Mobile Wallet,L6169
+T10211,11:56,Lux Soap 150g,1,130,Mobile Wallet,L6169
+T10212,23:24,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1328
+T10212,23:24,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1328
+T10213,22:50,Lux Soap 150g,1,130,Cash,L8743
+T10213,22:50,Nestle Milkpak 1L,2,520,Cash,L8743
+T10214,10:15,Nestle Milkpak 1L,2,520,Mobile Wallet,L5047
+T10214,10:15,Olper's Cream 200ml,1,180,Mobile Wallet,L5047
+T10215,15:56,Surf Excel 1kg,2,920,Cash,None
+T10215,15:56,Shan Biryani Masala 50g,2,180,Cash,None
+T10216,19:11,Dalda Cooking Oil 5L,1,2250,Card,L4125
+T10216,19:11,Lipton Yellow Label 380g,2,1360,Card,L4125
+T10216,19:11,Nestle Milkpak 1L,1,260,Card,L4125
+T10217,07:56,Nestle Milkpak 1L,4,1040,Mobile Wallet,L9115
+T10217,07:56,Ariel Detergent 2kg,2,1900,Mobile Wallet,L9115
+T10218,06:15,Nestle Milkpak 1L,1,260,Mobile Wallet,L1171
+T10218,06:15,National Chilli Powder 200g,1,210,Mobile Wallet,L1171
+T10219,11:38,Surf Excel 1kg,2,920,Card,L7313
+T10219,11:38,Ariel Detergent 2kg,1,950,Card,L7313
+T10219,11:38,Lux Soap 150g,2,260,Card,L7313
+T10220,03:56,Dalda Cooking Oil 5L,1,2250,Card,L2822
+T10220,03:56,Lipton Yellow Label 380g,1,680,Card,L2822
+T10221,17:44,Coca Cola 1.5L,2,300,Cash,None
+T10221,17:44,Nestle Milkpak 1L,2,520,Cash,None
+T10222,22:59,Dalda Cooking Oil 5L,2,4500,Card,L9492
+T10222,22:59,Lipton Yellow Label 380g,1,680,Card,L9492
+T10223,00:52,Dalda Cooking Oil 5L,1,2250,Cash,L4680
+T10223,00:52,Lipton Yellow Label 380g,1,680,Cash,L4680
+T10224,14:23,Nestle Milkpak 1L,1,260,Card,L8584
+T10224,14:23,Lipton Yellow Label 380g,2,1360,Card,L8584
+T10225,21:13,Lux Soap 150g,1,130,Card,L5564
+T10225,21:13,Surf Excel 1kg,2,920,Card,L5564
+T10226,10:35,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5651
+T10226,10:35,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5651
+T10227,18:38,Dalda Cooking Oil 5L,1,2250,Cash,L4459
+T10227,18:38,Lipton Yellow Label 380g,2,1360,Cash,L4459
+T10227,18:38,National Chilli Powder 200g,1,210,Cash,L4459
+T10228,23:04,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10228,23:04,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10229,04:43,Surf Excel 1kg,1,460,Card,L7807
+T10229,04:43,Ariel Detergent 2kg,1,950,Card,L7807
+T10229,04:43,Lux Soap 150g,1,130,Card,L7807
+T10230,21:00,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10231,15:38,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5192
+T10231,15:38,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5192
+T10232,17:03,Lipton Yellow Label 380g,2,1360,Card,None
+T10232,17:03,Coca Cola 1.5L,1,150,Card,None
+T10232,17:03,Shan Biryani Masala 50g,1,90,Card,None
+T10233,17:48,National Chilli Powder 200g,2,420,Card,None
+T10233,17:48,Lux Soap 150g,1,130,Card,None
+T10233,17:48,Surf Excel 1kg,1,460,Card,None
+T10234,20:29,Surf Excel 1kg,1,460,Mobile Wallet,L7367
+T10234,20:29,Ariel Detergent 2kg,1,950,Mobile Wallet,L7367
+T10235,22:50,Nestle Milkpak 1L,2,520,Card,None
+T10235,22:50,Shan Biryani Masala 50g,1,90,Card,None
+T10235,22:50,Olper's Cream 200ml,1,180,Card,None
+T10236,00:32,Surf Excel 1kg,1,460,Mobile Wallet,L4267
+T10236,00:32,Coca Cola 1.5L,2,300,Mobile Wallet,L4267
+T10237,03:37,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8143
+T10237,03:37,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8143
+T10238,23:58,National Chilli Powder 200g,1,210,Mobile Wallet,L9840
+T10239,09:24,Surf Excel 1kg,2,920,Card,L4680
+T10239,09:24,Ariel Detergent 2kg,1,950,Card,L4680
+T10240,07:54,Dalda Cooking Oil 5L,2,4500,Card,None
+T10240,07:54,Lipton Yellow Label 380g,2,1360,Card,None
+T10241,02:49,Dalda Cooking Oil 5L,1,2250,Card,None
+T10241,02:49,Lipton Yellow Label 380g,1,680,Card,None
+T10242,01:48,Nestle Milkpak 1L,1,260,Mobile Wallet,L6488
+T10242,01:48,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6488
+T10243,23:33,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10243,23:33,Lipton Yellow Label 380g,2,1360,Cash,None
+T10244,13:40,Surf Excel 1kg,1,460,Cash,L5886
+T10244,13:40,Ariel Detergent 2kg,1,950,Cash,L5886
+T10244,13:40,Lux Soap 150g,3,390,Cash,L5886
+T10245,04:09,Dalda Cooking Oil 5L,2,4500,Card,L4851
+T10245,04:09,Lipton Yellow Label 380g,2,1360,Card,L4851
+T10246,22:11,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8280
+T10246,22:11,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8280
+T10247,10:41,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10247,10:41,Lipton Yellow Label 380g,2,1360,Cash,None
+T10247,10:41,Olper's Cream 200ml,1,180,Cash,None
+T10248,10:57,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10248,10:57,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10249,04:04,Nestle Milkpak 1L,1,260,Card,L2458
+T10250,19:45,Dalda Cooking Oil 5L,1,2250,Cash,L7856
+T10250,19:45,Lipton Yellow Label 380g,1,680,Cash,L7856
+T10251,05:26,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10251,05:26,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T10252,12:40,Surf Excel 1kg,2,920,Cash,L7676
+T10252,12:40,Ariel Detergent 2kg,1,950,Cash,L7676
+T10253,03:40,Dalda Cooking Oil 5L,2,4500,Cash,L8496
+T10253,03:40,Lipton Yellow Label 380g,1,680,Cash,L8496
+T10254,07:10,Surf Excel 1kg,1,460,Mobile Wallet,L7676
+T10254,07:10,Ariel Detergent 2kg,1,950,Mobile Wallet,L7676
+T10254,07:10,Lux Soap 150g,3,390,Mobile Wallet,L7676
+T10255,11:04,Nestle Milkpak 1L,1,260,Card,L5564
+T10255,11:04,Shan Biryani Masala 50g,2,180,Card,L5564
+T10256,00:54,Surf Excel 1kg,1,460,Card,L4267
+T10256,00:54,Ariel Detergent 2kg,1,950,Card,L4267
+T10257,08:30,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4125
+T10257,08:30,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4125
+T10258,18:11,Coca Cola 1.5L,2,300,Cash,None
+T10258,18:11,Olper's Cream 200ml,2,360,Cash,None
+T10258,18:11,National Chilli Powder 200g,2,420,Cash,None
+T10259,21:41,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10259,21:41,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10260,12:43,Dalda Cooking Oil 5L,1,2250,Card,None
+T10260,12:43,Lipton Yellow Label 380g,1,680,Card,None
+T10261,05:53,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10261,05:53,Lipton Yellow Label 380g,1,680,Cash,None
+T10262,08:36,Dalda Cooking Oil 5L,2,4500,Card,L7322
+T10262,08:36,Lipton Yellow Label 380g,2,1360,Card,L7322
+T10263,10:50,Shan Biryani Masala 50g,2,180,Cash,None
+T10264,19:40,Dalda Cooking Oil 5L,2,4500,Cash,L2099
+T10264,19:40,Lipton Yellow Label 380g,2,1360,Cash,L2099
+T10264,19:40,Shan Biryani Masala 50g,1,90,Cash,L2099
+T10265,05:28,Nestle Milkpak 1L,5,1300,Cash,None
+T10266,19:07,Surf Excel 1kg,2,920,Cash,L2796
+T10266,19:07,Ariel Detergent 2kg,1,950,Cash,L2796
+T10267,13:55,Dalda Cooking Oil 5L,1,2250,Cash,L7676
+T10267,13:55,Lipton Yellow Label 380g,2,1360,Cash,L7676
+T10268,22:36,Dalda Cooking Oil 5L,2,4500,Cash,L6488
+T10268,22:36,Lipton Yellow Label 380g,1,680,Cash,L6488
+T10269,16:16,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2813
+T10269,16:16,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2813
+T10270,00:06,Surf Excel 1kg,1,460,Cash,None
+T10270,00:06,Ariel Detergent 2kg,2,1900,Cash,None
+T10271,00:10,Nestle Milkpak 1L,5,1300,Mobile Wallet,L4680
+T10271,00:10,Coca Cola 1.5L,1,150,Mobile Wallet,L4680
+T10272,10:39,Dalda Cooking Oil 5L,2,4500,Cash,L2373
+T10272,10:39,Lipton Yellow Label 380g,2,1360,Cash,L2373
+T10273,22:03,Surf Excel 1kg,1,460,Card,L2099
+T10273,22:03,Ariel Detergent 2kg,1,950,Card,L2099
+T10274,03:18,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10274,03:18,Lipton Yellow Label 380g,2,1360,Cash,None
+T10275,00:19,Dalda Cooking Oil 5L,1,2250,Card,L7921
+T10275,00:19,Lipton Yellow Label 380g,2,1360,Card,L7921
+T10276,19:59,Dalda Cooking Oil 5L,1,2250,Card,None
+T10276,19:59,Lipton Yellow Label 380g,2,1360,Card,None
+T10276,19:59,Ariel Detergent 2kg,1,950,Card,None
+T10277,14:31,Dalda Cooking Oil 5L,1,2250,Cash,L5039
+T10277,14:31,Lipton Yellow Label 380g,2,1360,Cash,L5039
+T10277,14:31,Coca Cola 1.5L,1,150,Cash,L5039
+T10278,14:58,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2726
+T10278,14:58,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2726
+T10279,20:19,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10279,20:19,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10280,19:14,Nestle Milkpak 1L,4,1040,Card,L5047
+T10280,19:14,Olper's Cream 200ml,2,360,Card,L5047
+T10281,17:15,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10281,17:15,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10282,07:28,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10282,07:28,Shan Biryani Masala 50g,2,180,Mobile Wallet,None
+T10283,15:41,Olper's Cream 200ml,2,360,Mobile Wallet,L6829
+T10283,15:41,National Chilli Powder 200g,1,210,Mobile Wallet,L6829
+T10283,15:41,Ariel Detergent 2kg,1,950,Mobile Wallet,L6829
+T10284,12:39,Dalda Cooking Oil 5L,2,4500,Card,L8280
+T10284,12:39,Lipton Yellow Label 380g,2,1360,Card,L8280
+T10284,12:39,Olper's Cream 200ml,1,180,Card,L8280
+T10285,21:24,Nestle Milkpak 1L,5,1300,Cash,L5225
+T10285,21:24,Ariel Detergent 2kg,2,1900,Cash,L5225
+T10286,22:45,Dalda Cooking Oil 5L,2,4500,Cash,L4253
+T10286,22:45,Lipton Yellow Label 380g,2,1360,Cash,L4253
+T10287,02:31,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10287,02:31,Lipton Yellow Label 380g,1,680,Cash,None
+T10288,03:50,Nestle Milkpak 1L,3,780,Mobile Wallet,L3396
+T10288,03:50,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L3396
+T10289,13:40,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10289,13:40,Lipton Yellow Label 380g,2,1360,Cash,None
+T10289,13:40,Coca Cola 1.5L,1,150,Cash,None
+T10290,14:12,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10290,14:12,Lipton Yellow Label 380g,1,680,Cash,None
+T10291,16:42,Shan Biryani Masala 50g,2,180,Cash,None
+T10291,16:42,Olper's Cream 200ml,1,180,Cash,None
+T10292,00:08,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10292,00:08,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10293,02:34,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1781
+T10293,02:34,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1781
+T10294,12:53,Nestle Milkpak 1L,5,1300,Cash,None
+T10294,12:53,Ariel Detergent 2kg,1,950,Cash,None
+T10295,04:00,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10296,14:18,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10296,14:18,Lipton Yellow Label 380g,1,680,Cash,None
+T10297,12:52,Ariel Detergent 2kg,1,950,Mobile Wallet,L8584
+T10298,12:23,Dalda Cooking Oil 5L,1,2250,Card,L8762
+T10298,12:23,Nestle Milkpak 1L,1,260,Card,L8762
+T10298,12:23,Shan Biryani Masala 50g,1,90,Card,L8762
+T10299,15:01,Nestle Milkpak 1L,5,1300,Card,None
+T10299,15:01,Ariel Detergent 2kg,1,950,Card,None
+T10300,07:12,Dalda Cooking Oil 5L,1,2250,Card,L8743
+T10300,07:12,Lipton Yellow Label 380g,1,680,Card,L8743
+T10301,14:55,Surf Excel 1kg,1,460,Card,L8762
+T10301,14:55,Ariel Detergent 2kg,1,950,Card,L8762
+T10302,07:36,Nestle Milkpak 1L,6,1560,Card,L5192
+T10302,07:36,Ariel Detergent 2kg,2,1900,Card,L5192
+T10303,19:43,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10303,19:43,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10303,19:43,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10304,22:23,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10304,22:23,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T10305,12:34,Surf Excel 1kg,2,920,Cash,L7313
+T10305,12:34,Ariel Detergent 2kg,1,950,Cash,L7313
+T10305,12:34,Lux Soap 150g,1,130,Cash,L7313
+T10306,02:12,Surf Excel 1kg,2,920,Mobile Wallet,L9840
+T10306,02:12,Coca Cola 1.5L,1,150,Mobile Wallet,L9840
+T10307,19:02,Surf Excel 1kg,2,920,Card,L5652
+T10307,19:02,Ariel Detergent 2kg,1,950,Card,L5652
+T10308,18:03,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10308,18:03,Lipton Yellow Label 380g,1,680,Cash,None
+T10308,18:03,Olper's Cream 200ml,1,180,Cash,None
+T10309,11:45,Surf Excel 1kg,1,460,Card,L5518
+T10309,11:45,Dalda Cooking Oil 5L,2,4500,Card,L5518
+T10310,17:12,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10310,17:12,Lipton Yellow Label 380g,2,1360,Cash,None
+T10311,19:01,Nestle Milkpak 1L,2,520,Mobile Wallet,L5710
+T10312,17:34,Nestle Milkpak 1L,5,1300,Mobile Wallet,L7921
+T10312,17:34,Lux Soap 150g,2,260,Mobile Wallet,L7921
+T10313,20:14,Coca Cola 1.5L,1,150,Card,None
+T10313,20:14,Lux Soap 150g,1,130,Card,None
+T10314,17:43,Nestle Milkpak 1L,3,780,Cash,L3337
+T10315,10:30,Nestle Milkpak 1L,1,260,Mobile Wallet,L1696
+T10315,10:30,Coca Cola 1.5L,1,150,Mobile Wallet,L1696
+T10316,08:17,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10316,08:17,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10317,22:33,Dalda Cooking Oil 5L,2,4500,Cash,L9115
+T10317,22:33,Coca Cola 1.5L,2,300,Cash,L9115
+T10317,22:33,Olper's Cream 200ml,2,360,Cash,L9115
+T10318,19:27,Dalda Cooking Oil 5L,2,4500,Card,L7313
+T10318,19:27,Lipton Yellow Label 380g,1,680,Card,L7313
+T10319,18:12,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9471
+T10319,18:12,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9471
+T10320,16:19,Coca Cola 1.5L,2,300,Cash,L9972
+T10320,16:19,Ariel Detergent 2kg,2,1900,Cash,L9972
+T10320,16:19,Surf Excel 1kg,1,460,Cash,L9972
+T10321,04:37,Dalda Cooking Oil 5L,2,4500,Card,L1342
+T10321,04:37,Lipton Yellow Label 380g,2,1360,Card,L1342
+T10321,04:37,Shan Biryani Masala 50g,1,90,Card,L1342
+T10322,01:30,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2796
+T10322,01:30,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2796
+T10323,16:48,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L7676
+T10323,16:48,Lipton Yellow Label 380g,1,680,Mobile Wallet,L7676
+T10324,03:53,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10324,03:53,Lipton Yellow Label 380g,1,680,Cash,None
+T10324,03:53,Ariel Detergent 2kg,1,950,Cash,None
+T10325,11:21,Surf Excel 1kg,2,920,Card,L1342
+T10325,11:21,Ariel Detergent 2kg,1,950,Card,L1342
+T10326,21:14,Nestle Milkpak 1L,2,520,Card,L6664
+T10326,21:14,National Chilli Powder 200g,2,420,Card,L6664
+T10327,03:09,Dalda Cooking Oil 5L,2,4500,Cash,L5886
+T10327,03:09,Lipton Yellow Label 380g,1,680,Cash,L5886
+T10328,13:25,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10328,13:25,Lipton Yellow Label 380g,1,680,Cash,None
+T10329,14:52,Dalda Cooking Oil 5L,2,4500,Cash,L8167
+T10329,14:52,Lipton Yellow Label 380g,1,680,Cash,L8167
+T10330,05:43,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8762
+T10330,05:43,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8762
+T10331,08:50,Ariel Detergent 2kg,2,1900,Cash,L7829
+T10331,08:50,Olper's Cream 200ml,1,180,Cash,L7829
+T10332,16:25,Dalda Cooking Oil 5L,1,2250,Cash,L6829
+T10332,16:25,Lipton Yellow Label 380g,2,1360,Cash,L6829
+T10333,11:29,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10333,11:29,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10333,11:29,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10334,02:30,Dalda Cooking Oil 5L,1,2250,Cash,L9972
+T10334,02:30,Lipton Yellow Label 380g,2,1360,Cash,L9972
+T10335,14:00,Dalda Cooking Oil 5L,2,4500,Card,None
+T10335,14:00,Lipton Yellow Label 380g,1,680,Card,None
+T10336,20:10,Surf Excel 1kg,2,920,Card,None
+T10336,20:10,Ariel Detergent 2kg,1,950,Card,None
+T10337,12:57,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10337,12:57,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10338,13:40,Nestle Milkpak 1L,2,520,Cash,L9840
+T10338,13:40,Ariel Detergent 2kg,2,1900,Cash,L9840
+T10339,16:20,Dalda Cooking Oil 5L,1,2250,Card,L2822
+T10339,16:20,Lipton Yellow Label 380g,1,680,Card,L2822
+T10339,16:20,Nestle Milkpak 1L,1,260,Card,L2822
+T10340,07:46,Nestle Milkpak 1L,6,1560,Card,L1696
+T10340,07:46,Surf Excel 1kg,1,460,Card,L1696
+T10341,11:37,Nestle Milkpak 1L,2,520,Cash,L5225
+T10341,11:37,Coca Cola 1.5L,1,150,Cash,L5225
+T10342,05:19,Surf Excel 1kg,1,460,Cash,L3089
+T10343,16:24,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10343,16:24,Lipton Yellow Label 380g,2,1360,Cash,None
+T10343,16:24,Nestle Milkpak 1L,1,260,Cash,None
+T10344,18:04,Nestle Milkpak 1L,3,780,Card,L5564
+T10344,18:04,Lipton Yellow Label 380g,2,1360,Card,L5564
+T10345,10:12,Nestle Milkpak 1L,3,780,Mobile Wallet,L1945
+T10345,10:12,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1945
+T10346,04:04,Coca Cola 1.5L,2,300,Mobile Wallet,L2458
+T10347,10:23,Dalda Cooking Oil 5L,2,4500,Card,L8535
+T10347,10:23,Lipton Yellow Label 380g,1,680,Card,L8535
+T10348,00:00,Surf Excel 1kg,1,460,Cash,L9499
+T10348,00:00,Ariel Detergent 2kg,1,950,Cash,L9499
+T10349,11:11,Shan Biryani Masala 50g,1,90,Card,None
+T10350,23:25,Dalda Cooking Oil 5L,2,4500,Cash,L7322
+T10350,23:25,Lipton Yellow Label 380g,1,680,Cash,L7322
+T10350,23:25,Nestle Milkpak 1L,1,260,Cash,L7322
+T10351,12:52,Nestle Milkpak 1L,6,1560,Cash,None
+T10351,12:52,Coca Cola 1.5L,2,300,Cash,None
+T10352,02:16,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L1781
+T10352,02:16,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1781
+T10353,14:29,Surf Excel 1kg,2,920,Card,L5047
+T10353,14:29,Ariel Detergent 2kg,1,950,Card,L5047
+T10354,22:38,National Chilli Powder 200g,1,210,Cash,L3391
+T10355,19:51,Dalda Cooking Oil 5L,2,4500,Card,L6829
+T10355,19:51,Lipton Yellow Label 380g,1,680,Card,L6829
+T10356,22:41,Dalda Cooking Oil 5L,2,4500,Card,L8167
+T10356,22:41,Lipton Yellow Label 380g,2,1360,Card,L8167
+T10357,14:58,Shan Biryani Masala 50g,2,180,Mobile Wallet,L2458
+T10358,13:37,Surf Excel 1kg,1,460,Mobile Wallet,L8535
+T10358,13:37,Ariel Detergent 2kg,1,950,Mobile Wallet,L8535
+T10358,13:37,Lux Soap 150g,3,390,Mobile Wallet,L8535
+T10359,18:37,Dalda Cooking Oil 5L,1,2250,Card,L1751
+T10359,18:37,Lipton Yellow Label 380g,2,1360,Card,L1751
+T10360,09:33,Nestle Milkpak 1L,6,1560,Card,L7313
+T10360,09:33,Ariel Detergent 2kg,1,950,Card,L7313
+T10361,19:21,Surf Excel 1kg,1,460,Card,L9471
+T10361,19:21,Ariel Detergent 2kg,1,950,Card,L9471
+T10362,22:54,Surf Excel 1kg,1,460,Mobile Wallet,L1171
+T10362,22:54,Ariel Detergent 2kg,1,950,Mobile Wallet,L1171
+T10363,14:19,Nestle Milkpak 1L,5,1300,Mobile Wallet,L7322
+T10363,14:19,Surf Excel 1kg,2,920,Mobile Wallet,L7322
+T10364,19:56,National Chilli Powder 200g,2,420,Card,L5913
+T10364,19:56,Ariel Detergent 2kg,2,1900,Card,L5913
+T10364,19:56,Lipton Yellow Label 380g,2,1360,Card,L5913
+T10365,18:16,Dalda Cooking Oil 5L,2,4500,Card,L1328
+T10365,18:16,Lipton Yellow Label 380g,2,1360,Card,L1328
+T10365,18:16,Ariel Detergent 2kg,1,950,Card,L1328
+T10366,09:01,Nestle Milkpak 1L,1,260,Card,L5651
+T10366,09:01,Lipton Yellow Label 380g,1,680,Card,L5651
+T10366,09:01,Coca Cola 1.5L,2,300,Card,L5651
+T10367,05:25,Nestle Milkpak 1L,3,780,Cash,None
+T10367,05:25,National Chilli Powder 200g,1,210,Cash,None
+T10368,06:31,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5913
+T10368,06:31,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L5913
+T10369,12:23,Dalda Cooking Oil 5L,1,2250,Card,L2648
+T10369,12:23,Lipton Yellow Label 380g,2,1360,Card,L2648
+T10370,04:17,Nestle Milkpak 1L,2,520,Cash,L7676
+T10370,04:17,Lux Soap 150g,2,260,Cash,L7676
+T10371,13:20,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9972
+T10371,13:20,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9972
+T10371,13:20,Shan Biryani Masala 50g,1,90,Mobile Wallet,L9972
+T10372,04:12,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4680
+T10372,04:12,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4680
+T10372,04:12,Surf Excel 1kg,1,460,Mobile Wallet,L4680
+T10373,22:07,Dalda Cooking Oil 5L,2,4500,Card,None
+T10373,22:07,Lipton Yellow Label 380g,1,680,Card,None
+T10374,16:48,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10374,16:48,Lipton Yellow Label 380g,2,1360,Cash,None
+T10374,16:48,Coca Cola 1.5L,1,150,Cash,None
+T10375,22:18,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2099
+T10375,22:18,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2099
+T10376,20:40,Dalda Cooking Oil 5L,2,4500,Card,L7921
+T10376,20:40,Lipton Yellow Label 380g,1,680,Card,L7921
+T10377,12:30,Shan Biryani Masala 50g,2,180,Mobile Wallet,None
+T10377,12:30,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T10377,12:30,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10378,17:42,Dalda Cooking Oil 5L,2,4500,Card,None
+T10378,17:42,Lipton Yellow Label 380g,1,680,Card,None
+T10379,00:21,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6643
+T10379,00:21,Lipton Yellow Label 380g,1,680,Mobile Wallet,L6643
+T10380,15:33,Surf Excel 1kg,2,920,Cash,L2133
+T10380,15:33,Shan Biryani Masala 50g,2,180,Cash,L2133
+T10380,15:33,Lux Soap 150g,2,260,Cash,L2133
+T10381,21:00,Nestle Milkpak 1L,2,520,Card,L2813
+T10381,21:00,Olper's Cream 200ml,1,180,Card,L2813
+T10382,15:32,Surf Excel 1kg,1,460,Cash,L8143
+T10382,15:32,Ariel Detergent 2kg,1,950,Cash,L8143
+T10382,15:32,Lux Soap 150g,3,390,Cash,L8143
+T10383,16:24,Lux Soap 150g,2,260,Cash,L1696
+T10384,22:43,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10384,22:43,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10385,05:39,Nestle Milkpak 1L,3,780,Cash,L6643
+T10385,05:39,Lux Soap 150g,2,260,Cash,L6643
+T10386,13:56,Surf Excel 1kg,1,460,Card,L3396
+T10386,13:56,Ariel Detergent 2kg,1,950,Card,L3396
+T10387,16:49,Nestle Milkpak 1L,2,520,Card,None
+T10387,16:49,Dalda Cooking Oil 5L,1,2250,Card,None
+T10388,21:25,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10388,21:25,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10388,21:25,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10389,16:36,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5225
+T10389,16:36,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5225
+T10390,17:37,Olper's Cream 200ml,1,180,Cash,L4635
+T10391,18:47,Nestle Milkpak 1L,1,260,Mobile Wallet,L9499
+T10392,21:44,Ariel Detergent 2kg,2,1900,Mobile Wallet,L8280
+T10392,21:44,Coca Cola 1.5L,1,150,Mobile Wallet,L8280
+T10392,21:44,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8280
+T10393,09:44,Dalda Cooking Oil 5L,1,2250,Cash,L5710
+T10393,09:44,Lipton Yellow Label 380g,2,1360,Cash,L5710
+T10393,09:44,Olper's Cream 200ml,1,180,Cash,L5710
+T10394,04:26,Nestle Milkpak 1L,1,260,Card,L1171
+T10394,04:26,Olper's Cream 200ml,2,360,Card,L1171
+T10395,05:37,Surf Excel 1kg,1,460,Mobile Wallet,L4169
+T10395,05:37,Ariel Detergent 2kg,1,950,Mobile Wallet,L4169
+T10396,11:59,Lux Soap 150g,1,130,Cash,L5039
+T10397,13:42,Coca Cola 1.5L,1,150,Card,L9105
+T10398,17:47,Surf Excel 1kg,1,460,Card,L8359
+T10398,17:47,Ariel Detergent 2kg,1,950,Card,L8359
+T10399,04:59,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10399,04:59,Lipton Yellow Label 380g,2,1360,Cash,None
+T10400,09:57,Nestle Milkpak 1L,2,520,Mobile Wallet,L8688
+T10400,09:57,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8688
+T10401,19:13,Olper's Cream 200ml,2,360,Mobile Wallet,L8060
+T10401,19:13,Coca Cola 1.5L,1,150,Mobile Wallet,L8060
+T10401,19:13,Shan Biryani Masala 50g,2,180,Mobile Wallet,L8060
+T10402,01:07,National Chilli Powder 200g,1,210,Mobile Wallet,L2458
+T10403,17:03,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10403,17:03,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10404,20:15,Ariel Detergent 2kg,1,950,Cash,L5047
+T10404,20:15,Dalda Cooking Oil 5L,2,4500,Cash,L5047
+T10404,20:15,Olper's Cream 200ml,1,180,Cash,L5047
+T10405,14:29,Dalda Cooking Oil 5L,1,2250,Card,L1532
+T10405,14:29,Lipton Yellow Label 380g,1,680,Card,L1532
+T10406,03:57,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10406,03:57,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10406,03:57,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10407,03:06,Surf Excel 1kg,1,460,Cash,L5913
+T10407,03:06,Ariel Detergent 2kg,1,950,Cash,L5913
+T10407,03:06,Lux Soap 150g,2,260,Cash,L5913
+T10408,13:48,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L7475
+T10408,13:48,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L7475
+T10409,08:50,Surf Excel 1kg,1,460,Cash,L7829
+T10409,08:50,Ariel Detergent 2kg,1,950,Cash,L7829
+T10409,08:50,Lux Soap 150g,1,130,Cash,L7829
+T10410,15:43,Dalda Cooking Oil 5L,1,2250,Card,None
+T10410,15:43,Lipton Yellow Label 380g,1,680,Card,None
+T10410,15:43,Lux Soap 150g,1,130,Card,None
+T10411,22:38,Nestle Milkpak 1L,5,1300,Cash,None
+T10411,22:38,Olper's Cream 200ml,1,180,Cash,None
+T10412,03:25,Surf Excel 1kg,1,460,Mobile Wallet,L4877
+T10412,03:25,Ariel Detergent 2kg,1,950,Mobile Wallet,L4877
+T10412,03:25,Lux Soap 150g,1,130,Mobile Wallet,L4877
+T10413,12:30,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10413,12:30,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10413,12:30,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10414,08:30,Surf Excel 1kg,2,920,Mobile Wallet,L6446
+T10414,08:30,Ariel Detergent 2kg,1,950,Mobile Wallet,L6446
+T10415,14:04,Lux Soap 150g,2,260,Mobile Wallet,None
+T10416,00:44,Dalda Cooking Oil 5L,1,2250,Cash,L1342
+T10416,00:44,Lipton Yellow Label 380g,2,1360,Cash,L1342
+T10417,22:49,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10418,03:48,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2588
+T10418,03:48,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2588
+T10419,02:32,National Chilli Powder 200g,1,210,Card,None
+T10420,01:50,Dalda Cooking Oil 5L,1,2250,Card,L5225
+T10420,01:50,Lipton Yellow Label 380g,1,680,Card,L5225
+T10421,20:35,National Chilli Powder 200g,2,420,Card,L7313
+T10421,20:35,Shan Biryani Masala 50g,2,180,Card,L7313
+T10422,11:04,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10423,22:22,Nestle Milkpak 1L,3,780,Card,L5886
+T10423,22:22,Lipton Yellow Label 380g,1,680,Card,L5886
+T10424,03:11,Nestle Milkpak 1L,6,1560,Cash,L9957
+T10424,03:11,National Chilli Powder 200g,1,210,Cash,L9957
+T10425,22:02,Surf Excel 1kg,2,920,Card,L6643
+T10425,22:02,Ariel Detergent 2kg,1,950,Card,L6643
+T10426,23:31,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10426,23:31,Lipton Yellow Label 380g,1,680,Cash,None
+T10427,17:16,Dalda Cooking Oil 5L,1,2250,Cash,L1945
+T10427,17:16,Lipton Yellow Label 380g,1,680,Cash,L1945
+T10428,03:46,Nestle Milkpak 1L,4,1040,Cash,L3089
+T10428,03:46,Surf Excel 1kg,2,920,Cash,L3089
+T10429,20:52,Surf Excel 1kg,2,920,Cash,L2150
+T10429,20:52,Ariel Detergent 2kg,1,950,Cash,L2150
+T10430,06:55,Lux Soap 150g,2,260,Cash,L4459
+T10430,06:55,Dalda Cooking Oil 5L,2,4500,Cash,L4459
+T10430,06:55,Lipton Yellow Label 380g,2,1360,Cash,L4459
+T10431,14:40,Dalda Cooking Oil 5L,1,2250,Card,L4384
+T10431,14:40,Lipton Yellow Label 380g,2,1360,Card,L4384
+T10431,14:40,Surf Excel 1kg,1,460,Card,L4384
+T10432,10:42,Dalda Cooking Oil 5L,1,2250,Cash,L4851
+T10432,10:42,Shan Biryani Masala 50g,2,180,Cash,L4851
+T10433,08:26,Nestle Milkpak 1L,2,520,Cash,L5225
+T10433,08:26,Coca Cola 1.5L,2,300,Cash,L5225
+T10434,07:17,Surf Excel 1kg,1,460,Card,L7621
+T10434,07:17,Ariel Detergent 2kg,1,950,Card,L7621
+T10434,07:17,Lux Soap 150g,3,390,Card,L7621
+T10435,18:13,Coca Cola 1.5L,1,150,Card,L3898
+T10436,07:39,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10436,07:39,Lipton Yellow Label 380g,2,1360,Cash,None
+T10437,01:39,Shan Biryani Masala 50g,1,90,Mobile Wallet,L7676
+T10437,01:39,Ariel Detergent 2kg,2,1900,Mobile Wallet,L7676
+T10437,01:39,Surf Excel 1kg,2,920,Mobile Wallet,L7676
+T10438,18:01,Surf Excel 1kg,1,460,Mobile Wallet,L2133
+T10438,18:01,Ariel Detergent 2kg,1,950,Mobile Wallet,L2133
+T10439,19:49,Dalda Cooking Oil 5L,1,2250,Cash,L8280
+T10439,19:49,Lipton Yellow Label 380g,2,1360,Cash,L8280
+T10440,04:42,Nestle Milkpak 1L,4,1040,Card,None
+T10440,04:42,Lipton Yellow Label 380g,2,1360,Card,None
+T10441,14:45,Surf Excel 1kg,2,920,Mobile Wallet,L9972
+T10441,14:45,Ariel Detergent 2kg,1,950,Mobile Wallet,L9972
+T10441,14:45,Lux Soap 150g,2,260,Mobile Wallet,L9972
+T10442,03:09,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8496
+T10442,03:09,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8496
+T10443,00:19,Surf Excel 1kg,1,460,Mobile Wallet,L9840
+T10443,00:19,Ariel Detergent 2kg,1,950,Mobile Wallet,L9840
+T10444,13:36,Nestle Milkpak 1L,1,260,Mobile Wallet,L8584
+T10444,13:36,Ariel Detergent 2kg,1,950,Mobile Wallet,L8584
+T10445,23:02,Dalda Cooking Oil 5L,1,2250,Cash,L2133
+T10445,23:02,Lipton Yellow Label 380g,2,1360,Cash,L2133
+T10446,21:31,Surf Excel 1kg,2,920,Cash,L9115
+T10446,21:31,Ariel Detergent 2kg,1,950,Cash,L9115
+T10447,20:57,Lux Soap 150g,1,130,Card,L9499
+T10448,10:21,Surf Excel 1kg,2,920,Cash,None
+T10448,10:21,Ariel Detergent 2kg,1,950,Cash,None
+T10449,21:28,Nestle Milkpak 1L,3,780,Cash,None
+T10449,21:28,Shan Biryani Masala 50g,1,90,Cash,None
+T10450,20:05,Nestle Milkpak 1L,2,520,Card,L4125
+T10450,20:05,Shan Biryani Masala 50g,2,180,Card,L4125
+T10451,11:17,Dalda Cooking Oil 5L,2,4500,Card,None
+T10451,11:17,Lipton Yellow Label 380g,1,680,Card,None
+T10452,08:13,Dalda Cooking Oil 5L,2,4500,Card,L1758
+T10452,08:13,Lipton Yellow Label 380g,2,1360,Card,L1758
+T10453,06:11,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10453,06:11,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10454,23:19,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6021
+T10454,23:19,Lipton Yellow Label 380g,1,680,Mobile Wallet,L6021
+T10454,23:19,Ariel Detergent 2kg,1,950,Mobile Wallet,L6021
+T10455,19:37,Dalda Cooking Oil 5L,2,4500,Card,L1171
+T10455,19:37,Lipton Yellow Label 380g,1,680,Card,L1171
+T10456,18:41,Dalda Cooking Oil 5L,2,4500,Card,None
+T10456,18:41,Lipton Yellow Label 380g,2,1360,Card,None
+T10457,15:32,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10457,15:32,Lipton Yellow Label 380g,2,1360,Cash,None
+T10458,10:07,Nestle Milkpak 1L,4,1040,Mobile Wallet,None
+T10458,10:07,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T10459,05:36,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4459
+T10459,05:36,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4459
+T10459,05:36,Lux Soap 150g,1,130,Mobile Wallet,L4459
+T10460,15:29,Nestle Milkpak 1L,2,520,Mobile Wallet,L6446
+T10460,15:29,Lux Soap 150g,1,130,Mobile Wallet,L6446
+T10461,12:08,Nestle Milkpak 1L,1,260,Mobile Wallet,L4125
+T10461,12:08,Olper's Cream 200ml,2,360,Mobile Wallet,L4125
+T10461,12:08,Coca Cola 1.5L,2,300,Mobile Wallet,L4125
+T10462,05:59,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10462,05:59,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10463,00:26,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4384
+T10463,00:26,Lux Soap 150g,1,130,Mobile Wallet,L4384
+T10463,00:26,Surf Excel 1kg,2,920,Mobile Wallet,L4384
+T10464,22:36,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10464,22:36,Lipton Yellow Label 380g,1,680,Cash,None
+T10465,03:28,Dalda Cooking Oil 5L,1,2250,Card,None
+T10465,03:28,Lipton Yellow Label 380g,1,680,Card,None
+T10466,12:03,Surf Excel 1kg,1,460,Mobile Wallet,L2458
+T10466,12:03,Ariel Detergent 2kg,1,950,Mobile Wallet,L2458
+T10467,01:09,Dalda Cooking Oil 5L,1,2250,Card,None
+T10467,01:09,Lipton Yellow Label 380g,2,1360,Card,None
+T10468,18:56,Dalda Cooking Oil 5L,2,4500,Card,L9262
+T10468,18:56,Lipton Yellow Label 380g,2,1360,Card,L9262
+T10469,05:54,Dalda Cooking Oil 5L,1,2250,Card,L9492
+T10469,05:54,Lipton Yellow Label 380g,1,680,Card,L9492
+T10470,18:50,Dalda Cooking Oil 5L,2,4500,Card,L2099
+T10470,18:50,Lipton Yellow Label 380g,1,680,Card,L2099
+T10470,18:50,Nestle Milkpak 1L,1,260,Card,L2099
+T10471,02:52,Surf Excel 1kg,1,460,Card,None
+T10471,02:52,Ariel Detergent 2kg,1,950,Card,None
+T10472,01:34,Coca Cola 1.5L,2,300,Cash,L2099
+T10472,01:34,Shan Biryani Masala 50g,2,180,Cash,L2099
+T10473,11:52,Dalda Cooking Oil 5L,1,2250,Cash,L7676
+T10473,11:52,Lipton Yellow Label 380g,1,680,Cash,L7676
+T10474,12:48,Dalda Cooking Oil 5L,1,2250,Cash,L1758
+T10474,12:48,Lipton Yellow Label 380g,1,680,Cash,L1758
+T10475,03:15,Nestle Milkpak 1L,2,520,Mobile Wallet,L8584
+T10475,03:15,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8584
+T10476,11:30,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2822
+T10476,11:30,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2822
+T10477,15:51,Dalda Cooking Oil 5L,2,4500,Card,None
+T10477,15:51,Lipton Yellow Label 380g,2,1360,Card,None
+T10478,14:46,Dalda Cooking Oil 5L,1,2250,Cash,L5192
+T10478,14:46,Lipton Yellow Label 380g,2,1360,Cash,L5192
+T10479,03:23,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10479,03:23,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10480,00:36,Lux Soap 150g,2,260,Card,L2099
+T10480,00:36,Shan Biryani Masala 50g,2,180,Card,L2099
+T10481,01:12,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10481,01:12,Coca Cola 1.5L,2,300,Mobile Wallet,None
+T10482,00:21,Nestle Milkpak 1L,5,1300,Card,L2150
+T10482,00:21,Dalda Cooking Oil 5L,1,2250,Card,L2150
+T10483,19:06,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6643
+T10483,19:06,Lipton Yellow Label 380g,1,680,Mobile Wallet,L6643
+T10483,19:06,Olper's Cream 200ml,1,180,Mobile Wallet,L6643
+T10484,00:09,Dalda Cooking Oil 5L,2,4500,Cash,L9105
+T10484,00:09,Lipton Yellow Label 380g,2,1360,Cash,L9105
+T10485,02:24,Surf Excel 1kg,2,920,Mobile Wallet,L7367
+T10485,02:24,Ariel Detergent 2kg,1,950,Mobile Wallet,L7367
+T10486,05:44,Dalda Cooking Oil 5L,1,2250,Card,None
+T10486,05:44,Lipton Yellow Label 380g,2,1360,Card,None
+T10486,05:44,Shan Biryani Masala 50g,1,90,Card,None
+T10487,00:03,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10487,00:03,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10488,07:38,Surf Excel 1kg,1,460,Cash,L5339
+T10488,07:38,Ariel Detergent 2kg,1,950,Cash,L5339
+T10489,22:11,Surf Excel 1kg,1,460,Cash,None
+T10489,22:11,Ariel Detergent 2kg,1,950,Cash,None
+T10490,11:43,Nestle Milkpak 1L,1,260,Card,L1781
+T10490,11:43,Olper's Cream 200ml,2,360,Card,L1781
+T10491,05:23,Dalda Cooking Oil 5L,2,4500,Card,L9262
+T10491,05:23,Lipton Yellow Label 380g,2,1360,Card,L9262
+T10492,22:20,Lux Soap 150g,1,130,Cash,L7856
+T10493,13:24,Dalda Cooking Oil 5L,2,4500,Cash,L4169
+T10493,13:24,Lipton Yellow Label 380g,1,680,Cash,L4169
+T10494,13:36,Lux Soap 150g,2,260,Card,None
+T10494,13:36,Ariel Detergent 2kg,2,1900,Card,None
+T10494,13:36,National Chilli Powder 200g,1,210,Card,None
+T10495,03:04,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9957
+T10495,03:04,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9957
+T10496,16:46,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2813
+T10496,16:46,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2813
+T10496,16:46,Olper's Cream 200ml,1,180,Mobile Wallet,L2813
+T10497,15:08,Nestle Milkpak 1L,2,520,Card,L1751
+T10497,15:08,Dalda Cooking Oil 5L,2,4500,Card,L1751
+T10497,15:08,Ariel Detergent 2kg,2,1900,Card,L1751
+T10498,03:08,Dalda Cooking Oil 5L,1,2250,Cash,L6664
+T10498,03:08,Lipton Yellow Label 380g,1,680,Cash,L6664
+T10498,03:08,Lux Soap 150g,1,130,Cash,L6664
+T10499,03:27,Nestle Milkpak 1L,3,780,Cash,L9957
+T10499,03:27,Shan Biryani Masala 50g,1,90,Cash,L9957
+T10500,13:08,Dalda Cooking Oil 5L,1,2250,Card,None
+T10500,13:08,Lipton Yellow Label 380g,1,680,Card,None
+T10501,08:34,Surf Excel 1kg,1,460,Cash,None
+T10501,08:34,Ariel Detergent 2kg,1,950,Cash,None
+T10502,17:44,Coca Cola 1.5L,1,150,Card,L2822
+T10502,17:44,Lux Soap 150g,2,260,Card,L2822
+T10502,17:44,Ariel Detergent 2kg,2,1900,Card,L2822
+T10503,05:01,Nestle Milkpak 1L,2,520,Cash,L2150
+T10503,05:01,Dalda Cooking Oil 5L,1,2250,Cash,L2150
+T10504,18:57,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10504,18:57,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10505,22:15,Surf Excel 1kg,2,920,Card,L6829
+T10505,22:15,Ariel Detergent 2kg,1,950,Card,L6829
+T10506,08:25,Nestle Milkpak 1L,6,1560,Cash,None
+T10507,03:02,Dalda Cooking Oil 5L,1,2250,Card,L3396
+T10507,03:02,Lipton Yellow Label 380g,2,1360,Card,L3396
+T10507,03:02,Surf Excel 1kg,1,460,Card,L3396
+T10508,01:37,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8167
+T10508,01:37,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8167
+T10509,17:17,Surf Excel 1kg,1,460,Card,L4753
+T10509,17:17,Ariel Detergent 2kg,1,950,Card,L4753
+T10509,17:17,Lux Soap 150g,3,390,Card,L4753
+T10510,23:46,Nestle Milkpak 1L,4,1040,Mobile Wallet,L2726
+T10510,23:46,Ariel Detergent 2kg,1,950,Mobile Wallet,L2726
+T10511,21:51,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L1934
+T10511,21:51,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1934
+T10512,03:08,Surf Excel 1kg,2,920,Mobile Wallet,L8143
+T10512,03:08,Ariel Detergent 2kg,1,950,Mobile Wallet,L8143
+T10513,08:47,National Chilli Powder 200g,1,210,Mobile Wallet,L8762
+T10513,08:47,Coca Cola 1.5L,1,150,Mobile Wallet,L8762
+T10514,23:31,Surf Excel 1kg,2,920,Cash,None
+T10514,23:31,Ariel Detergent 2kg,1,950,Cash,None
+T10515,17:12,Dalda Cooking Oil 5L,1,2250,Card,L5339
+T10515,17:12,Lipton Yellow Label 380g,2,1360,Card,L5339
+T10516,04:10,Shan Biryani Masala 50g,2,180,Cash,L6488
+T10516,04:10,Surf Excel 1kg,2,920,Cash,L6488
+T10516,04:10,Ariel Detergent 2kg,2,1900,Cash,L6488
+T10517,15:48,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10517,15:48,Lipton Yellow Label 380g,1,680,Cash,None
+T10518,15:09,National Chilli Powder 200g,1,210,Card,None
+T10519,11:27,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10520,15:43,Dalda Cooking Oil 5L,2,4500,Card,L7313
+T10520,15:43,Lipton Yellow Label 380g,2,1360,Card,L7313
+T10521,17:39,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10521,17:39,Lipton Yellow Label 380g,1,680,Cash,None
+T10522,10:59,Ariel Detergent 2kg,2,1900,Cash,None
+T10522,10:59,Olper's Cream 200ml,2,360,Cash,None
+T10522,10:59,Lux Soap 150g,2,260,Cash,None
+T10523,06:14,Dalda Cooking Oil 5L,2,4500,Card,None
+T10523,06:14,Lipton Yellow Label 380g,2,1360,Card,None
+T10524,11:54,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10524,11:54,Lipton Yellow Label 380g,1,680,Cash,None
+T10525,09:08,Dalda Cooking Oil 5L,1,2250,Card,L8688
+T10525,09:08,Lipton Yellow Label 380g,1,680,Card,L8688
+T10526,14:12,Surf Excel 1kg,2,920,Card,L4169
+T10526,14:12,Ariel Detergent 2kg,1,950,Card,L4169
+T10526,14:12,Lux Soap 150g,2,260,Card,L4169
+T10527,10:28,Dalda Cooking Oil 5L,2,4500,Card,L8584
+T10527,10:28,Lipton Yellow Label 380g,1,680,Card,L8584
+T10528,18:13,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10528,18:13,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10529,18:55,Nestle Milkpak 1L,4,1040,Cash,L7322
+T10529,18:55,National Chilli Powder 200g,1,210,Cash,L7322
+T10530,19:24,Dalda Cooking Oil 5L,2,4500,Card,None
+T10530,19:24,Lipton Yellow Label 380g,2,1360,Card,None
+T10531,03:34,Surf Excel 1kg,1,460,Card,L2588
+T10531,03:34,Ariel Detergent 2kg,1,950,Card,L2588
+T10532,14:18,Nestle Milkpak 1L,2,520,Mobile Wallet,L1467
+T10532,14:18,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1467
+T10533,20:05,Dalda Cooking Oil 5L,1,2250,Cash,L2723
+T10533,20:05,Lipton Yellow Label 380g,2,1360,Cash,L2723
+T10533,20:05,National Chilli Powder 200g,1,210,Cash,L2723
+T10534,00:14,Surf Excel 1kg,1,460,Mobile Wallet,L2133
+T10534,00:14,Ariel Detergent 2kg,1,950,Mobile Wallet,L2133
+T10534,00:14,Lux Soap 150g,3,390,Mobile Wallet,L2133
+T10535,04:49,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2822
+T10535,04:49,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2822
+T10536,16:41,Surf Excel 1kg,1,460,Cash,L6021
+T10536,16:41,Ariel Detergent 2kg,1,950,Cash,L6021
+T10537,06:46,Lipton Yellow Label 380g,2,1360,Card,L6643
+T10537,06:46,Olper's Cream 200ml,2,360,Card,L6643
+T10537,06:46,Surf Excel 1kg,1,460,Card,L6643
+T10538,16:00,Coca Cola 1.5L,2,300,Cash,None
+T10538,16:00,Lipton Yellow Label 380g,2,1360,Cash,None
+T10539,00:41,Nestle Milkpak 1L,3,780,Mobile Wallet,L5225
+T10539,00:41,Coca Cola 1.5L,2,300,Mobile Wallet,L5225
+T10540,00:40,Dalda Cooking Oil 5L,2,4500,Card,None
+T10540,00:40,Lipton Yellow Label 380g,1,680,Card,None
+T10541,00:30,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10541,00:30,Lipton Yellow Label 380g,1,680,Cash,None
+T10542,15:52,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10542,15:52,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10543,13:50,Nestle Milkpak 1L,4,1040,Card,None
+T10543,13:50,Lux Soap 150g,2,260,Card,None
+T10544,21:56,Nestle Milkpak 1L,2,520,Card,L2648
+T10544,21:56,Ariel Detergent 2kg,1,950,Card,L2648
+T10545,05:48,Nestle Milkpak 1L,5,1300,Mobile Wallet,L5710
+T10545,05:48,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5710
+T10546,07:47,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5225
+T10546,07:47,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5225
+T10547,16:00,Nestle Milkpak 1L,2,520,Cash,L2099
+T10548,19:27,Dalda Cooking Oil 5L,1,2250,Card,None
+T10548,19:27,Lipton Yellow Label 380g,1,680,Card,None
+T10549,05:18,Surf Excel 1kg,2,920,Cash,None
+T10549,05:18,Ariel Detergent 2kg,1,950,Cash,None
+T10550,10:24,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4877
+T10550,10:24,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4877
+T10551,15:30,National Chilli Powder 200g,2,420,Mobile Wallet,L4459
+T10552,01:24,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10552,01:24,Shan Biryani Masala 50g,1,90,Mobile Wallet,None
+T10553,11:27,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10553,11:27,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10554,07:09,Dalda Cooking Oil 5L,2,4500,Cash,L7856
+T10554,07:09,Lipton Yellow Label 380g,1,680,Cash,L7856
+T10555,07:41,Dalda Cooking Oil 5L,2,4500,Card,None
+T10555,07:41,Lipton Yellow Label 380g,2,1360,Card,None
+T10556,02:05,Dalda Cooking Oil 5L,1,2250,Cash,L2458
+T10556,02:05,Lipton Yellow Label 380g,1,680,Cash,L2458
+T10557,13:23,Dalda Cooking Oil 5L,1,2250,Card,L2796
+T10557,13:23,Lipton Yellow Label 380g,1,680,Card,L2796
+T10558,20:04,Nestle Milkpak 1L,6,1560,Mobile Wallet,L6488
+T10558,20:04,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6488
+T10559,14:39,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L7829
+T10559,14:39,Lipton Yellow Label 380g,1,680,Mobile Wallet,L7829
+T10560,09:23,Nestle Milkpak 1L,2,520,Mobile Wallet,L7676
+T10561,07:03,Nestle Milkpak 1L,2,520,Mobile Wallet,L8762
+T10562,08:48,Surf Excel 1kg,1,460,Card,L4877
+T10562,08:48,Ariel Detergent 2kg,1,950,Card,L4877
+T10562,08:48,Lux Soap 150g,2,260,Card,L4877
+T10563,13:10,Dalda Cooking Oil 5L,2,4500,Card,L7475
+T10563,13:10,Lipton Yellow Label 380g,2,1360,Card,L7475
+T10564,21:53,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8535
+T10564,21:53,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8535
+T10565,17:18,Nestle Milkpak 1L,6,1560,Mobile Wallet,L5039
+T10565,17:18,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5039
+T10566,23:44,Dalda Cooking Oil 5L,2,4500,Card,None
+T10566,23:44,Lipton Yellow Label 380g,1,680,Card,None
+T10567,14:58,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10567,14:58,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10568,07:04,Surf Excel 1kg,2,920,Cash,None
+T10568,07:04,Ariel Detergent 2kg,1,950,Cash,None
+T10569,03:32,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10569,03:32,Lipton Yellow Label 380g,2,1360,Cash,None
+T10570,12:29,Dalda Cooking Oil 5L,2,4500,Cash,L5339
+T10570,12:29,Lipton Yellow Label 380g,1,680,Cash,L5339
+T10570,12:29,Surf Excel 1kg,1,460,Cash,L5339
+T10571,08:13,Surf Excel 1kg,1,460,Card,L2373
+T10571,08:13,Ariel Detergent 2kg,1,950,Card,L2373
+T10572,08:54,Surf Excel 1kg,1,460,Card,L1934
+T10572,08:54,Nestle Milkpak 1L,1,260,Card,L1934
+T10573,02:48,Shan Biryani Masala 50g,2,180,Cash,None
+T10573,02:48,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10574,17:42,Surf Excel 1kg,1,460,Card,L7313
+T10574,17:42,Ariel Detergent 2kg,1,950,Card,L7313
+T10574,17:42,Lux Soap 150g,2,260,Card,L7313
+T10575,22:14,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10575,22:14,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10576,09:00,Nestle Milkpak 1L,4,1040,Mobile Wallet,L5652
+T10576,09:00,Ariel Detergent 2kg,1,950,Mobile Wallet,L5652
+T10577,03:35,Nestle Milkpak 1L,6,1560,Card,L5339
+T10578,16:50,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1532
+T10578,16:50,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1532
+T10579,08:35,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10580,14:46,Dalda Cooking Oil 5L,2,4500,Cash,L2373
+T10580,14:46,Lipton Yellow Label 380g,2,1360,Cash,L2373
+T10580,14:46,Ariel Detergent 2kg,1,950,Cash,L2373
+T10581,15:30,Nestle Milkpak 1L,4,1040,Mobile Wallet,L8535
+T10582,03:50,Dalda Cooking Oil 5L,1,2250,Card,L9471
+T10582,03:50,Lipton Yellow Label 380g,1,680,Card,L9471
+T10582,03:50,National Chilli Powder 200g,1,210,Card,L9471
+T10583,19:06,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10583,19:06,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10584,17:36,Dalda Cooking Oil 5L,1,2250,Cash,L2458
+T10584,17:36,Lipton Yellow Label 380g,1,680,Cash,L2458
+T10584,17:36,Lux Soap 150g,1,130,Cash,L2458
+T10585,02:13,Olper's Cream 200ml,2,360,Cash,None
+T10586,04:15,Dalda Cooking Oil 5L,2,4500,Card,None
+T10586,04:15,Lipton Yellow Label 380g,2,1360,Card,None
+T10587,19:22,Surf Excel 1kg,1,460,Mobile Wallet,L1171
+T10587,19:22,Ariel Detergent 2kg,1,950,Mobile Wallet,L1171
+T10588,04:07,Lux Soap 150g,2,260,Mobile Wallet,None
+T10588,04:07,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10589,04:46,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2239
+T10589,04:46,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2239
+T10589,04:46,Nestle Milkpak 1L,1,260,Mobile Wallet,L2239
+T10590,12:29,Dalda Cooking Oil 5L,2,4500,Card,L3396
+T10590,12:29,Lipton Yellow Label 380g,2,1360,Card,L3396
+T10591,17:58,Lipton Yellow Label 380g,1,680,Card,None
+T10592,00:15,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6488
+T10592,00:15,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6488
+T10593,01:51,Dalda Cooking Oil 5L,2,4500,Card,L8862
+T10593,01:51,Lipton Yellow Label 380g,1,680,Card,L8862
+T10593,01:51,Coca Cola 1.5L,1,150,Card,L8862
+T10594,04:11,Nestle Milkpak 1L,3,780,Cash,None
+T10594,04:11,Shan Biryani Masala 50g,1,90,Cash,None
+T10595,17:59,Surf Excel 1kg,2,920,Card,L8688
+T10595,17:59,Ariel Detergent 2kg,1,950,Card,L8688
+T10595,17:59,Lux Soap 150g,2,260,Card,L8688
+T10596,22:44,Dalda Cooking Oil 5L,2,4500,Card,L1945
+T10596,22:44,Lipton Yellow Label 380g,1,680,Card,L1945
+T10597,07:17,Surf Excel 1kg,2,920,Card,L9972
+T10597,07:17,Ariel Detergent 2kg,1,950,Card,L9972
+T10597,07:17,Lux Soap 150g,1,130,Card,L9972
+T10598,00:41,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10598,00:41,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10598,00:41,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10599,21:42,Nestle Milkpak 1L,1,260,Card,L2822
+T10599,21:42,Dalda Cooking Oil 5L,1,2250,Card,L2822
+T10600,04:03,Nestle Milkpak 1L,2,520,Cash,L1328
+T10601,22:59,Nestle Milkpak 1L,5,1300,Card,L2239
+T10601,22:59,Surf Excel 1kg,1,460,Card,L2239
+T10602,19:53,Nestle Milkpak 1L,5,1300,Card,L1342
+T10602,19:53,Shan Biryani Masala 50g,2,180,Card,L1342
+T10603,12:48,Dalda Cooking Oil 5L,1,2250,Cash,L8060
+T10603,12:48,Lipton Yellow Label 380g,2,1360,Cash,L8060
+T10604,11:30,Dalda Cooking Oil 5L,2,4500,Cash,L2588
+T10604,11:30,Lipton Yellow Label 380g,1,680,Cash,L2588
+T10605,23:12,Nestle Milkpak 1L,2,520,Card,L7807
+T10605,23:12,Ariel Detergent 2kg,2,1900,Card,L7807
+T10606,03:58,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10606,03:58,Lipton Yellow Label 380g,2,1360,Cash,None
+T10606,03:58,Nestle Milkpak 1L,1,260,Cash,None
+T10607,13:27,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2150
+T10607,13:27,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2150
+T10608,13:17,Lux Soap 150g,2,260,Cash,L4877
+T10609,15:10,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6169
+T10609,15:10,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6169
+T10610,11:51,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5886
+T10610,11:51,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5886
+T10611,13:38,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10611,13:38,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10612,04:40,Surf Excel 1kg,1,460,Cash,None
+T10612,04:40,Ariel Detergent 2kg,1,950,Cash,None
+T10613,08:05,Surf Excel 1kg,1,460,Card,L8060
+T10613,08:05,Ariel Detergent 2kg,1,950,Card,L8060
+T10613,08:05,Lux Soap 150g,3,390,Card,L8060
+T10614,11:26,National Chilli Powder 200g,1,210,Cash,L4680
+T10614,11:26,Surf Excel 1kg,1,460,Cash,L4680
+T10615,01:17,Surf Excel 1kg,1,460,Card,L4459
+T10615,01:17,Lipton Yellow Label 380g,1,680,Card,L4459
+T10616,06:01,Ariel Detergent 2kg,2,1900,Card,L3391
+T10616,06:01,Surf Excel 1kg,2,920,Card,L3391
+T10617,23:08,Dalda Cooking Oil 5L,2,4500,Cash,L3707
+T10617,23:08,Lipton Yellow Label 380g,1,680,Cash,L3707
+T10617,23:08,Ariel Detergent 2kg,1,950,Cash,L3707
+T10618,19:32,Nestle Milkpak 1L,5,1300,Cash,None
+T10618,19:32,Lipton Yellow Label 380g,1,680,Cash,None
+T10619,16:02,Surf Excel 1kg,2,920,Card,L7676
+T10619,16:02,Ariel Detergent 2kg,1,950,Card,L7676
+T10619,16:02,Lux Soap 150g,1,130,Card,L7676
+T10620,01:07,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10620,01:07,Lipton Yellow Label 380g,2,1360,Cash,None
+T10621,08:53,Dalda Cooking Oil 5L,2,4500,Card,L8535
+T10621,08:53,Lipton Yellow Label 380g,2,1360,Card,L8535
+T10622,05:22,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8535
+T10622,05:22,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8535
+T10623,12:42,Nestle Milkpak 1L,4,1040,Cash,None
+T10623,12:42,Lipton Yellow Label 380g,2,1360,Cash,None
+T10624,13:27,Dalda Cooking Oil 5L,1,2250,Card,L6021
+T10624,13:27,Lipton Yellow Label 380g,1,680,Card,L6021
+T10625,04:28,Nestle Milkpak 1L,1,260,Card,L2133
+T10625,04:28,Lux Soap 150g,2,260,Card,L2133
+T10626,16:47,Dalda Cooking Oil 5L,2,4500,Cash,L6664
+T10626,16:47,Lipton Yellow Label 380g,2,1360,Cash,L6664
+T10627,13:17,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10627,13:17,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10628,00:39,Lux Soap 150g,1,130,Mobile Wallet,L5225
+T10628,00:39,Nestle Milkpak 1L,2,520,Mobile Wallet,L5225
+T10628,00:39,National Chilli Powder 200g,2,420,Mobile Wallet,L5225
+T10629,12:43,Nestle Milkpak 1L,2,520,Mobile Wallet,L9115
+T10629,12:43,Olper's Cream 200ml,2,360,Mobile Wallet,L9115
+T10630,15:58,Dalda Cooking Oil 5L,1,2250,Card,L3391
+T10630,15:58,Lipton Yellow Label 380g,1,680,Card,L3391
+T10631,03:55,Dalda Cooking Oil 5L,2,4500,Card,L2133
+T10631,03:55,Lipton Yellow Label 380g,1,680,Card,L2133
+T10632,23:23,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10632,23:23,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T10633,19:36,Lipton Yellow Label 380g,2,1360,Cash,L2458
+T10633,19:36,Surf Excel 1kg,2,920,Cash,L2458
+T10633,19:36,Coca Cola 1.5L,1,150,Cash,L2458
+T10634,05:09,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10634,05:09,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10635,23:40,Shan Biryani Masala 50g,2,180,Card,L1171
+T10635,23:40,Coca Cola 1.5L,1,150,Card,L1171
+T10635,23:40,Dalda Cooking Oil 5L,2,4500,Card,L1171
+T10636,21:45,Dalda Cooking Oil 5L,1,2250,Card,L4169
+T10636,21:45,Lipton Yellow Label 380g,2,1360,Card,L4169
+T10637,17:03,Nestle Milkpak 1L,4,1040,Mobile Wallet,L7621
+T10637,17:03,Lux Soap 150g,2,260,Mobile Wallet,L7621
+T10638,14:13,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4296
+T10638,14:13,Lipton Yellow Label 380g,1,680,Mobile Wallet,L4296
+T10638,14:13,Coca Cola 1.5L,1,150,Mobile Wallet,L4296
+T10639,19:01,Dalda Cooking Oil 5L,2,4500,Card,None
+T10639,19:01,Lipton Yellow Label 380g,2,1360,Card,None
+T10640,18:57,Olper's Cream 200ml,2,360,Card,None
+T10640,18:57,National Chilli Powder 200g,2,420,Card,None
+T10641,09:37,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10641,09:37,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10641,09:37,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10642,23:58,Dalda Cooking Oil 5L,2,4500,Card,L5039
+T10642,23:58,Nestle Milkpak 1L,1,260,Card,L5039
+T10643,10:34,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10643,10:34,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10643,10:34,Lux Soap 150g,3,390,Mobile Wallet,None
+T10644,16:01,Surf Excel 1kg,2,920,Cash,None
+T10644,16:01,Ariel Detergent 2kg,1,950,Cash,None
+T10645,05:31,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1171
+T10645,05:31,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1171
+T10646,03:08,Dalda Cooking Oil 5L,2,4500,Card,L7676
+T10646,03:08,Lipton Yellow Label 380g,1,680,Card,L7676
+T10647,14:10,Dalda Cooking Oil 5L,1,2250,Card,L9115
+T10647,14:10,Lipton Yellow Label 380g,1,680,Card,L9115
+T10648,03:48,Surf Excel 1kg,2,920,Card,L3089
+T10648,03:48,Ariel Detergent 2kg,1,950,Card,L3089
+T10648,03:48,Shan Biryani Masala 50g,1,90,Card,L3089
+T10649,10:21,Shan Biryani Masala 50g,1,90,Mobile Wallet,L5652
+T10649,10:21,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5652
+T10650,21:22,Dalda Cooking Oil 5L,2,4500,Card,L7621
+T10650,21:22,Lipton Yellow Label 380g,2,1360,Card,L7621
+T10651,23:15,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10651,23:15,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10651,23:15,Lux Soap 150g,1,130,Mobile Wallet,None
+T10652,09:12,Dalda Cooking Oil 5L,1,2250,Card,None
+T10652,09:12,Lipton Yellow Label 380g,1,680,Card,None
+T10653,20:28,Dalda Cooking Oil 5L,2,4500,Card,L2726
+T10653,20:28,Lipton Yellow Label 380g,1,680,Card,L2726
+T10653,20:28,Shan Biryani Masala 50g,1,90,Card,L2726
+T10654,14:41,Lipton Yellow Label 380g,2,1360,Card,L4169
+T10654,14:41,Lux Soap 150g,1,130,Card,L4169
+T10655,02:47,Dalda Cooking Oil 5L,1,2250,Card,L4125
+T10655,02:47,Lipton Yellow Label 380g,2,1360,Card,L4125
+T10656,09:26,Nestle Milkpak 1L,1,260,Card,L2295
+T10657,08:32,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8584
+T10657,08:32,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8584
+T10657,08:32,Lux Soap 150g,1,130,Mobile Wallet,L8584
+T10658,17:18,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9105
+T10658,17:18,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9105
+T10659,04:06,Dalda Cooking Oil 5L,1,2250,Cash,L6446
+T10659,04:06,Lipton Yellow Label 380g,2,1360,Cash,L6446
+T10660,15:11,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10660,15:11,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10661,22:27,Nestle Milkpak 1L,3,780,Card,L1696
+T10661,22:27,Ariel Detergent 2kg,1,950,Card,L1696
+T10662,14:14,Dalda Cooking Oil 5L,1,2250,Card,L3089
+T10662,14:14,Lipton Yellow Label 380g,1,680,Card,L3089
+T10663,18:51,Shan Biryani Masala 50g,2,180,Mobile Wallet,L8743
+T10664,02:51,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10664,02:51,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10665,19:07,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10665,19:07,Lipton Yellow Label 380g,2,1360,Cash,None
+T10666,13:25,Dalda Cooking Oil 5L,1,2250,Card,L5886
+T10666,13:25,Lipton Yellow Label 380g,2,1360,Card,L5886
+T10667,02:44,Nestle Milkpak 1L,2,520,Card,None
+T10667,02:44,Dalda Cooking Oil 5L,1,2250,Card,None
+T10668,00:22,Nestle Milkpak 1L,6,1560,Card,L1758
+T10668,00:22,Surf Excel 1kg,1,460,Card,L1758
+T10669,10:25,Lipton Yellow Label 380g,1,680,Card,L6488
+T10669,10:25,Surf Excel 1kg,1,460,Card,L6488
+T10670,14:19,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10670,14:19,Coca Cola 1.5L,2,300,Mobile Wallet,None
+T10670,14:19,Shan Biryani Masala 50g,1,90,Mobile Wallet,None
+T10671,05:25,Coca Cola 1.5L,1,150,Mobile Wallet,L1467
+T10671,05:25,National Chilli Powder 200g,1,210,Mobile Wallet,L1467
+T10672,02:12,Surf Excel 1kg,1,460,Card,L1532
+T10672,02:12,Ariel Detergent 2kg,1,950,Card,L1532
+T10673,14:29,Nestle Milkpak 1L,5,1300,Card,None
+T10673,14:29,Lux Soap 150g,2,260,Card,None
+T10674,13:40,Nestle Milkpak 1L,6,1560,Cash,L4459
+T10674,13:40,Shan Biryani Masala 50g,2,180,Cash,L4459
+T10675,00:20,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10675,00:20,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10676,00:40,Ariel Detergent 2kg,2,1900,Cash,L3396
+T10677,19:49,Nestle Milkpak 1L,3,780,Mobile Wallet,None
+T10677,19:49,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10678,17:37,Nestle Milkpak 1L,5,1300,Card,L2796
+T10678,17:37,Surf Excel 1kg,2,920,Card,L2796
+T10679,03:18,Coca Cola 1.5L,2,300,Cash,L2723
+T10679,03:18,Shan Biryani Masala 50g,1,90,Cash,L2723
+T10680,05:18,Surf Excel 1kg,2,920,Card,L1532
+T10680,05:18,Ariel Detergent 2kg,1,950,Card,L1532
+T10681,22:35,Dalda Cooking Oil 5L,2,4500,Cash,L5047
+T10682,14:59,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9790
+T10682,14:59,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9790
+T10683,22:23,Nestle Milkpak 1L,6,1560,Card,None
+T10684,08:15,Nestle Milkpak 1L,2,520,Mobile Wallet,L2295
+T10684,08:15,Shan Biryani Masala 50g,1,90,Mobile Wallet,L2295
+T10685,19:30,Surf Excel 1kg,1,460,Mobile Wallet,L9115
+T10685,19:30,Ariel Detergent 2kg,1,950,Mobile Wallet,L9115
+T10685,19:30,Lux Soap 150g,3,390,Mobile Wallet,L9115
+T10686,00:10,Nestle Milkpak 1L,3,780,Cash,L5886
+T10686,00:10,National Chilli Powder 200g,2,420,Cash,L5886
+T10687,03:53,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9840
+T10688,03:12,Dalda Cooking Oil 5L,1,2250,Cash,L5047
+T10688,03:12,Lipton Yellow Label 380g,1,680,Cash,L5047
+T10688,03:12,Olper's Cream 200ml,1,180,Cash,L5047
+T10689,17:48,Olper's Cream 200ml,2,360,Cash,L4851
+T10689,17:48,Ariel Detergent 2kg,2,1900,Cash,L4851
+T10690,15:10,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5886
+T10690,15:10,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L5886
+T10691,09:46,Coca Cola 1.5L,1,150,Card,L1328
+T10691,09:46,National Chilli Powder 200g,2,420,Card,L1328
+T10692,05:23,Surf Excel 1kg,2,920,Cash,L7621
+T10692,05:23,Ariel Detergent 2kg,1,950,Cash,L7621
+T10693,03:47,Dalda Cooking Oil 5L,1,2250,Cash,L9972
+T10693,03:47,Lipton Yellow Label 380g,1,680,Cash,L9972
+T10694,16:13,Dalda Cooking Oil 5L,1,2250,Cash,L5192
+T10694,16:13,Lipton Yellow Label 380g,2,1360,Cash,L5192
+T10695,09:06,Surf Excel 1kg,1,460,Cash,L4169
+T10695,09:06,Ariel Detergent 2kg,1,950,Cash,L4169
+T10696,06:28,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10696,06:28,Lipton Yellow Label 380g,1,680,Cash,None
+T10697,07:39,Surf Excel 1kg,2,920,Cash,L8688
+T10697,07:39,Ariel Detergent 2kg,1,950,Cash,L8688
+T10698,11:50,Dalda Cooking Oil 5L,2,4500,Card,L9105
+T10698,11:50,Lipton Yellow Label 380g,1,680,Card,L9105
+T10699,05:36,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10699,05:36,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10700,23:35,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10700,23:35,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10701,06:02,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10701,06:02,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10702,19:24,Lux Soap 150g,2,260,Mobile Wallet,L2726
+T10702,19:24,Olper's Cream 200ml,2,360,Mobile Wallet,L2726
+T10702,19:24,Coca Cola 1.5L,1,150,Mobile Wallet,L2726
+T10703,01:31,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10703,01:31,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T10704,13:35,Nestle Milkpak 1L,4,1040,Card,L6169
+T10704,13:35,Shan Biryani Masala 50g,1,90,Card,L6169
+T10705,07:36,Nestle Milkpak 1L,6,1560,Card,L5339
+T10705,07:36,National Chilli Powder 200g,2,420,Card,L5339
+T10706,17:42,Nestle Milkpak 1L,2,520,Mobile Wallet,L8688
+T10707,14:37,Nestle Milkpak 1L,3,780,Mobile Wallet,L5047
+T10707,14:37,Shan Biryani Masala 50g,1,90,Mobile Wallet,L5047
+T10708,23:20,Nestle Milkpak 1L,2,520,Card,None
+T10708,23:20,Ariel Detergent 2kg,1,950,Card,None
+T10709,21:20,Surf Excel 1kg,1,460,Mobile Wallet,L8584
+T10709,21:20,Ariel Detergent 2kg,1,950,Mobile Wallet,L8584
+T10709,21:20,Lux Soap 150g,2,260,Mobile Wallet,L8584
+T10710,10:08,Surf Excel 1kg,1,460,Card,None
+T10710,10:08,Ariel Detergent 2kg,1,950,Card,None
+T10711,20:26,Surf Excel 1kg,2,920,Mobile Wallet,L2295
+T10711,20:26,Ariel Detergent 2kg,1,950,Mobile Wallet,L2295
+T10712,09:38,Surf Excel 1kg,1,460,Cash,None
+T10712,09:38,Ariel Detergent 2kg,1,950,Cash,None
+T10712,09:38,Lux Soap 150g,1,130,Cash,None
+T10713,00:46,Dalda Cooking Oil 5L,2,4500,Card,L1532
+T10713,00:46,Lipton Yellow Label 380g,2,1360,Card,L1532
+T10714,18:55,Surf Excel 1kg,1,460,Cash,None
+T10714,18:55,Ariel Detergent 2kg,1,950,Cash,None
+T10714,18:55,Lux Soap 150g,3,390,Cash,None
+T10715,15:30,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10715,15:30,Lipton Yellow Label 380g,1,680,Cash,None
+T10716,06:12,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2796
+T10716,06:12,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2796
+T10717,20:35,Dalda Cooking Oil 5L,1,2250,Card,L8584
+T10717,20:35,Lipton Yellow Label 380g,2,1360,Card,L8584
+T10717,20:35,Lux Soap 150g,1,130,Card,L8584
+T10718,02:32,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10718,02:32,Lipton Yellow Label 380g,1,680,Cash,None
+T10719,11:51,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L3396
+T10719,11:51,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L3396
+T10719,11:51,Coca Cola 1.5L,1,150,Mobile Wallet,L3396
+T10720,00:57,Surf Excel 1kg,1,460,Cash,None
+T10720,00:57,Ariel Detergent 2kg,1,950,Cash,None
+T10721,13:53,Olper's Cream 200ml,1,180,Mobile Wallet,L6169
+T10721,13:53,Surf Excel 1kg,1,460,Mobile Wallet,L6169
+T10721,13:53,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6169
+T10722,09:26,Dalda Cooking Oil 5L,2,4500,Card,None
+T10722,09:26,Lipton Yellow Label 380g,2,1360,Card,None
+T10722,09:26,Coca Cola 1.5L,1,150,Card,None
+T10723,08:10,Surf Excel 1kg,1,460,Mobile Wallet,L6829
+T10723,08:10,Ariel Detergent 2kg,1,950,Mobile Wallet,L6829
+T10724,22:52,Dalda Cooking Oil 5L,1,2250,Card,None
+T10724,22:52,Lipton Yellow Label 380g,1,680,Card,None
+T10724,22:52,Ariel Detergent 2kg,1,950,Card,None
+T10725,02:03,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10725,02:03,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10726,18:22,Nestle Milkpak 1L,2,520,Mobile Wallet,L1696
+T10726,18:22,Coca Cola 1.5L,1,150,Mobile Wallet,L1696
+T10727,00:58,Nestle Milkpak 1L,6,1560,Mobile Wallet,L4125
+T10727,00:58,Surf Excel 1kg,2,920,Mobile Wallet,L4125
+T10728,09:38,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8762
+T10729,09:33,Dalda Cooking Oil 5L,1,2250,Card,None
+T10729,09:33,Lipton Yellow Label 380g,2,1360,Card,None
+T10730,21:22,Ariel Detergent 2kg,1,950,Mobile Wallet,L4169
+T10730,21:22,Lux Soap 150g,1,130,Mobile Wallet,L4169
+T10731,06:17,Surf Excel 1kg,2,920,Mobile Wallet,L3721
+T10731,06:17,Ariel Detergent 2kg,1,950,Mobile Wallet,L3721
+T10732,00:57,Shan Biryani Masala 50g,1,90,Card,None
+T10732,00:57,Lipton Yellow Label 380g,1,680,Card,None
+T10733,07:52,Nestle Milkpak 1L,5,1300,Card,L2458
+T10733,07:52,Ariel Detergent 2kg,1,950,Card,L2458
+T10734,06:55,Nestle Milkpak 1L,4,1040,Card,L5047
+T10734,06:55,Dalda Cooking Oil 5L,2,4500,Card,L5047
+T10735,08:45,Dalda Cooking Oil 5L,1,2250,Cash,L6021
+T10735,08:45,Lipton Yellow Label 380g,1,680,Cash,L6021
+T10735,08:45,Olper's Cream 200ml,1,180,Cash,L6021
+T10736,17:56,Dalda Cooking Oil 5L,2,4500,Cash,L2295
+T10736,17:56,Lipton Yellow Label 380g,2,1360,Cash,L2295
+T10737,01:08,Nestle Milkpak 1L,1,260,Mobile Wallet,L2822
+T10737,01:08,Lux Soap 150g,1,130,Mobile Wallet,L2822
+T10738,13:32,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10738,13:32,Lipton Yellow Label 380g,2,1360,Cash,None
+T10738,13:32,Ariel Detergent 2kg,1,950,Cash,None
+T10739,22:26,Dalda Cooking Oil 5L,1,2250,Cash,L4851
+T10739,22:26,Lipton Yellow Label 380g,2,1360,Cash,L4851
+T10740,07:10,Nestle Milkpak 1L,2,520,Mobile Wallet,L1758
+T10740,07:10,Ariel Detergent 2kg,1,950,Mobile Wallet,L1758
+T10741,11:37,Olper's Cream 200ml,1,180,Card,L7313
+T10742,09:02,Nestle Milkpak 1L,1,260,Cash,None
+T10742,09:02,Lipton Yellow Label 380g,2,1360,Cash,None
+T10743,20:18,Dalda Cooking Oil 5L,2,4500,Card,L4253
+T10743,20:18,Lipton Yellow Label 380g,2,1360,Card,L4253
+T10744,03:25,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10744,03:25,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T10745,11:07,Olper's Cream 200ml,1,180,Mobile Wallet,L3721
+T10746,17:46,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T10746,17:46,Shan Biryani Masala 50g,2,180,Mobile Wallet,None
+T10746,17:46,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10747,09:41,Surf Excel 1kg,1,460,Mobile Wallet,L9972
+T10747,09:41,Ariel Detergent 2kg,1,950,Mobile Wallet,L9972
+T10748,21:35,Dalda Cooking Oil 5L,2,4500,Cash,L4296
+T10748,21:35,Lipton Yellow Label 380g,2,1360,Cash,L4296
+T10749,10:24,Surf Excel 1kg,1,460,Card,None
+T10749,10:24,Ariel Detergent 2kg,1,950,Card,None
+T10749,10:24,Lux Soap 150g,1,130,Card,None
+T10750,09:59,Olper's Cream 200ml,1,180,Mobile Wallet,L2373
+T10750,09:59,Ariel Detergent 2kg,2,1900,Mobile Wallet,L2373
+T10750,09:59,Nestle Milkpak 1L,1,260,Mobile Wallet,L2373
+T10751,06:08,Coca Cola 1.5L,2,300,Card,None
+T10752,21:45,Nestle Milkpak 1L,5,1300,Card,None
+T10752,21:45,Coca Cola 1.5L,1,150,Card,None
+T10753,09:40,Dalda Cooking Oil 5L,1,2250,Cash,L7313
+T10753,09:40,Lipton Yellow Label 380g,1,680,Cash,L7313
+T10754,23:31,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10755,21:29,Surf Excel 1kg,2,920,Mobile Wallet,L3898
+T10755,21:29,Ariel Detergent 2kg,1,950,Mobile Wallet,L3898
+T10756,20:37,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2239
+T10756,20:37,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2239
+T10756,20:37,Lux Soap 150g,1,130,Mobile Wallet,L2239
+T10757,02:26,Surf Excel 1kg,1,460,Cash,None
+T10757,02:26,Ariel Detergent 2kg,1,950,Cash,None
+T10758,23:54,Surf Excel 1kg,2,920,Card,L1751
+T10758,23:54,Ariel Detergent 2kg,1,950,Card,L1751
+T10759,14:17,Olper's Cream 200ml,1,180,Cash,L9499
+T10759,14:17,Lipton Yellow Label 380g,2,1360,Cash,L9499
+T10760,12:05,Olper's Cream 200ml,1,180,Card,None
+T10760,12:05,Shan Biryani Masala 50g,2,180,Card,None
+T10760,12:05,Lux Soap 150g,1,130,Card,None
+T10761,11:36,Olper's Cream 200ml,1,180,Card,L2723
+T10761,11:36,Surf Excel 1kg,1,460,Card,L2723
+T10761,11:36,Shan Biryani Masala 50g,1,90,Card,L2723
+T10762,14:51,Lipton Yellow Label 380g,2,1360,Card,L8535
+T10763,09:59,Lipton Yellow Label 380g,1,680,Cash,L4296
+T10763,09:59,Dalda Cooking Oil 5L,1,2250,Cash,L4296
+T10764,22:35,Dalda Cooking Oil 5L,2,4500,Card,L1758
+T10764,22:35,Lipton Yellow Label 380g,2,1360,Card,L1758
+T10765,11:41,Lipton Yellow Label 380g,1,680,Card,L2648
+T10766,02:51,Dalda Cooking Oil 5L,1,2250,Cash,L3707
+T10766,02:51,Lipton Yellow Label 380g,1,680,Cash,L3707
+T10766,02:51,Ariel Detergent 2kg,1,950,Cash,L3707
+T10767,09:31,Shan Biryani Masala 50g,2,180,Mobile Wallet,L4169
+T10767,09:31,Lipton Yellow Label 380g,1,680,Mobile Wallet,L4169
+T10767,09:31,Ariel Detergent 2kg,2,1900,Mobile Wallet,L4169
+T10768,14:05,Nestle Milkpak 1L,6,1560,Card,L7921
+T10768,14:05,Dalda Cooking Oil 5L,2,4500,Card,L7921
+T10769,22:29,Dalda Cooking Oil 5L,1,2250,Cash,L3089
+T10769,22:29,Lipton Yellow Label 380g,1,680,Cash,L3089
+T10770,18:22,Dalda Cooking Oil 5L,2,4500,Cash,L4384
+T10770,18:22,Lipton Yellow Label 380g,2,1360,Cash,L4384
+T10771,08:39,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5913
+T10771,08:39,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5913
+T10772,11:04,Dalda Cooking Oil 5L,2,4500,Card,L2099
+T10772,11:04,Lipton Yellow Label 380g,1,680,Card,L2099
+T10773,22:32,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10773,22:32,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10774,21:41,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10774,21:41,Lipton Yellow Label 380g,2,1360,Cash,None
+T10774,21:41,Surf Excel 1kg,1,460,Cash,None
+T10775,15:30,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4680
+T10775,15:30,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4680
+T10776,02:27,Nestle Milkpak 1L,3,780,Mobile Wallet,L9972
+T10776,02:27,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9972
+T10777,15:35,Surf Excel 1kg,2,920,Cash,L2239
+T10777,15:35,Ariel Detergent 2kg,1,950,Cash,L2239
+T10777,15:35,Lux Soap 150g,3,390,Cash,L2239
+T10778,05:55,Surf Excel 1kg,2,920,Card,L1467
+T10778,05:55,Shan Biryani Masala 50g,1,90,Card,L1467
+T10778,05:55,Dalda Cooking Oil 5L,1,2250,Card,L1467
+T10779,19:20,Surf Excel 1kg,1,460,Cash,None
+T10779,19:20,Ariel Detergent 2kg,1,950,Cash,None
+T10780,05:22,Nestle Milkpak 1L,4,1040,Cash,None
+T10781,19:37,Nestle Milkpak 1L,2,520,Cash,L9257
+T10782,18:12,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2588
+T10782,18:12,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2588
+T10783,11:45,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10783,11:45,Lipton Yellow Label 380g,2,1360,Cash,None
+T10784,07:06,Surf Excel 1kg,2,920,Mobile Wallet,L3721
+T10784,07:06,Ariel Detergent 2kg,1,950,Mobile Wallet,L3721
+T10785,04:13,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10785,04:13,Lipton Yellow Label 380g,1,680,Cash,None
+T10786,15:15,National Chilli Powder 200g,2,420,Card,None
+T10786,15:15,Lipton Yellow Label 380g,1,680,Card,None
+T10786,15:15,Surf Excel 1kg,2,920,Card,None
+T10787,13:29,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8762
+T10787,13:29,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8762
+T10788,09:22,Nestle Milkpak 1L,3,780,Mobile Wallet,L6643
+T10788,09:22,Ariel Detergent 2kg,2,1900,Mobile Wallet,L6643
+T10789,10:14,Surf Excel 1kg,2,920,Cash,L6829
+T10789,10:14,Ariel Detergent 2kg,1,950,Cash,L6829
+T10789,10:14,Lux Soap 150g,3,390,Cash,L6829
+T10790,21:21,Nestle Milkpak 1L,3,780,Mobile Wallet,None
+T10790,21:21,Lux Soap 150g,1,130,Mobile Wallet,None
+T10791,19:55,Surf Excel 1kg,2,920,Card,None
+T10791,19:55,Ariel Detergent 2kg,1,950,Card,None
+T10792,11:01,Surf Excel 1kg,1,460,Card,None
+T10792,11:01,Ariel Detergent 2kg,1,950,Card,None
+T10792,11:01,Lux Soap 150g,3,390,Card,None
+T10793,00:14,Nestle Milkpak 1L,6,1560,Cash,None
+T10793,00:14,Lux Soap 150g,1,130,Cash,None
+T10794,15:09,Dalda Cooking Oil 5L,2,4500,Card,L4753
+T10794,15:09,Ariel Detergent 2kg,2,1900,Card,L4753
+T10795,13:25,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9719
+T10795,13:25,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9719
+T10795,13:25,Surf Excel 1kg,1,460,Mobile Wallet,L9719
+T10796,03:58,Surf Excel 1kg,1,460,Card,L4169
+T10796,03:58,Lipton Yellow Label 380g,1,680,Card,L4169
+T10796,03:58,Olper's Cream 200ml,1,180,Card,L4169
+T10797,13:34,Dalda Cooking Oil 5L,2,4500,Card,None
+T10797,13:34,Lipton Yellow Label 380g,1,680,Card,None
+T10798,10:25,Nestle Milkpak 1L,2,520,Card,L7856
+T10798,10:25,Lipton Yellow Label 380g,1,680,Card,L7856
+T10799,18:44,Coca Cola 1.5L,1,150,Card,None
+T10800,20:53,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10800,20:53,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10801,06:14,Surf Excel 1kg,2,920,Mobile Wallet,L4125
+T10801,06:14,Ariel Detergent 2kg,1,950,Mobile Wallet,L4125
+T10801,06:14,Lux Soap 150g,1,130,Mobile Wallet,L4125
+T10802,02:43,Nestle Milkpak 1L,1,260,Card,None
+T10802,02:43,Olper's Cream 200ml,2,360,Card,None
+T10803,15:29,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10803,15:29,Lipton Yellow Label 380g,2,1360,Cash,None
+T10804,15:19,Olper's Cream 200ml,2,360,Cash,None
+T10804,15:19,Lux Soap 150g,1,130,Cash,None
+T10805,09:36,Lipton Yellow Label 380g,1,680,Cash,L3396
+T10806,08:38,Dalda Cooking Oil 5L,2,4500,Card,None
+T10806,08:38,Lipton Yellow Label 380g,2,1360,Card,None
+T10806,08:38,Lux Soap 150g,1,130,Card,None
+T10807,11:37,Surf Excel 1kg,1,460,Cash,None
+T10807,11:37,Ariel Detergent 2kg,1,950,Cash,None
+T10808,17:56,Dalda Cooking Oil 5L,2,4500,Card,None
+T10808,17:56,Lipton Yellow Label 380g,2,1360,Card,None
+T10809,12:26,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10809,12:26,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10810,08:16,Surf Excel 1kg,2,920,Card,L2458
+T10810,08:16,Ariel Detergent 2kg,1,950,Card,L2458
+T10810,08:16,Lux Soap 150g,1,130,Card,L2458
+T10811,21:24,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1751
+T10811,21:24,Nestle Milkpak 1L,1,260,Mobile Wallet,L1751
+T10812,10:54,Dalda Cooking Oil 5L,1,2250,Cash,L8743
+T10812,10:54,Lipton Yellow Label 380g,1,680,Cash,L8743
+T10813,09:36,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10813,09:36,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10814,09:10,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L3707
+T10814,09:10,Lipton Yellow Label 380g,1,680,Mobile Wallet,L3707
+T10815,11:03,Nestle Milkpak 1L,3,780,Card,None
+T10815,11:03,Coca Cola 1.5L,2,300,Card,None
+T10816,16:21,Surf Excel 1kg,2,920,Card,L7856
+T10816,16:21,Ariel Detergent 2kg,1,950,Card,L7856
+T10817,15:05,Surf Excel 1kg,2,920,Card,L4267
+T10817,15:05,Ariel Detergent 2kg,1,950,Card,L4267
+T10817,15:05,Lux Soap 150g,3,390,Card,L4267
+T10818,12:40,Surf Excel 1kg,1,460,Cash,L8143
+T10818,12:40,Ariel Detergent 2kg,1,950,Cash,L8143
+T10819,14:57,Surf Excel 1kg,2,920,Card,L7856
+T10819,14:57,Ariel Detergent 2kg,1,950,Card,L7856
+T10820,22:41,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10820,22:41,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10820,22:41,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T10821,02:59,Nestle Milkpak 1L,5,1300,Card,L2648
+T10822,21:02,Olper's Cream 200ml,1,180,Mobile Wallet,L6664
+T10823,05:56,Dalda Cooking Oil 5L,1,2250,Card,None
+T10823,05:56,Lipton Yellow Label 380g,2,1360,Card,None
+T10824,15:37,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L1751
+T10824,15:37,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1751
+T10825,16:59,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T10825,16:59,Coca Cola 1.5L,2,300,Mobile Wallet,None
+T10826,16:32,Lipton Yellow Label 380g,1,680,Mobile Wallet,L3898
+T10826,16:32,National Chilli Powder 200g,1,210,Mobile Wallet,L3898
+T10826,16:32,Lux Soap 150g,2,260,Mobile Wallet,L3898
+T10827,21:44,Nestle Milkpak 1L,3,780,Cash,L4753
+T10827,21:44,National Chilli Powder 200g,1,210,Cash,L4753
+T10828,16:47,Surf Excel 1kg,2,920,Cash,L5652
+T10828,16:47,Ariel Detergent 2kg,1,950,Cash,L5652
+T10829,05:02,Dalda Cooking Oil 5L,1,2250,Card,None
+T10829,05:02,Lipton Yellow Label 380g,2,1360,Card,None
+T10829,05:02,Lux Soap 150g,1,130,Card,None
+T10830,09:05,Nestle Milkpak 1L,1,260,Mobile Wallet,L2239
+T10830,09:05,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2239
+T10831,08:50,Surf Excel 1kg,2,920,Mobile Wallet,L6169
+T10831,08:50,Ariel Detergent 2kg,1,950,Mobile Wallet,L6169
+T10832,21:34,Dalda Cooking Oil 5L,2,4500,Cash,L2458
+T10832,21:34,Lipton Yellow Label 380g,1,680,Cash,L2458
+T10832,21:34,Lux Soap 150g,1,130,Cash,L2458
+T10833,19:37,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10833,19:37,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10833,19:37,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10834,23:18,Nestle Milkpak 1L,6,1560,Mobile Wallet,None
+T10834,23:18,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10835,19:21,Ariel Detergent 2kg,1,950,Mobile Wallet,L9972
+T10835,19:21,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9972
+T10835,19:21,Olper's Cream 200ml,1,180,Mobile Wallet,L9972
+T10836,13:35,Dalda Cooking Oil 5L,2,4500,Card,None
+T10836,13:35,Lipton Yellow Label 380g,2,1360,Card,None
+T10836,13:35,Ariel Detergent 2kg,1,950,Card,None
+T10837,19:50,Nestle Milkpak 1L,2,520,Mobile Wallet,L6446
+T10838,11:04,Surf Excel 1kg,1,460,Mobile Wallet,L1751
+T10839,21:44,Dalda Cooking Oil 5L,2,4500,Cash,L3721
+T10839,21:44,Lipton Yellow Label 380g,2,1360,Cash,L3721
+T10839,21:44,Coca Cola 1.5L,1,150,Cash,L3721
+T10840,11:22,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10840,11:22,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10841,16:33,Ariel Detergent 2kg,1,950,Card,L7829
+T10841,16:33,Shan Biryani Masala 50g,2,180,Card,L7829
+T10842,15:31,Surf Excel 1kg,1,460,Card,None
+T10842,15:31,Ariel Detergent 2kg,1,950,Card,None
+T10843,10:13,Dalda Cooking Oil 5L,1,2250,Card,L9972
+T10843,10:13,Lipton Yellow Label 380g,1,680,Card,L9972
+T10844,22:27,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10844,22:27,Lipton Yellow Label 380g,1,680,Cash,None
+T10845,14:21,Surf Excel 1kg,1,460,Cash,None
+T10845,14:21,Ariel Detergent 2kg,1,950,Cash,None
+T10845,14:21,Lux Soap 150g,3,390,Cash,None
+T10846,00:57,Dalda Cooking Oil 5L,1,2250,Cash,L7676
+T10846,00:57,Lipton Yellow Label 380g,2,1360,Cash,L7676
+T10847,01:11,Surf Excel 1kg,2,920,Cash,L4125
+T10847,01:11,Ariel Detergent 2kg,1,950,Cash,L4125
+T10848,03:29,Nestle Milkpak 1L,4,1040,Mobile Wallet,L9471
+T10848,03:29,Shan Biryani Masala 50g,2,180,Mobile Wallet,L9471
+T10849,12:06,Surf Excel 1kg,2,920,Cash,None
+T10849,12:06,Ariel Detergent 2kg,1,950,Cash,None
+T10850,19:24,Lipton Yellow Label 380g,1,680,Cash,None
+T10851,23:56,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4851
+T10851,23:56,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4851
+T10851,23:56,National Chilli Powder 200g,1,210,Mobile Wallet,L4851
+T10852,20:42,Nestle Milkpak 1L,5,1300,Mobile Wallet,L8862
+T10852,20:42,National Chilli Powder 200g,1,210,Mobile Wallet,L8862
+T10853,14:39,Surf Excel 1kg,2,920,Card,None
+T10853,14:39,Ariel Detergent 2kg,1,950,Card,None
+T10853,14:39,Lux Soap 150g,1,130,Card,None
+T10854,13:14,Nestle Milkpak 1L,6,1560,Cash,L5339
+T10854,13:14,Lux Soap 150g,2,260,Cash,L5339
+T10855,10:49,Dalda Cooking Oil 5L,1,2250,Card,L1532
+T10855,10:49,Lipton Yellow Label 380g,1,680,Card,L1532
+T10856,15:40,Shan Biryani Masala 50g,2,180,Card,None
+T10856,15:40,Surf Excel 1kg,2,920,Card,None
+T10857,03:04,Dalda Cooking Oil 5L,2,4500,Card,L9471
+T10857,03:04,Lipton Yellow Label 380g,1,680,Card,L9471
+T10858,06:52,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5710
+T10858,06:52,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5710
+T10859,18:25,Surf Excel 1kg,2,920,Card,L8496
+T10859,18:25,Ariel Detergent 2kg,1,950,Card,L8496
+T10860,08:38,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2723
+T10860,08:38,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2723
+T10860,08:38,Ariel Detergent 2kg,1,950,Mobile Wallet,L2723
+T10861,02:40,Dalda Cooking Oil 5L,2,4500,Cash,L6488
+T10861,02:40,Lipton Yellow Label 380g,1,680,Cash,L6488
+T10862,13:32,Nestle Milkpak 1L,2,520,Card,L2723
+T10862,13:32,Ariel Detergent 2kg,2,1900,Card,L2723
+T10863,10:53,Shan Biryani Masala 50g,2,180,Cash,L4753
+T10863,10:53,Olper's Cream 200ml,2,360,Cash,L4753
+T10863,10:53,Coca Cola 1.5L,2,300,Cash,L4753
+T10864,09:51,Dalda Cooking Oil 5L,1,2250,Card,L9105
+T10864,09:51,Lipton Yellow Label 380g,1,680,Card,L9105
+T10865,03:15,Nestle Milkpak 1L,3,780,Cash,L4125
+T10865,03:15,Coca Cola 1.5L,1,150,Cash,L4125
+T10866,15:30,Ariel Detergent 2kg,1,950,Mobile Wallet,L4384
+T10866,15:30,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4384
+T10866,15:30,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4384
+T10867,01:02,Nestle Milkpak 1L,5,1300,Cash,L7829
+T10867,01:02,National Chilli Powder 200g,2,420,Cash,L7829
+T10868,05:03,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10869,05:08,Ariel Detergent 2kg,1,950,Mobile Wallet,L5339
+T10870,01:30,Dalda Cooking Oil 5L,2,4500,Card,L2150
+T10870,01:30,Lipton Yellow Label 380g,1,680,Card,L2150
+T10870,01:30,Olper's Cream 200ml,1,180,Card,L2150
+T10871,19:29,Surf Excel 1kg,1,460,Card,None
+T10871,19:29,Ariel Detergent 2kg,1,950,Card,None
+T10872,08:55,Dalda Cooking Oil 5L,2,4500,Cash,L4635
+T10872,08:55,Lipton Yellow Label 380g,1,680,Cash,L4635
+T10872,08:55,Olper's Cream 200ml,1,180,Cash,L4635
+T10873,22:25,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10873,22:25,Lipton Yellow Label 380g,1,680,Cash,None
+T10874,08:27,Lux Soap 150g,2,260,Mobile Wallet,None
+T10874,08:27,Coca Cola 1.5L,2,300,Mobile Wallet,None
+T10875,20:13,Dalda Cooking Oil 5L,2,4500,Card,L2133
+T10875,20:13,Lipton Yellow Label 380g,1,680,Card,L2133
+T10876,08:59,Dalda Cooking Oil 5L,2,4500,Card,None
+T10876,08:59,Lipton Yellow Label 380g,1,680,Card,None
+T10877,14:09,Nestle Milkpak 1L,4,1040,Cash,L3337
+T10877,14:09,Lux Soap 150g,2,260,Cash,L3337
+T10878,18:43,Dalda Cooking Oil 5L,1,2250,Card,L2822
+T10878,18:43,Lipton Yellow Label 380g,2,1360,Card,L2822
+T10878,18:43,Surf Excel 1kg,1,460,Card,L2822
+T10879,16:39,Coca Cola 1.5L,2,300,Cash,None
+T10879,16:39,National Chilli Powder 200g,1,210,Cash,None
+T10879,16:39,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10880,20:34,Dalda Cooking Oil 5L,1,2250,Card,None
+T10880,20:34,Lipton Yellow Label 380g,2,1360,Card,None
+T10880,20:34,National Chilli Powder 200g,1,210,Card,None
+T10881,16:51,National Chilli Powder 200g,2,420,Card,L5225
+T10881,16:51,Lux Soap 150g,2,260,Card,L5225
+T10882,07:43,Dalda Cooking Oil 5L,2,4500,Cash,L6488
+T10882,07:43,Lipton Yellow Label 380g,1,680,Cash,L6488
+T10882,07:43,Surf Excel 1kg,1,460,Cash,L6488
+T10883,01:39,Nestle Milkpak 1L,1,260,Card,L3337
+T10883,01:39,Surf Excel 1kg,1,460,Card,L3337
+T10884,05:48,Dalda Cooking Oil 5L,1,2250,Card,L4384
+T10884,05:48,Lipton Yellow Label 380g,1,680,Card,L4384
+T10884,05:48,Surf Excel 1kg,1,460,Card,L4384
+T10885,09:18,Dalda Cooking Oil 5L,2,4500,Card,None
+T10885,09:18,Lipton Yellow Label 380g,2,1360,Card,None
+T10886,06:06,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10886,06:06,Lipton Yellow Label 380g,2,1360,Cash,None
+T10886,06:06,Coca Cola 1.5L,1,150,Cash,None
+T10887,02:58,Dalda Cooking Oil 5L,1,2250,Card,None
+T10887,02:58,Lipton Yellow Label 380g,1,680,Card,None
+T10887,02:58,Surf Excel 1kg,1,460,Card,None
+T10888,09:54,Nestle Milkpak 1L,1,260,Cash,None
+T10888,09:54,Surf Excel 1kg,1,460,Cash,None
+T10889,16:00,Nestle Milkpak 1L,1,260,Cash,L2723
+T10889,16:00,Olper's Cream 200ml,2,360,Cash,L2723
+T10890,20:34,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6169
+T10890,20:34,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6169
+T10891,04:25,Nestle Milkpak 1L,6,1560,Card,L5913
+T10891,04:25,Lux Soap 150g,2,260,Card,L5913
+T10892,09:07,Lipton Yellow Label 380g,2,1360,Cash,L5225
+T10892,09:07,Coca Cola 1.5L,1,150,Cash,L5225
+T10893,23:08,Surf Excel 1kg,2,920,Card,L1781
+T10893,23:08,Ariel Detergent 2kg,1,950,Card,L1781
+T10894,08:29,Nestle Milkpak 1L,2,520,Cash,L9790
+T10895,13:05,Dalda Cooking Oil 5L,1,2250,Card,L8688
+T10895,13:05,Lipton Yellow Label 380g,1,680,Card,L8688
+T10896,03:00,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8280
+T10896,03:00,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8280
+T10897,01:13,Coca Cola 1.5L,2,300,Card,L9492
+T10897,01:13,Dalda Cooking Oil 5L,1,2250,Card,L9492
+T10897,01:13,Shan Biryani Masala 50g,1,90,Card,L9492
+T10898,08:47,Lux Soap 150g,1,130,Mobile Wallet,None
+T10898,08:47,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10898,08:47,Surf Excel 1kg,1,460,Mobile Wallet,None
+T10899,07:01,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10899,07:01,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10900,00:10,Dalda Cooking Oil 5L,1,2250,Card,L3721
+T10900,00:10,Lipton Yellow Label 380g,2,1360,Card,L3721
+T10900,00:10,Nestle Milkpak 1L,1,260,Card,L3721
+T10901,05:05,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10901,05:05,Lipton Yellow Label 380g,2,1360,Cash,None
+T10902,17:43,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L3337
+T10902,17:43,Ariel Detergent 2kg,1,950,Mobile Wallet,L3337
+T10903,23:46,Nestle Milkpak 1L,4,1040,Mobile Wallet,L2458
+T10903,23:46,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2458
+T10904,12:12,Olper's Cream 200ml,2,360,Mobile Wallet,L8280
+T10904,12:12,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8280
+T10904,12:12,Surf Excel 1kg,2,920,Mobile Wallet,L8280
+T10905,21:43,Dalda Cooking Oil 5L,2,4500,Card,L5886
+T10905,21:43,Lipton Yellow Label 380g,1,680,Card,L5886
+T10906,11:11,Coca Cola 1.5L,1,150,Mobile Wallet,L9972
+T10907,13:43,Lux Soap 150g,2,260,Mobile Wallet,None
+T10908,07:08,Nestle Milkpak 1L,5,1300,Cash,L6643
+T10908,07:08,National Chilli Powder 200g,1,210,Cash,L6643
+T10909,04:46,Nestle Milkpak 1L,5,1300,Card,L4753
+T10909,04:46,Olper's Cream 200ml,1,180,Card,L4753
+T10910,21:19,Surf Excel 1kg,1,460,Cash,L7322
+T10910,21:19,Ariel Detergent 2kg,1,950,Cash,L7322
+T10910,21:19,Lux Soap 150g,2,260,Cash,L7322
+T10911,11:05,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10911,11:05,Lipton Yellow Label 380g,1,680,Cash,None
+T10912,11:35,Surf Excel 1kg,1,460,Card,L5564
+T10913,22:49,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1532
+T10913,22:49,Lipton Yellow Label 380g,1,680,Mobile Wallet,L1532
+T10914,21:41,Dalda Cooking Oil 5L,2,4500,Cash,L8359
+T10914,21:41,Lipton Yellow Label 380g,2,1360,Cash,L8359
+T10915,10:27,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10915,10:27,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10916,08:47,Dalda Cooking Oil 5L,1,2250,Card,L9115
+T10916,08:47,Lipton Yellow Label 380g,2,1360,Card,L9115
+T10917,07:08,Nestle Milkpak 1L,6,1560,Cash,L4169
+T10917,07:08,Dalda Cooking Oil 5L,1,2250,Cash,L4169
+T10918,09:22,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10918,09:22,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10919,13:39,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10919,13:39,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10920,08:24,Dalda Cooking Oil 5L,2,4500,Cash,L5886
+T10920,08:24,Lipton Yellow Label 380g,1,680,Cash,L5886
+T10921,14:22,Dalda Cooking Oil 5L,2,4500,Card,L5652
+T10921,14:22,Lipton Yellow Label 380g,1,680,Card,L5652
+T10922,15:43,Nestle Milkpak 1L,5,1300,Mobile Wallet,L1751
+T10922,15:43,Surf Excel 1kg,1,460,Mobile Wallet,L1751
+T10923,00:18,Olper's Cream 200ml,2,360,Cash,L2133
+T10923,00:18,Coca Cola 1.5L,2,300,Cash,L2133
+T10923,00:18,Ariel Detergent 2kg,1,950,Cash,L2133
+T10924,03:49,Nestle Milkpak 1L,5,1300,Cash,None
+T10925,15:31,Lux Soap 150g,2,260,Mobile Wallet,None
+T10925,15:31,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T10925,15:31,Surf Excel 1kg,2,920,Mobile Wallet,None
+T10926,16:59,Lux Soap 150g,2,260,Card,None
+T10926,16:59,Ariel Detergent 2kg,1,950,Card,None
+T10926,16:59,Nestle Milkpak 1L,2,520,Card,None
+T10927,17:51,Surf Excel 1kg,1,460,Cash,None
+T10927,17:51,Ariel Detergent 2kg,1,950,Cash,None
+T10928,04:34,Nestle Milkpak 1L,2,520,Card,None
+T10928,04:34,Surf Excel 1kg,1,460,Card,None
+T10929,07:46,Olper's Cream 200ml,1,180,Mobile Wallet,L3089
+T10930,08:32,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10930,08:32,Lipton Yellow Label 380g,1,680,Cash,None
+T10930,08:32,National Chilli Powder 200g,1,210,Cash,None
+T10931,14:33,Dalda Cooking Oil 5L,1,2250,Cash,L9115
+T10931,14:33,Lipton Yellow Label 380g,1,680,Cash,L9115
+T10931,14:33,Shan Biryani Masala 50g,1,90,Cash,L9115
+T10932,19:26,Surf Excel 1kg,1,460,Mobile Wallet,L3707
+T10932,19:26,Ariel Detergent 2kg,1,950,Mobile Wallet,L3707
+T10933,11:25,Nestle Milkpak 1L,1,260,Cash,None
+T10933,11:25,Surf Excel 1kg,2,920,Cash,None
+T10934,04:10,Nestle Milkpak 1L,5,1300,Cash,None
+T10934,04:10,Shan Biryani Masala 50g,2,180,Cash,None
+T10935,12:44,Surf Excel 1kg,1,460,Card,L1934
+T10935,12:44,Ariel Detergent 2kg,1,950,Card,L1934
+T10936,11:43,Surf Excel 1kg,2,920,Cash,L5651
+T10936,11:43,Ariel Detergent 2kg,1,950,Cash,L5651
+T10937,17:57,Surf Excel 1kg,2,920,Card,L1328
+T10937,17:57,Ariel Detergent 2kg,1,950,Card,L1328
+T10938,05:09,Surf Excel 1kg,1,460,Card,None
+T10938,05:09,Ariel Detergent 2kg,1,950,Card,None
+T10939,22:39,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2150
+T10939,22:39,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2150
+T10940,09:09,Surf Excel 1kg,2,920,Mobile Wallet,L7921
+T10940,09:09,Ariel Detergent 2kg,1,950,Mobile Wallet,L7921
+T10940,09:09,Lux Soap 150g,3,390,Mobile Wallet,L7921
+T10941,13:24,Lipton Yellow Label 380g,2,1360,Card,L2150
+T10942,20:36,Nestle Milkpak 1L,2,520,Card,L6488
+T10942,20:36,Coca Cola 1.5L,1,150,Card,L6488
+T10943,19:53,Nestle Milkpak 1L,4,1040,Card,None
+T10943,19:53,Coca Cola 1.5L,1,150,Card,None
+T10944,08:09,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10944,08:09,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10945,16:43,Nestle Milkpak 1L,2,520,Mobile Wallet,L9471
+T10945,16:43,Olper's Cream 200ml,2,360,Mobile Wallet,L9471
+T10946,12:49,Nestle Milkpak 1L,5,1300,Mobile Wallet,L9471
+T10946,12:49,Surf Excel 1kg,1,460,Mobile Wallet,L9471
+T10947,01:14,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2588
+T10947,01:14,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2588
+T10948,05:02,Lux Soap 150g,1,130,Cash,L4459
+T10948,05:02,Ariel Detergent 2kg,1,950,Cash,L4459
+T10948,05:02,Coca Cola 1.5L,1,150,Cash,L4459
+T10949,00:17,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10949,00:17,Lipton Yellow Label 380g,2,1360,Cash,None
+T10950,05:36,Nestle Milkpak 1L,1,260,Mobile Wallet,L2822
+T10951,06:40,Nestle Milkpak 1L,2,520,Mobile Wallet,None
+T10951,06:40,Olper's Cream 200ml,1,180,Mobile Wallet,None
+T10952,16:37,Nestle Milkpak 1L,2,520,Mobile Wallet,L2726
+T10953,21:11,Nestle Milkpak 1L,3,780,Card,L8535
+T10953,21:11,Lux Soap 150g,2,260,Card,L8535
+T10954,12:58,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9144
+T10954,12:58,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9144
+T10955,23:48,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1532
+T10955,23:48,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1532
+T10956,03:39,Olper's Cream 200ml,2,360,Cash,None
+T10956,03:39,Ariel Detergent 2kg,1,950,Cash,None
+T10956,03:39,Shan Biryani Masala 50g,2,180,Cash,None
+T10957,14:41,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10957,14:41,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10958,04:50,Surf Excel 1kg,1,460,Mobile Wallet,L2458
+T10958,04:50,Ariel Detergent 2kg,1,950,Mobile Wallet,L2458
+T10958,04:50,Lux Soap 150g,3,390,Mobile Wallet,L2458
+T10959,15:47,Dalda Cooking Oil 5L,2,4500,Cash,None
+T10959,15:47,Shan Biryani Masala 50g,2,180,Cash,None
+T10960,13:06,Dalda Cooking Oil 5L,1,2250,Card,L8584
+T10960,13:06,Lipton Yellow Label 380g,2,1360,Card,L8584
+T10961,20:04,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L4753
+T10961,20:04,Lipton Yellow Label 380g,1,680,Mobile Wallet,L4753
+T10962,02:52,Dalda Cooking Oil 5L,2,4500,Card,L9499
+T10962,02:52,Lipton Yellow Label 380g,2,1360,Card,L9499
+T10963,05:26,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2458
+T10963,05:26,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L2458
+T10964,10:40,Dalda Cooking Oil 5L,1,2250,Card,L9115
+T10964,10:40,Lipton Yellow Label 380g,2,1360,Card,L9115
+T10965,05:33,Olper's Cream 200ml,1,180,Mobile Wallet,L3089
+T10965,05:33,Surf Excel 1kg,2,920,Mobile Wallet,L3089
+T10966,17:53,Nestle Milkpak 1L,1,260,Card,None
+T10967,09:49,Surf Excel 1kg,2,920,Card,L8167
+T10967,09:49,Ariel Detergent 2kg,1,950,Card,L8167
+T10968,22:43,Surf Excel 1kg,2,920,Mobile Wallet,L8535
+T10968,22:43,Ariel Detergent 2kg,1,950,Mobile Wallet,L8535
+T10969,12:51,Olper's Cream 200ml,1,180,Mobile Wallet,L8688
+T10969,12:51,Surf Excel 1kg,2,920,Mobile Wallet,L8688
+T10969,12:51,Lux Soap 150g,2,260,Mobile Wallet,L8688
+T10970,06:26,Dalda Cooking Oil 5L,2,4500,Card,L3721
+T10970,06:26,Lipton Yellow Label 380g,2,1360,Card,L3721
+T10971,05:46,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1696
+T10971,05:46,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1696
+T10972,15:11,Surf Excel 1kg,1,460,Card,None
+T10972,15:11,Ariel Detergent 2kg,1,950,Card,None
+T10973,12:10,Dalda Cooking Oil 5L,1,2250,Card,L8359
+T10973,12:10,Lipton Yellow Label 380g,2,1360,Card,L8359
+T10974,16:16,Surf Excel 1kg,2,920,Card,None
+T10974,16:16,Ariel Detergent 2kg,1,950,Card,None
+T10974,16:16,Lux Soap 150g,3,390,Card,None
+T10975,07:55,Nestle Milkpak 1L,1,260,Card,None
+T10975,07:55,Lipton Yellow Label 380g,1,680,Card,None
+T10976,03:15,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10976,03:15,Lipton Yellow Label 380g,1,680,Cash,None
+T10976,03:15,Ariel Detergent 2kg,1,950,Cash,None
+T10977,05:22,Nestle Milkpak 1L,1,260,Card,L8280
+T10977,05:22,Lux Soap 150g,2,260,Card,L8280
+T10978,08:49,Dalda Cooking Oil 5L,1,2250,Cash,None
+T10978,08:49,Lipton Yellow Label 380g,2,1360,Cash,None
+T10979,08:00,Dalda Cooking Oil 5L,1,2250,Card,None
+T10979,08:00,Lipton Yellow Label 380g,1,680,Card,None
+T10980,08:27,Lux Soap 150g,1,130,Mobile Wallet,None
+T10980,08:27,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T10981,01:43,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T10981,01:43,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T10982,22:25,Nestle Milkpak 1L,3,780,Mobile Wallet,L2099
+T10982,22:25,Ariel Detergent 2kg,1,950,Mobile Wallet,L2099
+T10983,03:50,Nestle Milkpak 1L,1,260,Card,None
+T10984,05:50,Dalda Cooking Oil 5L,2,4500,Cash,L8060
+T10984,05:50,Lipton Yellow Label 380g,2,1360,Cash,L8060
+T10985,15:46,Dalda Cooking Oil 5L,1,2250,Card,L6169
+T10985,15:46,Ariel Detergent 2kg,1,950,Card,L6169
+T10986,01:42,Dalda Cooking Oil 5L,2,4500,Card,L9957
+T10986,01:42,Lipton Yellow Label 380g,1,680,Card,L9957
+T10987,08:04,Surf Excel 1kg,1,460,Mobile Wallet,L1467
+T10987,08:04,Ariel Detergent 2kg,1,950,Mobile Wallet,L1467
+T10988,08:15,Dalda Cooking Oil 5L,2,4500,Card,L4680
+T10988,08:15,Lipton Yellow Label 380g,2,1360,Card,L4680
+T10989,19:41,Coca Cola 1.5L,1,150,Mobile Wallet,L1696
+T10989,19:41,Olper's Cream 200ml,2,360,Mobile Wallet,L1696
+T10990,11:54,Shan Biryani Masala 50g,1,90,Mobile Wallet,L5652
+T10990,11:54,Coca Cola 1.5L,1,150,Mobile Wallet,L5652
+T10991,13:28,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T10991,13:28,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T10992,15:01,Dalda Cooking Oil 5L,2,4500,Card,None
+T10992,15:01,Lipton Yellow Label 380g,1,680,Card,None
+T10993,19:51,Dalda Cooking Oil 5L,2,4500,Card,L2373
+T10993,19:51,Lipton Yellow Label 380g,1,680,Card,L2373
+T10994,07:16,Dalda Cooking Oil 5L,1,2250,Card,L1945
+T10994,07:16,Lipton Yellow Label 380g,2,1360,Card,L1945
+T10995,10:53,National Chilli Powder 200g,1,210,Card,None
+T10996,07:23,Dalda Cooking Oil 5L,1,2250,Card,L9257
+T10996,07:23,Lipton Yellow Label 380g,1,680,Card,L9257
+T10997,19:43,Dalda Cooking Oil 5L,2,4500,Cash,L4125
+T10997,19:43,Lipton Yellow Label 380g,1,680,Cash,L4125
+T10997,19:43,Nestle Milkpak 1L,1,260,Cash,L4125
+T10998,14:37,Dalda Cooking Oil 5L,2,4500,Card,None
+T10998,14:37,Lipton Yellow Label 380g,2,1360,Card,None
+T10999,04:10,Dalda Cooking Oil 5L,1,2250,Cash,L1696
+T10999,04:10,Lipton Yellow Label 380g,1,680,Cash,L1696
+T11000,07:51,Surf Excel 1kg,1,460,Cash,None
+T11000,07:51,Ariel Detergent 2kg,1,950,Cash,None
+T11000,07:51,Lux Soap 150g,2,260,Cash,None
+T11001,06:37,Dalda Cooking Oil 5L,1,2250,Cash,L1934
+T11001,06:37,Lipton Yellow Label 380g,1,680,Cash,L1934
+T11002,00:42,Coca Cola 1.5L,2,300,Mobile Wallet,L6643
+T11002,00:42,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L6643
+T11002,00:42,Lux Soap 150g,1,130,Mobile Wallet,L6643
+T11003,13:58,Nestle Milkpak 1L,3,780,Mobile Wallet,L8143
+T11004,18:03,Nestle Milkpak 1L,3,780,Cash,L8359
+T11004,18:03,Lux Soap 150g,2,260,Cash,L8359
+T11005,22:02,Nestle Milkpak 1L,3,780,Cash,L1532
+T11005,22:02,Olper's Cream 200ml,2,360,Cash,L1532
+T11006,18:47,Nestle Milkpak 1L,5,1300,Cash,None
+T11006,18:47,Olper's Cream 200ml,2,360,Cash,None
+T11007,15:08,Shan Biryani Masala 50g,1,90,Card,None
+T11007,15:08,Surf Excel 1kg,2,920,Card,None
+T11008,13:19,Nestle Milkpak 1L,6,1560,Cash,None
+T11008,13:19,Ariel Detergent 2kg,2,1900,Cash,None
+T11009,20:56,Coca Cola 1.5L,1,150,Card,L2373
+T11010,21:17,Nestle Milkpak 1L,6,1560,Card,None
+T11010,21:17,Lux Soap 150g,2,260,Card,None
+T11011,10:02,Dalda Cooking Oil 5L,1,2250,Cash,None
+T11011,10:02,Lipton Yellow Label 380g,2,1360,Cash,None
+T11012,11:03,Surf Excel 1kg,1,460,Cash,L2726
+T11012,11:03,Ariel Detergent 2kg,1,950,Cash,L2726
+T11013,01:08,Dalda Cooking Oil 5L,2,4500,Card,L8359
+T11013,01:08,Lipton Yellow Label 380g,1,680,Card,L8359
+T11013,01:08,Surf Excel 1kg,1,460,Card,L8359
+T11014,02:12,Shan Biryani Masala 50g,1,90,Cash,None
+T11014,02:12,Coca Cola 1.5L,1,150,Cash,None
+T11014,02:12,Lux Soap 150g,2,260,Cash,None
+T11015,08:18,Dalda Cooking Oil 5L,2,4500,Card,L9957
+T11015,08:18,Lipton Yellow Label 380g,2,1360,Card,L9957
+T11016,13:35,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T11016,13:35,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T11017,02:35,Nestle Milkpak 1L,4,1040,Cash,None
+T11017,02:35,Dalda Cooking Oil 5L,1,2250,Cash,None
+T11018,14:05,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T11018,14:05,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T11018,14:05,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T11019,02:24,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T11019,02:24,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T11020,19:18,Dalda Cooking Oil 5L,2,4500,Cash,None
+T11020,19:18,Lipton Yellow Label 380g,1,680,Cash,None
+T11021,13:21,Ariel Detergent 2kg,2,1900,Card,L8535
+T11022,06:53,Surf Excel 1kg,1,460,Cash,L8862
+T11022,06:53,Ariel Detergent 2kg,1,950,Cash,L8862
+T11023,19:45,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L6664
+T11023,19:45,Surf Excel 1kg,1,460,Mobile Wallet,L6664
+T11024,00:18,Dalda Cooking Oil 5L,1,2250,Card,L8584
+T11024,00:18,Lipton Yellow Label 380g,1,680,Card,L8584
+T11025,22:18,Dalda Cooking Oil 5L,2,4500,Cash,L9499
+T11025,22:18,Lipton Yellow Label 380g,2,1360,Cash,L9499
+T11026,03:37,Nestle Milkpak 1L,3,780,Card,None
+T11026,03:37,Surf Excel 1kg,1,460,Card,None
+T11027,04:28,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T11027,04:28,Coca Cola 1.5L,1,150,Mobile Wallet,None
+T11028,12:26,Surf Excel 1kg,1,460,Card,None
+T11028,12:26,Ariel Detergent 2kg,1,950,Card,None
+T11028,12:26,Lux Soap 150g,2,260,Card,None
+T11029,13:44,Surf Excel 1kg,2,920,Card,None
+T11029,13:44,Ariel Detergent 2kg,1,950,Card,None
+T11030,04:25,Ariel Detergent 2kg,1,950,Cash,L1758
+T11031,03:35,Dalda Cooking Oil 5L,1,2250,Card,None
+T11031,03:35,Lipton Yellow Label 380g,2,1360,Card,None
+T11032,22:00,Surf Excel 1kg,1,460,Mobile Wallet,L2373
+T11032,22:00,Ariel Detergent 2kg,1,950,Mobile Wallet,L2373
+T11033,21:37,Surf Excel 1kg,1,460,Mobile Wallet,None
+T11033,21:37,Ariel Detergent 2kg,1,950,Mobile Wallet,None
+T11034,18:12,Nestle Milkpak 1L,1,260,Card,L9115
+T11034,18:12,Dalda Cooking Oil 5L,2,4500,Card,L9115
+T11035,18:40,Dalda Cooking Oil 5L,2,4500,Cash,L4851
+T11035,18:40,Lux Soap 150g,1,130,Cash,L4851
+T11035,18:40,Coca Cola 1.5L,1,150,Cash,L4851
+T11036,22:06,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L7807
+T11036,22:06,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L7807
+T11037,20:52,Dalda Cooking Oil 5L,2,4500,Cash,L2723
+T11037,20:52,Lipton Yellow Label 380g,2,1360,Cash,L2723
+T11037,20:52,Lux Soap 150g,1,130,Cash,L2723
+T11038,09:52,Dalda Cooking Oil 5L,2,4500,Cash,L2099
+T11038,09:52,Lipton Yellow Label 380g,2,1360,Cash,L2099
+T11039,08:18,Surf Excel 1kg,2,920,Mobile Wallet,L2723
+T11040,11:13,Surf Excel 1kg,1,460,Cash,None
+T11040,11:13,Ariel Detergent 2kg,1,950,Cash,None
+T11041,16:10,Surf Excel 1kg,2,920,Card,None
+T11041,16:10,Ariel Detergent 2kg,1,950,Card,None
+T11041,16:10,Lux Soap 150g,3,390,Card,None
+T11042,02:36,Lux Soap 150g,1,130,Card,None
+T11043,07:31,Surf Excel 1kg,2,920,Mobile Wallet,L5652
+T11043,07:31,Ariel Detergent 2kg,1,950,Mobile Wallet,L5652
+T11044,17:07,Dalda Cooking Oil 5L,1,2250,Card,L2648
+T11044,17:07,Lipton Yellow Label 380g,1,680,Card,L2648
+T11045,20:42,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L8060
+T11045,20:42,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8060
+T11046,02:13,Nestle Milkpak 1L,3,780,Mobile Wallet,None
+T11046,02:13,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T11047,14:44,Surf Excel 1kg,1,460,Cash,L1342
+T11047,14:44,Ariel Detergent 2kg,1,950,Cash,L1342
+T11048,13:23,Dalda Cooking Oil 5L,1,2250,Cash,L8280
+T11048,13:23,Lipton Yellow Label 380g,2,1360,Cash,L8280
+T11049,06:10,Dalda Cooking Oil 5L,2,4500,Cash,L5651
+T11049,06:10,Lipton Yellow Label 380g,2,1360,Cash,L5651
+T11050,07:56,Shan Biryani Masala 50g,2,180,Mobile Wallet,L7829
+T11050,07:56,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L7829
+T11050,07:56,Lux Soap 150g,2,260,Mobile Wallet,L7829
+T11051,19:11,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T11051,19:11,Olper's Cream 200ml,2,360,Mobile Wallet,None
+T11052,19:43,Nestle Milkpak 1L,6,1560,Card,None
+T11052,19:43,Coca Cola 1.5L,1,150,Card,None
+T11053,14:27,Shan Biryani Masala 50g,1,90,Card,None
+T11054,00:08,Nestle Milkpak 1L,4,1040,Cash,None
+T11054,00:08,Lux Soap 150g,1,130,Cash,None
+T11055,10:31,Nestle Milkpak 1L,5,1300,Mobile Wallet,L1781
+T11055,10:31,Ariel Detergent 2kg,1,950,Mobile Wallet,L1781
+T11056,15:22,Olper's Cream 200ml,2,360,Mobile Wallet,L4459
+T11056,15:22,Lux Soap 150g,1,130,Mobile Wallet,L4459
+T11057,21:27,Dalda Cooking Oil 5L,2,4500,Cash,None
+T11057,21:27,Lipton Yellow Label 380g,2,1360,Cash,None
+T11058,05:46,Dalda Cooking Oil 5L,2,4500,Cash,L7475
+T11058,05:46,Lipton Yellow Label 380g,1,680,Cash,L7475
+T11058,05:46,Surf Excel 1kg,1,460,Cash,L7475
+T11059,12:33,Nestle Milkpak 1L,5,1300,Cash,L8359
+T11059,12:33,Lux Soap 150g,1,130,Cash,L8359
+T11060,17:56,Olper's Cream 200ml,1,180,Cash,L4851
+T11060,17:56,Lux Soap 150g,2,260,Cash,L4851
+T11060,17:56,Ariel Detergent 2kg,2,1900,Cash,L4851
+T11061,14:13,National Chilli Powder 200g,1,210,Cash,L8743
+T11061,14:13,Shan Biryani Masala 50g,1,90,Cash,L8743
+T11061,14:13,Lipton Yellow Label 380g,1,680,Cash,L8743
+T11062,21:23,Surf Excel 1kg,1,460,Cash,None
+T11062,21:23,Ariel Detergent 2kg,1,950,Cash,None
+T11062,21:23,Lux Soap 150g,1,130,Cash,None
+T11063,00:45,Lux Soap 150g,2,260,Mobile Wallet,None
+T11063,00:45,National Chilli Powder 200g,2,420,Mobile Wallet,None
+T11064,05:43,Nestle Milkpak 1L,1,260,Mobile Wallet,None
+T11064,05:43,Surf Excel 1kg,1,460,Mobile Wallet,None
+T11065,00:39,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9499
+T11065,00:39,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9499
+T11066,15:46,Dalda Cooking Oil 5L,1,2250,Cash,L1934
+T11066,15:46,Lipton Yellow Label 380g,1,680,Cash,L1934
+T11067,00:36,Ariel Detergent 2kg,2,1900,Mobile Wallet,L2796
+T11067,00:36,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2796
+T11067,00:36,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L2796
+T11068,21:07,Nestle Milkpak 1L,6,1560,Cash,L4635
+T11068,21:07,Lux Soap 150g,2,260,Cash,L4635
+T11069,18:33,Dalda Cooking Oil 5L,1,2250,Cash,L2458
+T11069,18:33,Lipton Yellow Label 380g,2,1360,Cash,L2458
+T11069,18:33,National Chilli Powder 200g,1,210,Cash,L2458
+T11070,22:51,National Chilli Powder 200g,1,210,Cash,None
+T11070,22:51,Coca Cola 1.5L,2,300,Cash,None
+T11070,22:51,Lipton Yellow Label 380g,2,1360,Cash,None
+T11071,08:14,Surf Excel 1kg,2,920,Mobile Wallet,L2813
+T11072,19:24,Nestle Milkpak 1L,3,780,Mobile Wallet,None
+T11072,19:24,National Chilli Powder 200g,1,210,Mobile Wallet,None
+T11073,00:18,Dalda Cooking Oil 5L,1,2250,Card,L2822
+T11073,00:18,Lipton Yellow Label 380g,2,1360,Card,L2822
+T11074,21:37,National Chilli Powder 200g,2,420,Card,None
+T11075,23:58,Surf Excel 1kg,1,460,Mobile Wallet,L5651
+T11075,23:58,Ariel Detergent 2kg,1,950,Mobile Wallet,L5651
+T11075,23:58,Lux Soap 150g,3,390,Mobile Wallet,L5651
+T11076,19:39,Dalda Cooking Oil 5L,1,2250,Card,L2458
+T11076,19:39,Lipton Yellow Label 380g,2,1360,Card,L2458
+T11077,23:42,Dalda Cooking Oil 5L,1,2250,Card,None
+T11077,23:42,Lipton Yellow Label 380g,1,680,Card,None
+T11078,14:21,Surf Excel 1kg,2,920,Card,L1934
+T11078,14:21,Ariel Detergent 2kg,1,950,Card,L1934
+T11079,17:01,Dalda Cooking Oil 5L,2,4500,Cash,None
+T11079,17:01,Lipton Yellow Label 380g,1,680,Cash,None
+T11080,17:52,Nestle Milkpak 1L,4,1040,Cash,L9471
+T11080,17:52,Surf Excel 1kg,2,920,Cash,L9471
+T11081,05:33,Shan Biryani Masala 50g,2,180,Mobile Wallet,None
+T11081,05:33,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T11082,09:44,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4267
+T11082,09:44,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4267
+T11082,09:44,Ariel Detergent 2kg,1,950,Mobile Wallet,L4267
+T11083,07:21,Nestle Milkpak 1L,3,780,Mobile Wallet,L9257
+T11083,07:21,Lux Soap 150g,1,130,Mobile Wallet,L9257
+T11084,05:12,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T11084,05:12,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T11085,08:21,Dalda Cooking Oil 5L,2,4500,Card,L6488
+T11085,08:21,Lipton Yellow Label 380g,2,1360,Card,L6488
+T11086,15:46,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8359
+T11086,15:46,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L8359
+T11087,09:41,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T11087,09:41,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T11088,18:36,Dalda Cooking Oil 5L,2,4500,Cash,L7921
+T11088,18:36,Lipton Yellow Label 380g,2,1360,Cash,L7921
+T11089,18:00,Dalda Cooking Oil 5L,2,4500,Cash,L2904
+T11089,18:00,Lipton Yellow Label 380g,2,1360,Cash,L2904
+T11090,22:27,Surf Excel 1kg,2,920,Cash,None
+T11090,22:27,Ariel Detergent 2kg,1,950,Cash,None
+T11091,01:25,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T11091,01:25,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T11092,00:08,Dalda Cooking Oil 5L,2,4500,Card,None
+T11092,00:08,Lipton Yellow Label 380g,2,1360,Card,None
+T11093,16:53,Dalda Cooking Oil 5L,1,2250,Card,L7313
+T11093,16:53,Lipton Yellow Label 380g,1,680,Card,L7313
+T11094,07:15,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L9719
+T11094,07:15,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L9719
+T11094,07:15,Lux Soap 150g,1,130,Mobile Wallet,L9719
+T11095,18:17,Nestle Milkpak 1L,1,260,Card,None
+T11096,07:06,Nestle Milkpak 1L,3,780,Cash,None
+T11097,13:07,Dalda Cooking Oil 5L,1,2250,Cash,L2723
+T11097,13:07,Lipton Yellow Label 380g,2,1360,Cash,L2723
+T11098,16:29,Nestle Milkpak 1L,1,260,Card,None
+T11098,16:29,Olper's Cream 200ml,1,180,Card,None
+T11099,14:21,Nestle Milkpak 1L,5,1300,Mobile Wallet,None
+T11099,14:21,Surf Excel 1kg,2,920,Mobile Wallet,None
+T11100,22:14,Surf Excel 1kg,2,920,Card,L3089
+T11100,22:14,Ariel Detergent 2kg,1,950,Card,L3089
+T11101,05:39,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L1171
+T11101,05:39,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1171
+T11102,08:05,Dalda Cooking Oil 5L,2,4500,Card,L6664
+T11102,08:05,Lipton Yellow Label 380g,2,1360,Card,L6664
+T11103,04:09,Nestle Milkpak 1L,3,780,Card,L4169
+T11103,04:09,Coca Cola 1.5L,2,300,Card,L4169
+T11104,13:26,Surf Excel 1kg,2,920,Card,L2726
+T11104,13:26,Ariel Detergent 2kg,1,950,Card,L2726
+T11105,22:56,Dalda Cooking Oil 5L,2,4500,Card,L3391
+T11105,22:56,Lipton Yellow Label 380g,2,1360,Card,L3391
+T11106,22:24,Dalda Cooking Oil 5L,1,2250,Card,L6488
+T11106,22:24,Lipton Yellow Label 380g,1,680,Card,L6488
+T11107,13:21,Dalda Cooking Oil 5L,1,2250,Card,None
+T11107,13:21,Lipton Yellow Label 380g,2,1360,Card,None
+T11108,11:48,Coca Cola 1.5L,1,150,Mobile Wallet,L6664
+T11108,11:48,Shan Biryani Masala 50g,2,180,Mobile Wallet,L6664
+T11108,11:48,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L6664
+T11109,09:50,Coca Cola 1.5L,1,150,Cash,L8688
+T11109,09:50,Surf Excel 1kg,1,460,Cash,L8688
+T11109,09:50,Dalda Cooking Oil 5L,1,2250,Cash,L8688
+T11110,20:25,Nestle Milkpak 1L,1,260,Mobile Wallet,L5886
+T11111,06:57,Dalda Cooking Oil 5L,2,4500,Cash,L8584
+T11111,06:57,Lipton Yellow Label 380g,1,680,Cash,L8584
+T11112,13:28,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T11112,13:28,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T11113,03:48,Lux Soap 150g,1,130,Card,None
+T11113,03:48,Lipton Yellow Label 380g,1,680,Card,None
+T11114,13:05,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T11114,13:05,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T11115,18:59,Nestle Milkpak 1L,5,1300,Cash,L9972
+T11115,18:59,National Chilli Powder 200g,1,210,Cash,L9972
+T11116,12:29,Nestle Milkpak 1L,4,1040,Card,L8762
+T11116,12:29,Lipton Yellow Label 380g,2,1360,Card,L8762
+T11117,01:57,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L2904
+T11117,01:57,Lipton Yellow Label 380g,1,680,Mobile Wallet,L2904
+T11118,09:09,Dalda Cooking Oil 5L,1,2250,Card,L4253
+T11118,09:09,Lipton Yellow Label 380g,1,680,Card,L4253
+T11119,13:35,Dalda Cooking Oil 5L,1,2250,Cash,L2813
+T11119,13:35,Lipton Yellow Label 380g,2,1360,Cash,L2813
+T11120,13:44,Nestle Milkpak 1L,4,1040,Cash,None
+T11120,13:44,Coca Cola 1.5L,1,150,Cash,None
+T11121,13:05,Nestle Milkpak 1L,5,1300,Card,L7322
+T11122,19:16,Nestle Milkpak 1L,5,1300,Mobile Wallet,L6664
+T11122,19:16,National Chilli Powder 200g,1,210,Mobile Wallet,L6664
+T11123,17:31,Dalda Cooking Oil 5L,1,2250,Card,None
+T11123,17:31,Lipton Yellow Label 380g,1,680,Card,None
+T11124,18:41,Dalda Cooking Oil 5L,1,2250,Card,L3337
+T11124,18:41,Lipton Yellow Label 380g,2,1360,Card,L3337
+T11125,22:28,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L8762
+T11125,22:28,Lipton Yellow Label 380g,1,680,Mobile Wallet,L8762
+T11126,05:10,Surf Excel 1kg,2,920,Cash,L4877
+T11126,05:10,Ariel Detergent 2kg,1,950,Cash,L4877
+T11127,05:05,Surf Excel 1kg,1,460,Card,L4296
+T11127,05:05,Ariel Detergent 2kg,1,950,Card,L4296
+T11128,13:35,Nestle Milkpak 1L,4,1040,Card,L5564
+T11128,13:35,Lipton Yellow Label 380g,2,1360,Card,L5564
+T11129,00:58,Nestle Milkpak 1L,5,1300,Mobile Wallet,L1758
+T11129,00:58,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1758
+T11130,00:18,Surf Excel 1kg,1,460,Card,L2796
+T11130,00:18,Ariel Detergent 2kg,1,950,Card,L2796
+T11131,15:27,Nestle Milkpak 1L,4,1040,Cash,None
+T11131,15:27,Coca Cola 1.5L,1,150,Cash,None
+T11132,06:25,Surf Excel 1kg,2,920,Card,L7829
+T11132,06:25,Ariel Detergent 2kg,1,950,Card,L7829
+T11133,21:43,Ariel Detergent 2kg,1,950,Mobile Wallet,L8359
+T11133,21:43,Nestle Milkpak 1L,1,260,Mobile Wallet,L8359
+T11134,01:11,Lux Soap 150g,1,130,Card,L4459
+T11135,02:07,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L5518
+T11135,02:07,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5518
+T11136,15:43,Dalda Cooking Oil 5L,2,4500,Cash,None
+T11136,15:43,Lipton Yellow Label 380g,2,1360,Cash,None
+T11137,04:15,Dalda Cooking Oil 5L,2,4500,Card,L6169
+T11137,04:15,Lipton Yellow Label 380g,2,1360,Card,L6169
+T11138,05:30,Shan Biryani Masala 50g,1,90,Cash,L8584
+T11138,05:30,Dalda Cooking Oil 5L,1,2250,Cash,L8584
+T11138,05:30,Surf Excel 1kg,1,460,Cash,L8584
+T11139,20:57,Surf Excel 1kg,1,460,Mobile Wallet,L9499
+T11139,20:57,Ariel Detergent 2kg,1,950,Mobile Wallet,L9499
+T11140,13:12,National Chilli Powder 200g,2,420,Card,L7313
+T11140,13:12,Ariel Detergent 2kg,1,950,Card,L7313
+T11140,13:12,Shan Biryani Masala 50g,2,180,Card,L7313
+T11141,12:51,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L5710
+T11141,12:51,Lipton Yellow Label 380g,1,680,Mobile Wallet,L5710
+T11142,03:47,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,None
+T11142,03:47,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T11143,14:19,Nestle Milkpak 1L,3,780,Cash,L3391
+T11143,14:19,Olper's Cream 200ml,2,360,Cash,L3391
+T11144,08:29,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,None
+T11144,08:29,Lipton Yellow Label 380g,2,1360,Mobile Wallet,None
+T11145,04:25,Nestle Milkpak 1L,1,260,Cash,L2150
+T11146,17:05,Dalda Cooking Oil 5L,1,2250,Card,L9144
+T11146,17:05,Lipton Yellow Label 380g,2,1360,Card,L9144
+T11147,02:29,Dalda Cooking Oil 5L,1,2250,Card,L5710
+T11147,02:29,Lipton Yellow Label 380g,1,680,Card,L5710
+T11147,02:29,National Chilli Powder 200g,1,210,Card,L5710
+T11148,22:53,Lux Soap 150g,1,130,Cash,L9115
+T11149,02:17,Dalda Cooking Oil 5L,1,2250,Card,L6446
+T11149,02:17,Lipton Yellow Label 380g,1,680,Card,L6446
+T11150,08:15,Nestle Milkpak 1L,3,780,Cash,None
+T11150,08:15,Surf Excel 1kg,1,460,Cash,None
+T11151,04:44,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9499
+T11151,04:44,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9499
+T11151,04:44,Olper's Cream 200ml,1,180,Mobile Wallet,L9499
+T11152,08:16,Surf Excel 1kg,2,920,Card,None
+T11152,08:16,Ariel Detergent 2kg,1,950,Card,None
+T11152,08:16,Lux Soap 150g,2,260,Card,None
+T11153,20:53,Nestle Milkpak 1L,1,260,Mobile Wallet,L6169
+T11153,20:53,Ariel Detergent 2kg,2,1900,Mobile Wallet,L6169
+T11154,10:28,Dalda Cooking Oil 5L,1,2250,Cash,None
+T11154,10:28,Lipton Yellow Label 380g,1,680,Cash,None
+T11154,10:28,Coca Cola 1.5L,1,150,Cash,None
+T11155,18:26,Dalda Cooking Oil 5L,1,2250,Cash,L8496
+T11155,18:26,Lipton Yellow Label 380g,1,680,Cash,L8496
+T11156,04:54,Shan Biryani Masala 50g,1,90,Card,L1328
+T11156,04:54,Olper's Cream 200ml,1,180,Card,L1328
+T11156,04:54,Nestle Milkpak 1L,1,260,Card,L1328
+T11157,19:57,Nestle Milkpak 1L,2,520,Mobile Wallet,L6446
+T11157,19:57,Ariel Detergent 2kg,2,1900,Mobile Wallet,L6446
+T11158,23:34,Dalda Cooking Oil 5L,2,4500,Cash,L7322
+T11158,23:34,Lipton Yellow Label 380g,2,1360,Cash,L7322
+T11159,10:06,Shan Biryani Masala 50g,1,90,Cash,L9499
+T11160,00:16,Dalda Cooking Oil 5L,1,2250,Card,None
+T11161,15:06,Nestle Milkpak 1L,1,260,Mobile Wallet,L1171
+T11161,15:06,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L1171
+T11162,17:42,Nestle Milkpak 1L,6,1560,Mobile Wallet,L7921
+T11162,17:42,Coca Cola 1.5L,1,150,Mobile Wallet,L7921
+T11163,08:02,Dalda Cooking Oil 5L,1,2250,Cash,L5886
+T11163,08:02,Lipton Yellow Label 380g,2,1360,Cash,L5886
+T11164,14:55,Surf Excel 1kg,1,460,Card,None
+T11164,14:55,Ariel Detergent 2kg,1,950,Card,None
+T11165,13:53,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4296
+T11165,13:53,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4296
+T11166,18:27,Nestle Milkpak 1L,2,520,Cash,L4125
+T11166,18:27,Dalda Cooking Oil 5L,1,2250,Cash,L4125
+T11167,23:25,Nestle Milkpak 1L,2,520,Card,L1696
+T11167,23:25,Coca Cola 1.5L,2,300,Card,L1696
+T11167,23:25,Lux Soap 150g,1,130,Card,L1696
+T11168,04:00,Nestle Milkpak 1L,5,1300,Cash,L5710
+T11169,21:15,Dalda Cooking Oil 5L,2,4500,Cash,L8743
+T11169,21:15,Lipton Yellow Label 380g,1,680,Cash,L8743
+T11169,21:15,Surf Excel 1kg,1,460,Cash,L8743
+T11170,05:07,Dalda Cooking Oil 5L,2,4500,Cash,None
+T11170,05:07,Lipton Yellow Label 380g,1,680,Cash,None
+T11171,00:09,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L7367
+T11171,00:09,Lipton Yellow Label 380g,1,680,Mobile Wallet,L7367
+T11172,02:57,Nestle Milkpak 1L,5,1300,Card,L5225
+T11172,02:57,Surf Excel 1kg,1,460,Card,L5225
+T11173,04:34,Nestle Milkpak 1L,4,1040,Mobile Wallet,None
+T11173,04:34,Lipton Yellow Label 380g,1,680,Mobile Wallet,None
+T11174,23:25,Dalda Cooking Oil 5L,1,2250,Card,L2150
+T11174,23:25,Lipton Yellow Label 380g,1,680,Card,L2150
+T11175,16:41,Dalda Cooking Oil 5L,1,2250,Mobile Wallet,L4125
+T11175,16:41,Lipton Yellow Label 380g,2,1360,Mobile Wallet,L4125
+T11176,22:57,Dalda Cooking Oil 5L,2,4500,Mobile Wallet,L9492
+T11176,22:57,Lipton Yellow Label 380g,1,680,Mobile Wallet,L9492
+T11177,21:41,Ariel Detergent 2kg,2,1900,Mobile Wallet,None
+T11177,21:41,Surf Excel 1kg,2,920,Mobile Wallet,None
+T11178,03:53,Dalda Cooking Oil 5L,2,4500,Card,L1781
+T11178,03:53,Lipton Yellow Label 380g,2,1360,Card,L1781
+T11178,03:53,National Chilli Powder 200g,1,210,Card,L1781
+T11179,07:53,National Chilli Powder 200g,1,210,Card,L9972
+T11179,07:53,Olper's Cream 200ml,2,360,Card,L9972

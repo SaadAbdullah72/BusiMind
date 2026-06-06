@@ -7,6 +7,10 @@ import SupportEngine from './components/SupportEngine';
 import LoginScreen from './components/LoginScreen';
 import DataSyncHub from './components/DataSyncHub';
 import BusinessSettings from './components/BusinessSettings';
+import ExpiryDesk from './components/ExpiryDesk';
+import PricingGuard from './components/PricingGuard';
+import ProcurementCenter from './components/ProcurementCenter';
+import OperationsChatbot from './components/OperationsChatbot';
 
 // Default initial state
 const defaultKPIs = {
@@ -30,9 +34,10 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
   const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem('userEmail'));
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'datasync' | 'support' | 'settings'>('settings');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'datasync' | 'support' | 'settings' | 'expiry' | 'pricing' | 'procurement' | 'chatbot'>('dashboard');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
+  const [scanResult, setScanResult] = useState<any>(null);
 
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState<any>(null);
@@ -54,6 +59,7 @@ export default function App() {
       } else if (data.status === 'complete') {
         setKpis(data.result.kpis);
         setSwot(data.result.swot);
+        setScanResult(data.result);
         
         setScanning(false);
         setProgress(null);
@@ -149,30 +155,62 @@ export default function App() {
       {/* Main Core Layout */}
       <div className="flex flex-1 overflow-hidden relative z-10">
         {/* Sidebar Nav */}
-        <aside className="w-64 bg-[#0c0c0e]/60 backdrop-blur-xl border-r border-[#1c1c22]/80 p-5 flex flex-col justify-between shrink-0 shadow-2xl">
+        <aside className="w-64 bg-[#0c0c0e]/60 backdrop-blur-xl border-r border-[#1c1c22]/80 p-5 flex flex-col justify-between shrink-0 shadow-2xl overflow-y-auto">
           <div className="space-y-6">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">Intelligence Modules</span>
-            <nav className="flex-1 space-y-2 mt-4 px-3">
-              <button onClick={() => setActiveTab('datasync')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'datasync' ? 'bg-[#121216] border border-[#1e1e24] shadow-lg text-slate-100' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                <span className="font-semibold text-sm">Data Sync Hub</span>
-              </button>
-              
-              <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/5' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span className="font-semibold text-sm">Overview Dashboard</span>
-              </button>
+            <div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">Data Sync</span>
+              <nav className="space-y-1 mt-2">
+                <button onClick={() => setActiveTab('datasync')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'datasync' ? 'bg-[#121216] border border-[#1e1e24] shadow-lg text-slate-100' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                  <span className="font-semibold text-xs">Data Sync Hub</span>
+                </button>
+              </nav>
+            </div>
 
-              <button onClick={() => setActiveTab('support')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'support' ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400 shadow-lg shadow-blue-500/5' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                <span className="font-semibold text-sm">Support Engine AI</span>
-              </button>
+            <div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">Intelligence Modules</span>
+              <nav className="space-y-1 mt-2">
+                <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'dashboard' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                  <span className="font-semibold text-xs">Operations Dashboard</span>
+                </button>
 
-              <button onClick={() => setActiveTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 shadow-lg shadow-indigo-500/5' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                <svg className="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span className="font-semibold text-sm">Business Settings</span>
-              </button>
-            </nav>
+                <button onClick={() => setActiveTab('chatbot')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'chatbot' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                  <span className="font-semibold text-xs">AI Operations Chatbot</span>
+                </button>
+
+                <button onClick={() => setActiveTab('expiry')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'expiry' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span className="font-semibold text-xs">Expiry Desk</span>
+                </button>
+
+                <button onClick={() => setActiveTab('pricing')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'pricing' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 15l3-3 3 3m0-6l-3 3-3-3"></path></svg>
+                  <span className="font-semibold text-xs">Pricing Guard</span>
+                </button>
+
+                <button onClick={() => setActiveTab('procurement')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'procurement' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                  <span className="font-semibold text-xs">Procurement Center</span>
+                </button>
+              </nav>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">System</span>
+              <nav className="space-y-1 mt-2">
+                <button onClick={() => setActiveTab('support')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'support' ? 'bg-blue-500/10 border border-blue-500/30 text-blue-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                  <span className="font-semibold text-xs">Support Engine AI</span>
+                </button>
+
+                <button onClick={() => setActiveTab('settings')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'settings' ? 'bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
+                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                  <span className="font-semibold text-xs">Business Settings</span>
+                </button>
+              </nav>
+            </div>
           </div>
 
           <div className="bg-[#121216]/60 border border-[#1e1e24] rounded-2xl p-4.5 mt-auto">
@@ -204,8 +242,14 @@ export default function App() {
                 swot={swot}
                 onScanComplete={runDiagnosticScan}
                 scanning={scanning}
+                depletionRisks={scanResult?.depletion_risks}
+                layoutRecommendations={scanResult?.layout_recommendations}
               />
             )}
+            {activeTab === 'expiry' && <ExpiryDesk expiryData={scanResult?.expiry} />}
+            {activeTab === 'pricing' && <PricingGuard pricingData={scanResult?.pricing} />}
+            {activeTab === 'procurement' && <ProcurementCenter procurementData={scanResult?.procurement} />}
+            {activeTab === 'chatbot' && <OperationsChatbot userEmail={userEmail || ''} />}
             {activeTab === 'support' && <SupportEngine userEmail={userEmail || ''} />}
             {activeTab === 'settings' && <BusinessSettings userEmail={userEmail || ''} />}
           </div>
