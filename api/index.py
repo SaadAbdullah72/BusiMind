@@ -588,8 +588,10 @@ def resolve_customer_support(request: SupportRequest):
     )
     try:
         res = llm.invoke(classify_prompt).content.strip()
-        if res.startswith("```json"): res = res[7:]
-        if res.endswith("```"): res = res[:-3]
+        import re
+        json_match = re.search(r'\{.*\}', res, re.DOTALL)
+        if json_match:
+            res = json_match.group(0)
         classification = json.loads(res.strip())
         intent = classification.get("intent", "faq")
         extracted_id = classification.get("extracted_id", "none")
@@ -601,7 +603,7 @@ def resolve_customer_support(request: SupportRequest):
     # Step 2 & 3: Database Lookup & Reply Generation
     if intent == "order_status":
         order_details = "Not Found"
-        if extracted_id.lower() != "none" and pos_collection:
+        if extracted_id.lower() != "none" and pos_collection is not None:
             record = pos_collection.find_one({"email": request.email})
             if record and "data" in record:
                 for row in record["data"]:
@@ -718,7 +720,7 @@ def resolve_live_email(req: LiveResolveRequest):
     
     # Fetch Policy Document for context
     policy_doc = "No specific policy document uploaded."
-    if policies_collection:
+    if policies_collection is not None:
         # For simplicity, fetching the first policy available or matching by a hypothetical admin email
         record = policies_collection.find_one({}) # In a real SaaS, filter by req.email or user's email
         if record and "policy_text" in record:
@@ -736,8 +738,10 @@ def resolve_live_email(req: LiveResolveRequest):
     )
     try:
         res = llm.invoke(classify_prompt).content.strip()
-        if res.startswith("```json"): res = res[7:]
-        if res.endswith("```"): res = res[:-3]
+        import re
+        json_match = re.search(r'\{.*\}', res, re.DOTALL)
+        if json_match:
+            res = json_match.group(0)
         classification = json.loads(res.strip())
         intent = classification.get("intent", "faq")
         extracted_id = classification.get("extracted_id", "none")
