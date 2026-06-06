@@ -611,5 +611,5 @@ def reset_password(payload: ResetPasswordRequest):
         
         return {"status": "success", "message": "Password reset successfully."}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"status": "error", "message": f"Server crash V3: {str(e)} | pass_len={len(payload.new_password)}"})
+        return JSONResponse(status_code=500, content={"status": "error", "message": f"Server crash V4: {traceback.format_exc()}"})
 
