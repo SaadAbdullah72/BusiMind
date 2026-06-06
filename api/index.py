@@ -1374,9 +1374,8 @@ def resolve_live_email(req: LiveResolveRequest):
     classify_prompt = (
         f"Analyze this customer email: '{req.message}'.\n"
         f"Available Business Policy context:\n\"\"\"{policy_doc}\"\"\"\n\n"
-        f"Can this customer's query be fully answered using ONLY the provided Business Policy context? "
-        f"If the policy does not explicitly cover it, or if they are extremely angry/demanding an escalation, classify the intent as 'complaint'. "
-        f"Otherwise, classify it as 'faq'.\n"
+        f"CRITICAL INSTRUCTION: If the customer's query is answered or covered by the provided Business Policy context, you MUST classify it as 'faq'. "
+        f"ONLY classify as 'complaint' if the query is completely unrelated to the policy, or if the customer is extremely angry and explicitly demands human support.\n"
         f"Extract any Transaction/Order ID (TXXXX) if present. If none, output 'none'.\n"
         f"Return ONLY valid JSON format exactly like: {{\"intent\": \"faq\" or \"complaint\", \"extracted_id\": \"id\"}}"
     )
@@ -1426,7 +1425,10 @@ def resolve_live_email(req: LiveResolveRequest):
 
     smtp_email = settings.get("smtp_email")
     smtp_pass = settings.get("smtp_password")
-    staff_email = settings.get("staff_email", "trustvault3.help@gmail.com")
+    
+    staff_email = settings.get("staff_email")
+    if not staff_email or str(staff_email).strip() == "":
+        staff_email = "trustvault3.help@gmail.com"
     action_taken = "Auto-Reply Sent"
 
     try:
