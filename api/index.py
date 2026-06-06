@@ -578,16 +578,18 @@ def send_mock_live_emails(payload: dict = None):
         return JSONResponse(status_code=500, content={"status": "error", "message": "Credentials not found in .env"})
 
     queries = [
-        "Do you ship internationally to Dubai? I want to buy in bulk.",
-        "What is your return policy? I bought something yesterday.",
+        # Solvable by PDF
         "How long does standard delivery take for metropolitan areas?",
-        "I want to cancel my order that I placed 5 hours ago. Please cancel it.",
-        "Can I get a refund for an item I bought on a 30% discount sale?",
-        "My product arrived completely broken and shattered! I am extremely angry and want to talk to a manager immediately!",
-        "Do your electronic products come with a warranty?",
-        "How long do refunds take to reflect in my bank account after processing?",
-        "Can I get express shipping? And how much does it cost for next day delivery?",
-        "I placed an order but you guys are completely useless and late! I want a full refund and I am complaining to the consumer court right now!"
+        "What is your return policy? I bought an item 2 days ago.",
+        "Can I get express shipping and how much is it?",
+        "Do electronic products come with a warranty?",
+        "Can I get a refund for a sale item I bought at 30% discount?",
+        # Unsolvable / Escalations (Go to Staff)
+        "I want to collaborate with your brand for a marketing campaign. Who should I contact?",
+        "I received the completely wrong item. The rider was very rude. I want my money back NOW!",
+        "Can I change my delivery address? I moved to a different city yesterday.",
+        "Do you offer wholesale or B2B discounts for bulk purchasing?",
+        "My credit card was charged twice for the same order! Please refund the extra charge!"
     ]
 
     try:
@@ -599,6 +601,7 @@ def send_mock_live_emails(payload: dict = None):
             msg = MIMEMultipart()
             msg['From'] = smtp_email
             msg['To'] = smtp_email
+            msg['Reply-To'] = f"mock_customer_{i+1}@gmail.com"
             msg['Subject'] = f"Business Queries: Test Customer Question #{i+1}"
             
             msg.attach(MIMEText(query, 'plain'))
@@ -713,10 +716,10 @@ def get_live_inbox():
                             subject = subject.decode("utf-8", errors="ignore")
                     
                     # Filter by subject in Python
-                    if "bueiness queirues" not in subject.lower() and "business queries" not in subject.lower():
+                    if "business queries" not in subject.lower():
                         continue
                             
-                    sender = msg.get("From")
+                    sender = msg.get("Reply-To") or msg.get("From")
                     body = ""
                     if msg.is_multipart():
                         for part in msg.walk():
@@ -797,7 +800,7 @@ def resolve_live_email(req: LiveResolveRequest):
         reply_prompt = (
             f"Customer says: '{req.message}'\n"
             f"The issue cannot be resolved by the policy or requires human escalation.\n"
-            f"Write a highly professional and empathetic email reply in English assuring them that their issue has been escalated to our human management team (staff@trustvault) and they will be contacted shortly to resolve it."
+            f"Generate an internal memo summarizing this user's issue. Do not write an email to the user."
         )
     else:
         reply_prompt = (
@@ -825,23 +828,24 @@ def resolve_live_email(req: LiveResolveRequest):
         server.login(smtp_email, smtp_pass)
 
         if intent == "complaint":
-            # Forward to staff
+            # Forward ONLY to staff
             msg = MIMEMultipart()
             msg['From'] = smtp_email
             msg['To'] = staff_email
             msg['Subject'] = f"ESCALATED: {req.subject}"
-            body = f"Customer Email: {req.sender}\nCustomer Message:\n{req.message}\n\nAI Drafted Reply sent to user:\n{auto_reply}"
+            body = f"An email arrived from user {req.sender} that needs your attention.\n\nCustomer Message:\n{req.message}"
             msg.attach(MIMEText(body, 'plain'))
             server.send_message(msg)
             action_taken = f"Forwarded to Staff ({staff_email})"
-
-        # Send reply back to customer
-        reply_msg = MIMEMultipart()
-        reply_msg['From'] = smtp_email
-        reply_msg['To'] = req.sender
-        reply_msg['Subject'] = f"Re: {req.subject}"
-        reply_msg.attach(MIMEText(auto_reply, 'plain'))
-        server.send_message(reply_msg)
+        else:
+            # Send reply ONLY back to customer
+            reply_msg = MIMEMultipart()
+            reply_msg['From'] = smtp_email
+            reply_msg['To'] = req.sender
+            reply_msg['Subject'] = f"Re: {req.subject}"
+            reply_msg.attach(MIMEText(auto_reply, 'plain'))
+            server.send_message(reply_msg)
+            action_taken = f"Auto-Reply Sent to Customer ({req.sender})"
         
         server.quit()
 
