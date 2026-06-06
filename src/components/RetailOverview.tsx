@@ -8,28 +8,53 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
       {/* Header */}
       <div className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
+          <h2 style={{
+            fontSize: '28px',
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #f97316 0%, #fbbf24 50%, #f59e0b 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>
             Supermarket Operations
           </h2>
-          <p className="text-slate-400 text-sm mt-1">Live KPI and strategic analysis.</p>
+          <p style={{ color: '#64748b', fontSize: '13px', marginTop: '4px', fontWeight: 500 }}>
+            Live KPI and strategic analysis
+          </p>
         </div>
         <button
           onClick={onScanComplete}
           disabled={scanning}
-          className="px-6 py-2.5 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold rounded-xl shadow-lg shadow-orange-500/30 transition-all disabled:opacity-50 flex items-center space-x-2"
+          style={{
+            padding: '10px 24px',
+            background: scanning ? 'rgba(249,115,22,0.3)' : 'linear-gradient(135deg, #ea580c, #f59e0b)',
+            color: 'white',
+            fontWeight: 700,
+            fontSize: '13px',
+            borderRadius: '14px',
+            border: 'none',
+            boxShadow: scanning ? 'none' : '0 8px 24px rgba(249,115,22,0.3), 0 2px 4px rgba(0,0,0,0.2)',
+            cursor: scanning ? 'not-allowed' : 'pointer',
+            opacity: scanning ? 0.6 : 1,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            letterSpacing: '-0.01em'
+          }}
         >
           {scanning ? (
-            <span className="flex items-center space-x-2">
-              <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <>
+              <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path opacity="0.85" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
               <span>Scanning Operations...</span>
-            </span>
+            </>
           ) : (
             <>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               <span>Run Diagnostic Scan</span>
             </>
@@ -39,138 +64,259 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
 
       {/* KPI Cards */}
       <div className="grid grid-cols-3 gap-5">
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-            <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd"/></svg>
+        {[
+          {
+            label: 'Total Revenue',
+            value: kpis.total_revenue,
+            sub: `${kpis.total_transactions} transactions today`,
+            color: '#f97316',
+            gradient: 'linear-gradient(135deg, rgba(249,115,22,0.08), rgba(234,88,12,0.03))',
+            borderColor: 'rgba(249,115,22,0.15)',
+            icon: (
+              <svg width="40" height="40" viewBox="0 0 20 20" fill="currentColor" opacity="0.06">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd"/>
+              </svg>
+            )
+          },
+          {
+            label: 'Waste Risk Cost',
+            value: kpis.waste_risk_cost,
+            sub: 'Due to approaching expiries',
+            color: '#f87171',
+            gradient: 'linear-gradient(135deg, rgba(248,113,113,0.08), rgba(239,68,68,0.03))',
+            borderColor: 'rgba(248,113,113,0.15)',
+            icon: (
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.06">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            )
+          },
+          {
+            label: 'Bestseller',
+            value: kpis.bestseller,
+            sub: `Avg Basket: ${kpis.average_basket_value}`,
+            color: '#34d399',
+            gradient: 'linear-gradient(135deg, rgba(52,211,153,0.08), rgba(16,185,129,0.03))',
+            borderColor: 'rgba(52,211,153,0.15)',
+            isText: true,
+            icon: (
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.06">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            )
+          }
+        ].map((card, i) => (
+          <div key={i} style={{
+            background: card.gradient,
+            backdropFilter: 'blur(16px)',
+            border: `1px solid ${card.borderColor}`,
+            borderRadius: '18px',
+            padding: '22px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position: 'absolute', top: '12px', right: '14px' }}>{card.icon}</div>
+            <p style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8', marginBottom: '6px', letterSpacing: '0.02em' }}>
+              {card.label}
+            </p>
+            <p style={{
+              fontSize: card.isText ? '20px' : '28px',
+              fontWeight: 800,
+              color: card.color,
+              letterSpacing: '-0.02em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}>
+              {card.value}
+            </p>
+            <p style={{ fontSize: '11px', color: '#475569', marginTop: '8px', fontWeight: 500 }}>{card.sub}</p>
           </div>
-          <p className="text-sm font-semibold text-slate-400 mb-1">Total Revenue</p>
-          <p className="text-3xl font-bold text-orange-400">{kpis.total_revenue}</p>
-          <p className="text-xs text-slate-500 mt-2">{kpis.total_transactions} transactions today</p>
-        </div>
-
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
-          <p className="text-sm font-semibold text-slate-400 mb-1">Waste Risk Cost</p>
-          <p className="text-3xl font-bold text-red-400">{kpis.waste_risk_cost}</p>
-          <p className="text-xs text-slate-500 mt-2">Due to approaching expiries</p>
-        </div>
-
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
-          <p className="text-sm font-semibold text-slate-400 mb-1">Bestseller</p>
-          <p className="text-2xl font-bold text-emerald-400 truncate">{kpis.bestseller}</p>
-          <p className="text-xs text-slate-500 mt-2">Avg Basket: {kpis.average_basket_value}</p>
-        </div>
+        ))}
       </div>
 
       {/* SWOT Board */}
       <div className="grid grid-cols-2 gap-5 mt-6">
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <h3 className="text-emerald-400 font-bold mb-3 flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            <span>Strengths</span>
-          </h3>
-          <ul className="space-y-2">
-            {swot.strengths.map((s: string, i: number) => (
-              <li key={i} className="text-sm text-slate-300 flex items-start space-x-2">
-                <span className="text-emerald-500 mt-0.5">•</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <h3 className="text-red-400 font-bold mb-3 flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            <span>Weaknesses</span>
-          </h3>
-          <ul className="space-y-2">
-            {swot.weaknesses.map((w: string, i: number) => (
-              <li key={i} className="text-sm text-slate-300 flex items-start space-x-2">
-                <span className="text-red-500 mt-0.5">•</span>
-                <span>{w}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <h3 className="text-orange-400 font-bold mb-3 flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-            <span>Opportunities</span>
-          </h3>
-          <ul className="space-y-2">
-            {swot.opportunities.map((o: string, i: number) => (
-              <li key={i} className="text-sm text-slate-300 flex items-start space-x-2">
-                <span className="text-orange-500 mt-0.5">•</span>
-                <span>{o}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg">
-          <h3 className="text-orange-400 font-bold mb-3 flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span>Threats</span>
-          </h3>
-          <ul className="space-y-2">
-            {swot.threats.map((t: string, i: number) => (
-              <li key={i} className="text-sm text-slate-300 flex items-start space-x-2">
-                <span className="text-orange-500 mt-0.5">•</span>
-                <span>{t}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {[
+          { title: 'Strengths', items: swot.strengths, color: '#34d399', borderColor: 'rgba(52,211,153,0.15)', bg: 'rgba(52,211,153,0.04)', icon: '📈' },
+          { title: 'Weaknesses', items: swot.weaknesses, color: '#f87171', borderColor: 'rgba(248,113,113,0.15)', bg: 'rgba(248,113,113,0.04)', icon: '⚠️' },
+          { title: 'Opportunities', items: swot.opportunities, color: '#fbbf24', borderColor: 'rgba(251,191,36,0.15)', bg: 'rgba(251,191,36,0.04)', icon: '💡' },
+          { title: 'Threats', items: swot.threats, color: '#fb923c', borderColor: 'rgba(251,146,60,0.15)', bg: 'rgba(251,146,60,0.04)', icon: '🛡️' }
+        ].map((section, i) => (
+          <div key={i} style={{
+            background: `linear-gradient(145deg, ${section.bg}, rgba(15,23,42,0.4))`,
+            backdropFilter: 'blur(16px)',
+            border: `1px solid ${section.borderColor}`,
+            borderRadius: '18px',
+            padding: '22px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{
+              color: section.color,
+              fontWeight: 800,
+              fontSize: '14px',
+              marginBottom: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              letterSpacing: '-0.01em'
+            }}>
+              <span style={{ fontSize: '16px' }}>{section.icon}</span>
+              {section.title}
+            </h3>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {section.items.map((item: string, j: number) => (
+                <li key={j} style={{
+                  fontSize: '12.5px',
+                  color: '#cbd5e1',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '8px',
+                  lineHeight: 1.5
+                }}>
+                  <span style={{ color: section.color, marginTop: '2px', fontSize: '6px' }}>●</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
-      <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg mt-5">
-        <h3 className="text-indigo-400 font-bold mb-3 flex items-center space-x-2">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-          <span>Priority Action Steps</span>
+      {/* Priority Action Steps */}
+      <div style={{
+        background: 'linear-gradient(145deg, rgba(99,102,241,0.04), rgba(15,23,42,0.4))',
+        backdropFilter: 'blur(16px)',
+        border: '1px solid rgba(99,102,241,0.12)',
+        borderRadius: '18px',
+        padding: '22px',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+        marginTop: '4px'
+      }}>
+        <h3 style={{
+          color: '#818cf8',
+          fontWeight: 800,
+          fontSize: '14px',
+          marginBottom: '14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '16px' }}>⚡</span>
+          Priority Action Steps
         </h3>
-        <ul className="space-y-3">
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {swot.action_steps.map((a: string, i: number) => (
-            <li key={i} className="bg-slate-850/50 p-3 rounded-xl text-sm text-slate-200 border border-slate-700/50 flex items-center space-x-3">
-              <span className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">{i+1}</span>
+            <li key={i} style={{
+              background: 'rgba(99,102,241,0.04)',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              fontSize: '12.5px',
+              color: '#e2e8f0',
+              border: '1px solid rgba(99,102,241,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              lineHeight: 1.4
+            }}>
+              <span style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))',
+                color: '#818cf8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: '11px',
+                flexShrink: 0,
+                border: '1px solid rgba(99,102,241,0.2)'
+              }}>{i+1}</span>
               <span>{a}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Depletion Risks Section */}
+      {/* Depletion Risks */}
       {depletionRisks && depletionRisks.length > 0 && (
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg mt-6">
-          <h3 className="text-rose-400 font-bold mb-3 flex items-center space-x-2">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-            <span>Critical Stock Depletion Risks (Velocity vs. Lead Time)</span>
+        <div style={{
+          background: 'linear-gradient(145deg, rgba(244,63,94,0.04), rgba(15,23,42,0.4))',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(244,63,94,0.12)',
+          borderRadius: '18px',
+          padding: '22px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+          marginTop: '4px'
+        }}>
+          <h3 style={{
+            color: '#fb7185',
+            fontWeight: 800,
+            fontSize: '14px',
+            marginBottom: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '16px' }}>🚨</span>
+            Critical Stock Depletion Risks
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {depletionRisks.map((risk: any, i: number) => (
-              <div key={i} className="bg-slate-850/50 p-4 rounded-xl border border-slate-700/40 flex flex-col justify-between">
+              <div key={i} style={{
+                background: 'rgba(244,63,94,0.03)',
+                padding: '16px',
+                borderRadius: '14px',
+                border: '1px solid rgba(244,63,94,0.1)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+              }}>
                 <div>
-                  <div className="flex justify-between items-start">
-                    <span className="font-semibold text-slate-200 text-sm">{risk.name}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${risk.status === 'Critical' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <span style={{ fontWeight: 700, color: '#e2e8f0', fontSize: '13px' }}>{risk.name}</span>
+                    <span style={{
+                      padding: '3px 10px',
+                      borderRadius: '8px',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      background: risk.status === 'Critical' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)',
+                      color: risk.status === 'Critical' ? '#f87171' : '#fbbf24',
+                      border: risk.status === 'Critical' ? '1px solid rgba(239,68,68,0.2)' : '1px solid rgba(245,158,11,0.2)'
+                    }}>
                       {risk.status}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 mt-3 text-xs text-slate-400">
-                    <div>
-                      <p className="text-[10px] text-slate-500">Current Stock</p>
-                      <p className="font-medium text-slate-300">{risk.stock} units</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500">Sales Velocity</p>
-                      <p className="font-medium text-slate-300">{risk.sales_velocity_daily}/day</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500">Supplier SLA</p>
-                      <p className="font-medium text-slate-300">{risk.supplier_lead_days} days lead</p>
-                    </div>
+                  <div className="grid grid-cols-3 gap-3" style={{ marginTop: '14px' }}>
+                    {[
+                      { label: 'Current Stock', value: `${risk.stock} units` },
+                      { label: 'Sales Velocity', value: `${risk.sales_velocity_daily}/day` },
+                      { label: 'Supplier SLA', value: `${risk.supplier_lead_days}d lead` }
+                    ].map((stat, j) => (
+                      <div key={j}>
+                        <p style={{ fontSize: '10px', color: '#475569', fontWeight: 500, marginBottom: '3px' }}>{stat.label}</p>
+                        <p style={{ fontWeight: 600, color: '#cbd5e1', fontSize: '12px' }}>{stat.value}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <div className="mt-3.5 pt-3.5 border-t border-slate-800 flex justify-between items-center text-xs">
-                  <span className="text-slate-400">Estimated Stockout In:</span>
-                  <span className={`font-bold ${risk.status === 'Critical' ? 'text-red-400' : 'text-amber-400'}`}>{risk.days_left} Days</span>
+                <div style={{
+                  marginTop: '14px',
+                  paddingTop: '12px',
+                  borderTop: '1px solid rgba(255,255,255,0.04)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '12px'
+                }}>
+                  <span style={{ color: '#64748b' }}>Estimated Stockout In:</span>
+                  <span style={{
+                    fontWeight: 800,
+                    color: risk.status === 'Critical' ? '#f87171' : '#fbbf24'
+                  }}>{risk.days_left} Days</span>
                 </div>
               </div>
             ))}
@@ -178,9 +324,9 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
         </div>
       )}
 
-      {/* Shelf Arrangement Recommendations with Visual 2D Map */}
+      {/* Map + Recommendations Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* Visual Map Column (Spans 2 columns) */}
+        {/* Map Column */}
         <div className="lg:col-span-2 h-full">
           <StoreLayoutMap 
             layoutConfig={layoutConfig} 
@@ -192,45 +338,125 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
           />
         </div>
 
-        {/* AI Recommendations Cards Column */}
-        <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        {/* AI Recommendations Column */}
+        <div style={{
+          background: 'linear-gradient(145deg, rgba(251,191,36,0.03), rgba(15,23,42,0.5))',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(251,191,36,0.1)',
+          borderRadius: '18px',
+          padding: '22px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}>
           <div>
-            <h3 className="text-amber-400 font-bold mb-1 flex items-center space-x-2 text-sm">
-              <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
-              <span>AI Shelf Optimization Suggestions</span>
+            <h3 style={{
+              color: '#fbbf24',
+              fontWeight: 800,
+              fontSize: '14px',
+              marginBottom: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '16px' }}>🧠</span>
+              AI Shelf Optimization
             </h3>
-            <p className="text-[10px] text-slate-400 mb-4 font-medium leading-relaxed">Hover over any card below to visualize shelf placement paths on the map.</p>
+            <p style={{
+              fontSize: '11px',
+              color: '#64748b',
+              marginBottom: '18px',
+              fontWeight: 500,
+              lineHeight: 1.5
+            }}>
+              Hover over any card to visualize placement paths on the map.
+            </p>
             
-            <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 scrollbar-thin">
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              overflowY: 'auto',
+              maxHeight: '380px',
+              paddingRight: '4px'
+            }} className="scrollbar-thin">
               {layoutRecommendations && layoutRecommendations.length > 0 ? (
                 layoutRecommendations.map((rec: any, i: number) => (
                   <div 
                     key={i} 
                     onMouseEnter={() => setHoveredRec(rec)}
                     onMouseLeave={() => setHoveredRec(null)}
-                    className="bg-[#121216]/50 hover:bg-[#121216]/90 p-3.5 rounded-xl border border-slate-700/40 hover:border-indigo-500/40 transition-all flex flex-col justify-between cursor-pointer"
+                    style={{
+                      background: hoveredRec === rec 
+                        ? 'rgba(251,191,36,0.06)' 
+                        : 'rgba(15,15,22,0.5)',
+                      padding: '14px',
+                      borderRadius: '14px',
+                      border: hoveredRec === rec 
+                        ? '1px solid rgba(251,191,36,0.25)' 
+                        : '1px solid rgba(255,255,255,0.04)',
+                      cursor: 'pointer',
+                      transition: 'all 0.25s ease',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                      boxShadow: hoveredRec === rec 
+                        ? '0 4px 16px rgba(251,191,36,0.08)' 
+                        : 'none'
+                    }}
                   >
                     <div>
-                      <h4 className="font-bold text-slate-200 text-xs">{rec.title}</h4>
-                      <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
-                        <span className="text-amber-400 font-semibold">Insight: </span>{rec.reason}
+                      <h4 style={{ fontWeight: 700, color: '#e2e8f0', fontSize: '12px', marginBottom: '6px' }}>
+                        {rec.title}
+                      </h4>
+                      <p style={{ fontSize: '11px', color: '#94a3b8', lineHeight: 1.5 }}>
+                        <span style={{ color: '#fbbf24', fontWeight: 700 }}>Insight: </span>{rec.reason}
                       </p>
                     </div>
-                    <div className="bg-slate-800/40 p-2.5 rounded-lg border border-slate-700/40 mt-3 text-[10px] text-slate-350 leading-normal">
-                      <span className="font-bold text-orange-400 uppercase tracking-wider block text-[8px] mb-1">Placement Strategy</span>
-                      {rec.placement_tip}
+                    <div style={{
+                      background: 'rgba(255,255,255,0.02)',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255,255,255,0.04)'
+                    }}>
+                      <span style={{
+                        fontWeight: 800,
+                        color: '#f97316',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        display: 'block',
+                        fontSize: '8.5px',
+                        marginBottom: '4px'
+                      }}>Placement Strategy</span>
+                      <span style={{ fontSize: '11px', color: '#94a3b8', lineHeight: 1.5 }}>
+                        {rec.placement_tip}
+                      </span>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-slate-500 py-10 text-center">
+                <div style={{
+                  padding: '40px 0',
+                  textAlign: 'center',
+                  fontSize: '12px',
+                  color: '#475569'
+                }}>
                   No layout recommendations available. Run a diagnostic scan to generate recommendations.
                 </div>
               )}
             </div>
           </div>
           
-          <div className="border-t border-slate-800 pt-3 mt-4 text-[9px] text-slate-500 text-center font-medium">
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,0.04)',
+            paddingTop: '12px',
+            marginTop: '16px',
+            textAlign: 'center',
+            fontSize: '10px',
+            color: '#374151',
+            fontWeight: 500
+          }}>
             💡 Hover over cards to preview placement paths.
           </div>
         </div>
