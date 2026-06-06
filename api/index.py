@@ -50,21 +50,18 @@ def get_password_hash(password):
 
 def send_otp_email(to_email: str, otp: str):
     if not SMTP_EMAIL or not SMTP_PASSWORD:
-        print(f"Mock sending OTP {otp} to {to_email}")
-        return
+        raise Exception("SMTP_EMAIL or SMTP_PASSWORD not set in backend.")
+    
     msg = EmailMessage()
     msg.set_content(f"Your RetailMind AI Password Reset OTP is: {otp}\n\nIt will expire in 10 minutes.")
     msg['Subject'] = "RetailMind AI - Password Reset OTP"
     msg['From'] = SMTP_EMAIL
     msg['To'] = to_email
 
-    try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.login(SMTP_EMAIL, SMTP_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-    except Exception as e:
-        print(f"Failed to send email: {str(e)}")
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.login(SMTP_EMAIL, SMTP_PASSWORD)
+    server.send_message(msg)
+    server.quit()
 
 # ── FastAPI App ───────────────────────────────────────────────────────────────
 app = FastAPI(title="RetailMind AI API")
@@ -577,30 +574,38 @@ def forgot_password(payload: ForgotPasswordRequest):
         return JSONResponse(status_code=404, content={"status": "error", "message": "Email address not found."})
         
     otp = "".join(random.choices(string.digits, k=6))
+    
+    try:
+        send_otp_email(payload.email, otp)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": f"Failed to send email: {str(e)}"})
+        
     otps_collection.update_one(
         {"email": payload.email},
         {"$set": {"otp": otp, "created_at": datetime.utcnow()}},
         upsert=True
     )
     
-    send_otp_email(payload.email, otp)
     return {"status": "success", "message": "OTP sent successfully."}
 
 @app.post("/api/auth/reset-password")
 def reset_password(payload: ResetPasswordRequest):
-    if otps_collection is None or users_collection is None:
-        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
-    record = otps_collection.find_one({"email": payload.email, "otp": payload.otp})
-    if not record:
-        return JSONResponse(status_code=400, content={"status": "error", "message": "Invalid or expired OTP."})
+    try:
+        if otps_collection is None or users_collection is None:
+            return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+        record = otps_collection.find_one({"email": payload.email, "otp": payload.otp})
+        if not record:
+            return JSONResponse(status_code=400, content={"status": "error", "message": "Invalid or expired OTP."})
+            
+        time_diff = (datetime.utcnow() - record["created_at"]).total_seconds()
+        if time_diff > 600:
+            return JSONResponse(status_code=400, content={"status": "error", "message": "OTP expired."})
+            
+        hashed_pwd = get_password_hash(payload.new_password)
+        users_collection.update_one({"email": payload.email}, {"$set": {"password": hashed_pwd}})
+        otps_collection.delete_one({"_id": record["_id"]})
         
-    time_diff = (datetime.utcnow() - record["created_at"]).total_seconds()
-    if time_diff > 600:
-        return JSONResponse(status_code=400, content={"status": "error", "message": "OTP expired."})
-        
-    hashed_pwd = get_password_hash(payload.new_password)
-    users_collection.update_one({"email": payload.email}, {"$set": {"password": hashed_pwd}})
-    otps_collection.delete_one({"_id": record["_id"]})
-    
-    return {"status": "success", "message": "Password reset successfully."}
+        return {"status": "success", "message": "Password reset successfully."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": f"Server crash: {str(e)}"})
 
