@@ -734,6 +734,7 @@ def resolve_live_email(req: LiveResolveRequest):
     # Email Action via SMTP
     smtp_email = os.getenv("SMTP_EMAIL")
     smtp_pass = os.getenv("SMTP_PASSWORD")
+    staff_email = os.getenv("STAFF_EMAIL", "trustvault3.help@gmail.com")
     action_taken = "Auto-Reply Sent"
 
     try:
@@ -745,12 +746,12 @@ def resolve_live_email(req: LiveResolveRequest):
             # Forward to staff
             msg = MIMEMultipart()
             msg['From'] = smtp_email
-            msg['To'] = "trustvault3.help@gmail.com"
+            msg['To'] = staff_email
             msg['Subject'] = f"ESCALATED: {req.subject}"
             body = f"Customer Email: {req.sender}\nCustomer Message:\n{req.message}\n\nAI Drafted Reply sent to user:\n{auto_reply}"
             msg.attach(MIMEText(body, 'plain'))
             server.send_message(msg)
-            action_taken = "Forwarded to Staff (trustvault3.help@gmail.com)"
+            action_taken = f"Forwarded to Staff ({staff_email})"
 
         # Send reply back to customer
         reply_msg = MIMEMultipart()
