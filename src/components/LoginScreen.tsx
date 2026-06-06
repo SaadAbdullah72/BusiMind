@@ -285,7 +285,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen w-full relative z-10">
         
         {/* Left Visual Area - Cyborg Visual */}
-        <div className="lg:col-span-7 relative flex flex-col justify-between p-8 md:p-12 overflow-hidden border-b lg:border-b-0 lg:border-r border-[#1a1a1a]/40 min-h-[45vh] lg:min-h-0">
+        <div className="lg:col-span-7 relative flex flex-col justify-between p-8 md:p-12 overflow-hidden lg:border-r border-[#1a1a1a]/40 min-h-[50vh] lg:min-h-0">
           
           {/* Top text overlay */}
           <div className="relative z-20 max-w-lg mt-2 lg:mt-6">
@@ -307,9 +307,9 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               alt="Cyborg visual" 
               className="w-full h-full object-cover opacity-90 transition-transform duration-700 hover:scale-[1.02]"
             />
-            {/* Overlay gradient to blend bottom/right */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#050505]/10 to-[#050505] opacity-80"></div>
+            {/* Seamless fade overlay for Mobile (bottom fade) and Desktop (right fade) */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-[#070708]/80 to-transparent lg:opacity-0 opacity-100 h-full"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#070708]/10 to-[#070708] lg:opacity-100 opacity-0"></div>
           </div>
 
           {/* Bottom Branding info */}
