@@ -1370,14 +1370,22 @@ def resolve_live_email(req: LiveResolveRequest):
         if records:
             policy_doc = "\n\n".join([rec.get("policy_text", "") for rec in records])
 
-    # Step 1: Classifier & RAG Verification
+    # Single Step: Classifier, RAG Verification & Reply Generation
     classify_prompt = (
         f"Analyze this customer email: '{req.message}'.\n"
         f"Available Business Policy context:\n\"\"\"{policy_doc}\"\"\"\n\n"
-        f"CRITICAL INSTRUCTION: If the customer's query is answered or covered by the provided Business Policy context, you MUST classify it as 'faq'. "
-        f"ONLY classify as 'complaint' if the query is completely unrelated to the policy, or if the customer is extremely angry and explicitly demands human support.\n"
+        f"CRITICAL INSTRUCTION: You must perform TWO tasks simultaneously:\n"
+        f"1. Determine if the query is answered by the Business Policy context. If yes, classify intent as 'faq'. "
+        f"ONLY classify as 'complaint' if the query is completely unrelated to the policy or if the customer explicitly demands human escalation.\n"
+        f"2. Generate the appropriate reply. If 'faq', write a highly professional email reply answering their query strictly using the policy context. "
+        f"If 'complaint', generate a short internal memo summarizing the issue for human staff.\n\n"
         f"Extract any Transaction/Order ID (TXXXX) if present. If none, output 'none'.\n"
-        f"Return ONLY valid JSON format exactly like: {{\"intent\": \"faq\" or \"complaint\", \"extracted_id\": \"id\"}}"
+        f"Return ONLY valid JSON format exactly like this:\n"
+        f"{{\n"
+        f"  \"intent\": \"faq\" or \"complaint\",\n"
+        f"  \"extracted_id\": \"id\",\n"
+        f"  \"reply\": \"Your generated text here\"\n"
+        f"}}"
     )
     try:
         res = llm.invoke(classify_prompt).content.strip()
@@ -1388,31 +1396,10 @@ def resolve_live_email(req: LiveResolveRequest):
         classification = json.loads(res.strip())
         intent = classification.get("intent", "faq")
         extracted_id = classification.get("extracted_id", "none")
+        auto_reply = classification.get("reply", "We have received your email. Our human support team will get back to you shortly.")
     except Exception as e:
         print("LLM Classification Error:", e)
         intent, extracted_id = "complaint", "none"
-
-    # Step 2: Generate English Reply
-    db_context = f"Business Policy Context: {policy_doc}"
-    
-    if intent == "complaint":
-        reply_prompt = (
-            f"Customer says: '{req.message}'\n"
-            f"The issue cannot be resolved by the policy or requires human escalation.\n"
-            f"Generate an internal memo summarizing this user's issue. Do not write an email to the user."
-        )
-    else:
-        reply_prompt = (
-            f"Customer says: '{req.message}'\n"
-            f"Business Policy Context: {policy_doc}\n"
-            f"Write a friendly, highly professional, and perfectly formatted email reply in English addressing their query.\n"
-            f"You MUST use ONLY the information provided in the Business Policy Context. Do NOT make up rules or policies."
-        )
-        
-    try:
-        auto_reply = llm.invoke(reply_prompt).content.strip()
-    except Exception as e:
-        print("LLM Reply Generation Error:", e)
         auto_reply = "We have received your email. Our human support team will get back to you shortly."
 
     # Email Action via SMTP
