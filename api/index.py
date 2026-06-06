@@ -704,7 +704,8 @@ def resolve_live_email(req: LiveResolveRequest):
         classification = json.loads(res.strip())
         intent = classification.get("intent", "faq")
         extracted_id = classification.get("extracted_id", "none")
-    except:
+    except Exception as e:
+        print("LLM Classification Error:", e)
         intent, extracted_id = "faq", "none"
 
     db_context = "No specific DB context."
@@ -726,7 +727,8 @@ def resolve_live_email(req: LiveResolveRequest):
     )
     try:
         auto_reply = llm.invoke(reply_prompt).content.strip()
-    except:
+    except Exception as e:
+        print("LLM Reply Generation Error:", e)
         auto_reply = "We have received your query and will reply shortly."
 
     # Email Action via SMTP

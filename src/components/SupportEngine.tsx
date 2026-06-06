@@ -63,6 +63,8 @@ export default function SupportEngine() {
       }
       count++;
       setProgress(Math.round((count / emails.length) * 100));
+      // Add a 3 second delay to avoid hitting LLM rate limits (Groq allows ~30 RPM)
+      await new Promise(r => setTimeout(r, 3000));
     }
     setProcessing(false);
   };
