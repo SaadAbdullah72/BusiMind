@@ -231,8 +231,8 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           animation: continuous-spin 10s linear infinite;
         }
         @keyframes continuous-spin {
-          0% { transform: rotateY(0deg) rotateX(10deg); }
-          100% { transform: rotateY(360deg) rotateX(10deg); }
+          0% { transform: rotateY(0deg) rotateX(0deg); }
+          100% { transform: rotateY(360deg) rotateX(0deg); }
         }
         .logo-face {
           position: absolute;
@@ -285,11 +285,11 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen w-full relative z-10">
         
         {/* Left Visual Area - Cyborg Visual */}
-        <div className="lg:col-span-7 relative flex flex-col justify-between p-8 md:p-12 overflow-hidden lg:border-r border-[#1a1a1a]/40 min-h-[50vh] lg:min-h-0">
+        <div className="lg:col-span-7 relative flex flex-col justify-between p-6 lg:p-12 overflow-hidden lg:border-r border-[#1a1a1a]/40 min-h-[35vh] lg:min-h-0">
           
           {/* Top text overlay */}
           <div className="relative z-20 max-w-lg mt-2 lg:mt-6">
-            <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
+            <h2 className="text-2xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
               Into Successful<br />
               <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-orange-400 bg-clip-text text-transparent">
                 Business.
@@ -312,12 +312,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#070708]/10 to-[#070708] lg:opacity-100 opacity-0"></div>
           </div>
 
-          {/* Bottom Branding info */}
-          <div className="relative z-20 flex items-center space-x-2 text-xs text-slate-500 mt-auto">
-            <span>Powered by BusiMind AI</span>
-            <span>•</span>
-            <span>v2.4.0-neural</span>
-          </div>
+          {/* Branding line removed as requested */}
         </div>
 
         {/* Right Auth Panel */}
