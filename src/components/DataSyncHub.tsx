@@ -12,24 +12,46 @@ const TEMPLATES = {
 
 export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubProps) {
   const [uploading, setUploading] = useState<string | null>(null);
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, boolean>>({});
   const [policies, setPolicies] = useState<any[]>([]);
+  const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
+  const [posFiles, setPosFiles] = useState<any[]>([]);
 
   const fetchPolicies = async () => {
     try {
       const res = await fetch(`/api/policies?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       setPolicies(data);
-      if (data.length > 0) {
-        setUploadedFiles(prev => ({ ...prev, 'Policy': true }));
-      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchInventory = async () => {
+    try {
+      const res = await fetch(`/api/inventory?email=${encodeURIComponent(userEmail)}`);
+      const data = await res.json();
+      setInventoryFiles(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchPos = async () => {
+    try {
+      const res = await fetch(`/api/pos?email=${encodeURIComponent(userEmail)}`);
+      const data = await res.json();
+      setPosFiles(data);
     } catch (err) {
       console.error(err);
     }
   };
 
   React.useEffect(() => {
-    fetchPolicies();
+    if (userEmail) {
+      fetchPolicies();
+      fetchInventory();
+      fetchPos();
+    }
   }, [userEmail]);
 
   const handleDownload = (type: keyof typeof TEMPLATES) => {
@@ -57,9 +79,9 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
         });
         const data = await res.json();
         if (data.status === 'success') {
-          setUploadedFiles(prev => ({ ...prev, [type]: true }));
+          if (type === 'Inventory') fetchInventory();
+          if (type === 'POS') fetchPos();
           onUploadSuccess(type);
-          // Optional: Add a subtle toast instead of annoying alert if desired, but alert works for now.
         } else {
           alert('Upload failed: ' + data.message);
         }
@@ -93,7 +115,6 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
       });
       const data = await res.json();
       if (res.ok && data.status === 'success') {
-        setUploadedFiles(prev => ({ ...prev, 'Policy': true }));
         fetchPolicies();
         onUploadSuccess('Policy');
       } else {
@@ -119,6 +140,26 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
     }
   };
 
+  const deleteInventory = async (doc_id: string) => {
+    if (!confirm('Are you sure you want to delete this inventory file?')) return;
+    try {
+      const res = await fetch(`/api/inventory/${doc_id}?email=${encodeURIComponent(userEmail)}`, { method: 'DELETE' });
+      if (res.ok) fetchInventory();
+    } catch (err) {
+      alert('Error deleting inventory file');
+    }
+  };
+
+  const deletePos = async (doc_id: string) => {
+    if (!confirm('Are you sure you want to delete this POS file?')) return;
+    try {
+      const res = await fetch(`/api/pos/${doc_id}?email=${encodeURIComponent(userEmail)}`, { method: 'DELETE' });
+      if (res.ok) fetchPos();
+    } catch (err) {
+      alert('Error deleting POS file');
+    }
+  };
+
   return (
     <div className="bg-[#121216]/80 backdrop-blur-md border border-[#1e1e24] rounded-2xl p-8 shadow-2xl">
       <h2 className="text-2xl font-bold text-slate-100 mb-2">Data Sync Hub</h2>
@@ -129,22 +170,41 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Inventory Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          {uploadedFiles['Inventory'] && (
-            <div className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-bl-lg flex items-center shadow-lg backdrop-blur-sm border-b border-l border-emerald-500/30">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-              UPLOADED
-            </div>
-          )}
           <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 border border-blue-500/30">
              <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
           </div>
           <h3 className="text-md font-bold text-slate-200">1. Current Inventory</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-6">Required for AI to verify stock availability & Expiry Optimization.</p>
+          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs for AI to verify stock & Expiry Optimization.</p>
           
+          <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
+              {inventoryFiles.length === 0 ? (
+                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                  No inventory uploaded.
+                </div>
+              ) : (
+                inventoryFiles.map(f => (
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-blue-500/30">
+                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={f.filename || 'Inventory CSV'}>
+                      📊 {f.filename || 'Inventory CSV'}
+                    </span>
+                    <button 
+                      onClick={() => deleteInventory(f.doc_id)} 
+                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      title="Delete document"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('inventory')} className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors">Download Template</button>
-             <label className={`flex-1 py-2.5 ${uploadedFiles['Inventory'] ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' : 'bg-blue-600 hover:bg-blue-500 text-white border border-transparent'} text-xs rounded-lg font-medium transition-colors cursor-pointer text-center`}>
-               {uploading === 'Inventory' ? 'Uploading...' : (uploadedFiles['Inventory'] ? 'Replace CSV' : 'Upload CSV')}
+             <button onClick={() => handleDownload('inventory')} className="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors" title="Download Template">⬇️ Tmpl</button>
+             <label className={`flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
+               {uploading === 'Inventory' ? 'Uploading...' : 'Upload New CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'inventory', 'Inventory')} />
              </label>
           </div>
@@ -193,22 +253,41 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
 
         {/* POS Logs Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          {uploadedFiles['POS'] && (
-            <div className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-bl-lg flex items-center shadow-lg backdrop-blur-sm border-b border-l border-emerald-500/30">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-              UPLOADED
-            </div>
-          )}
           <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30">
              <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
           </div>
           <h3 className="text-md font-bold text-slate-200">3. Daily POS Sales</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-6">Upload everyday. Required for AI to verify historical purchases and orders.</p>
+          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs. Required for AI to verify historical purchases.</p>
           
+          <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
+              {posFiles.length === 0 ? (
+                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                  No POS logs uploaded.
+                </div>
+              ) : (
+                posFiles.map(f => (
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-emerald-500/30">
+                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={f.filename || 'POS Sales CSV'}>
+                      🛒 {f.filename || 'POS Sales CSV'}
+                    </span>
+                    <button 
+                      onClick={() => deletePos(f.doc_id)} 
+                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      title="Delete document"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('pos')} className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors">Download Template</button>
-             <label className={`flex-1 py-2.5 ${uploadedFiles['POS'] ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' : 'bg-emerald-600 hover:bg-emerald-500 text-white border border-transparent'} text-xs rounded-lg font-medium transition-colors cursor-pointer text-center`}>
-               {uploading === 'POS' ? 'Uploading...' : (uploadedFiles['POS'] ? 'Replace CSV' : 'Upload CSV')}
+             <button onClick={() => handleDownload('pos')} className="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors" title="Download Template">⬇️ Tmpl</button>
+             <label className={`flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
+               {uploading === 'POS' ? 'Uploading...' : 'Upload New CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'pos', 'POS')} />
              </label>
           </div>

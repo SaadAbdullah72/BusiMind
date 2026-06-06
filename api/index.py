@@ -109,11 +109,14 @@ app.add_middleware(
 def load_inventory(email: str):
     if inventory_collection is None:
         return {}
-    record = inventory_collection.find_one({"email": email})
-    if not record or "data" not in record:
+    records = list(inventory_collection.find({"email": email}))
+    if not records:
         return {}
     inv = {}
-    for row in record["data"]:
+    for record in records:
+        if "data" not in record:
+            continue
+        for row in record["data"]:
         key = row.get("ItemName", "").strip().lower()
         if key:
             inv[key] = {
@@ -149,8 +152,11 @@ def save_inventory(email: str, inv: dict):
             "Supplier": item["supplier"],
             "SupplierLeadDays": str(item["supplier_lead_days"])
         })
+    # For save_inventory (used by deduct stock), we just update the first matching document or a default one.
+    # A robust approach would be to update the specific docs, but for simplicity we'll just upsert a main state doc
+    # or better yet, since we only deduct temporarily in memory and overwrite, we can just save it as an "Aggregated" doc
     inventory_collection.update_one(
-        {"email": email},
+        {"email": email, "filename": "Aggregated_Stock"},
         {"$set": {"data": data, "updated_at": datetime.utcnow()}},
         upsert=True
     )
@@ -270,20 +276,7 @@ def generate_purchase_order(email: str, product_key: str, order_quantity: int) -
         return {"error": f"Product key '{product_key}' not found in inventory."}
     cost_price = item["cost_price"]
     total_cost = cost_price * order_quantity
-    llm = _get_llm()
-    prompt = (
-        f"You are the Procurement Director at RetailMind Supermarket.\n"
-        f"Write a formal purchase order email to our supplier rep for {item['supplier']}.\n"
-        f"Order details:\n- Product: {item['name']}\n- Quantity: {order_quantity} {item['unit']}\n"
-        f"- Cost Price per unit: {cost_price} PKR\n- Total Cost: {total_cost} PKR\n"
-        f"- Lead Delivery Time expected: {item['supplier_lead_days']} days\n\n"
-        f"Keep the email short, professional, and clear."
-    )
-    try:
-        response = llm.invoke(prompt)
-        email_draft = response.content.strip()
-    except Exception:
-        email_draft = f"Subject: Purchase Order for {item['name']}\n\nDear Sales Rep,\n\nPlease process our order for {order_quantity} units of {item['name']}.\n\nBest regards,\nProcurement Dept."
+    email_draft = f"Subject: Urgent Purchase Order for {item['name']}\n\nDear Sales Rep,\n\nPlease process our formal purchase order for {order_quantity} {item['unit']} of {item['name']} at a cost of {cost_price} PKR per unit. The total order value is {total_cost} PKR.\n\nWe expect delivery within the standard {item['supplier_lead_days']} days.\n\nBest regards,\nRetailMind Procurement Automations"
     po_number = f"PO-2026-{datetime.now().strftime('%M%S')}"
     return {
         "po_number": po_number, "supplier": item["supplier"], "product_name": item["name"],
@@ -317,8 +310,10 @@ def run_diagnostics_stream(email: str):
     yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
     time.sleep(0.5)
 
-    record = pos_collection.find_one({"email": email}) if pos_collection else None
-    transactions = record.get("data", []) if record else []
+    records = list(pos_collection.find({"email": email})) if pos_collection else []
+    transactions = []
+    for r in records:
+        transactions.extend(r.get("data", []))
     
     if not transactions:
         yield f"data: {json.dumps({'agent': 'Error', 'status': 'No POS data uploaded. Please upload files in Data Sync Hub.'})}\n\n"
@@ -466,11 +461,14 @@ def upload_inventory(payload: UploadRequest):
         f = io.StringIO(payload.content.strip())
         reader = csv.DictReader(f)
         records = list(reader)
-        inventory_collection.update_one(
-            {"email": payload.email},
-            {"$set": {"data": records, "updated_at": datetime.utcnow()}},
-            upsert=True
-        )
+        doc_id = str(uuid.uuid4())
+        inventory_collection.insert_one({
+            "email": payload.email,
+            "doc_id": doc_id,
+            "filename": payload.filename,
+            "data": records,
+            "updated_at": datetime.utcnow()
+        })
         return {"status": "success", "message": f"Successfully loaded {len(records)} inventory items."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
@@ -500,14 +498,45 @@ def upload_pos(payload: UploadRequest):
         f = io.StringIO(payload.content.strip())
         reader = csv.DictReader(f)
         records = list(reader)
-        pos_collection.update_one(
-            {"email": payload.email},
-            {"$set": {"data": records, "updated_at": datetime.utcnow()}},
-            upsert=True
-        )
+        doc_id = str(uuid.uuid4())
+        pos_collection.insert_one({
+            "email": payload.email,
+            "doc_id": doc_id,
+            "filename": payload.filename,
+            "data": records,
+            "updated_at": datetime.utcnow()
+        })
         return {"status": "success", "message": f"Successfully loaded {len(records)} POS transactions."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+@app.get("/api/inventory")
+def get_inventory_files(email: str):
+    if inventory_collection is None:
+        return []
+    records = list(inventory_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 0}))
+    return records
+
+@app.delete("/api/inventory/{doc_id}")
+def delete_inventory(doc_id: str, email: str):
+    if inventory_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error"})
+    inventory_collection.delete_one({"doc_id": doc_id, "email": email})
+    return {"status": "success"}
+
+@app.get("/api/pos")
+def get_pos_files(email: str):
+    if pos_collection is None:
+        return []
+    records = list(pos_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 0}))
+    return records
+
+@app.delete("/api/pos/{doc_id}")
+def delete_pos(doc_id: str, email: str):
+    if pos_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error"})
+    pos_collection.delete_one({"doc_id": doc_id, "email": email})
+    return {"status": "success"}
 
 @app.post("/api/upload/policy")
 async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
