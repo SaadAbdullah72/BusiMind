@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 
-interface SupportEngineProps {
-  userEmail: string;
-}
+
 
 export default function SupportEngine() {
   const [emails, setEmails] = useState<any[]>([]);
