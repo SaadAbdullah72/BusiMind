@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './index.css';
 
 // Component imports
-import DashboardOverview from './components/DashboardOverview';
+import RetailOverview from './components/RetailOverview';
 import SupportEngine from './components/SupportEngine';
 import LoginScreen from './components/LoginScreen';
 import DataSyncHub from './components/DataSyncHub';
@@ -32,9 +32,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'datasync' | 'support'>('support');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
-  const [expiryData, setExpiryData] = useState<any>(null);
-  const [pricingData, setPricingData] = useState<any>(null);
-  const [procurementData, setProcurementData] = useState<any>(null);
 
   const [scanning, setScanning] = useState(false);
   const [progress, setProgress] = useState<any>(null);
@@ -193,7 +190,14 @@ export default function App() {
                 }}
               />
             )}
-            {activeTab === 'dashboard' && <DashboardOverview kpis={kpis} swot={swot} onRunDiagnostic={runDiagnosticScan} isScanning={scanning} progress={progress} />}
+            {activeTab === 'dashboard' && (
+              <RetailOverview
+                kpis={kpis}
+                swot={swot}
+                onScanComplete={runDiagnosticScan}
+                scanning={scanning}
+              />
+            )}
             {activeTab === 'support' && <SupportEngine />}
           </div>
         </main>
