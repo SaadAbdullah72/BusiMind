@@ -307,6 +307,67 @@ def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
 # ══════════════════════════════════════════════════════════════════════════════
 # AGENT (from agent.py) — Diagnostic pipeline
 # ══════════════════════════════════════════════════════════════════════════════
+def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
+    categories = list(set([item.get("category", "General") for item in inventory_items.values() if item.get("category")]))
+    if not categories:
+        categories = ["Cooking Oil", "Tea", "Flour", "Sugar", "Milk", "Yogurt", "Soap", "Detergent", "Soft Drinks", "Snacks"]
+
+    # Calculate sales frequency per category
+    category_sales = {}
+    for row in transactions:
+        item_name = row.get("ItemName", "").strip().lower()
+        item_cat = "General"
+        for key, inv_item in inventory_items.items():
+            if inv_item.get("name") and inv_item["name"].lower() == item_name:
+                item_cat = inv_item.get("category", "General")
+                break
+        qty = safe_int(row.get("Quantity"), 1)
+        category_sales[item_cat] = category_sales.get(item_cat, 0) + qty
+
+    # Sort categories by sales volume, fallback to alphabetical
+    categories.sort(key=lambda c: category_sales.get(c, 0), reverse=True)
+
+    # Retrieve layout config (Aisles count & Slots per aisle)
+    aisles_count = 3
+    slots_per_aisle = 4
+    if settings_collection is not None:
+        settings = settings_collection.find_one({"email": email})
+        if settings:
+            layout_data = settings.get("layout_config", {})
+            if isinstance(layout_data, dict):
+                aisles_count = int(layout_data.get("aisles_count", 3))
+                slots_per_aisle = int(layout_data.get("slots_per_aisle", 4))
+
+    total_capacity = aisles_count * slots_per_aisle
+    fitted_categories = categories[:total_capacity]
+    overflow_categories = categories[total_capacity:]
+
+    import math
+    extra_lines_needed = math.ceil(len(overflow_categories) / slots_per_aisle) if overflow_categories and slots_per_aisle > 0 else 0
+
+    fitted_layout = []
+    for i in range(aisles_count):
+        aisle_slots = []
+        for j in range(slots_per_aisle):
+            idx = i * slots_per_aisle + j
+            if idx < len(fitted_categories):
+                aisle_slots.append(fitted_categories[idx])
+            else:
+                aisle_slots.append("")
+        fitted_layout.append({
+            "id": str(i + 1),
+            "name": f"Line {i + 1}",
+            "slots": aisle_slots
+        })
+
+    return {
+        "fitted_layout": fitted_layout,
+        "overflow_categories": overflow_categories,
+        "extra_lines_needed": extra_lines_needed,
+        "aisles_count": aisles_count,
+        "slots_per_aisle": slots_per_aisle
+    }
+
 def analyze_purchase_patterns(email: str) -> list:
     if pos_collection is None:
         return []
@@ -335,21 +396,15 @@ def analyze_purchase_patterns(email: str) -> list:
     sorted_pairs = sorted(pair_counts.items(), key=lambda x: x[1], reverse=True)
     top_pairs = sorted_pairs[:5]
     
-    # Load user layout settings
-    layout_config = []
-    if settings_collection is not None:
-        settings = settings_collection.find_one({"email": email})
-        if settings:
-            layout_config = settings.get("layout_config", [])
+    # Load user layout settings & fit them
+    inventory_items = load_inventory(email)
+    layout_info = build_fitted_layout(email, transactions, inventory_items)
+    layout_config = layout_info["fitted_layout"]
 
-    layout_desc = ""
-    if layout_config:
-        layout_desc = "Current Supermarket Layout Configuration:\n"
-        for aisle in layout_config:
-            slots_str = ", ".join([s if s else "Empty" for s in aisle.get("slots", [])])
-            layout_desc += f"- Aisle ID '{aisle.get('id')}': Named '{aisle.get('name')}', holding slots: [{slots_str}]\n"
-    else:
-        layout_desc = "No layout configuration is set by the user yet.\n"
+    layout_desc = "Current Supermarket Layout Configuration:\n"
+    for aisle in layout_config:
+        slots_str = ", ".join([s if s else "Empty" for s in aisle.get("slots", [])])
+        layout_desc += f"- Aisle ID '{aisle.get('id')}': Named '{aisle.get('name')}', holding slots: [{slots_str}]\n"
     
     recommendations = []
     if top_pairs:
@@ -545,12 +600,9 @@ def run_diagnostics_stream(email: str):
         # Co-occurrence Layout Recommendations
         layout_recs = analyze_purchase_patterns(email)
 
-        # Load user layout settings
-        layout_config = []
-        if settings_collection is not None:
-            settings = settings_collection.find_one({"email": email})
-            if settings:
-                layout_config = settings.get("layout_config", [])
+        # Load user layout settings & fit layout dynamically
+        layout_items = load_inventory(email)
+        layout_info = build_fitted_layout(email, transactions, layout_items)
 
         final_payload = {
             "kpis": {
@@ -568,7 +620,9 @@ def run_diagnostics_stream(email: str):
             "swot": swot_data,
             "depletion_risks": depletion_risks,
             "layout_recommendations": layout_recs,
-            "layout_config": layout_config
+            "layout_config": layout_info["fitted_layout"],
+            "overflow_categories": layout_info["overflow_categories"],
+            "extra_lines_needed": layout_info["extra_lines_needed"]
         }
         yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
     except Exception as e:
@@ -745,7 +799,7 @@ class SettingsPayload(BaseModel):
     customer_email: str
     customer_password: str
     staff_email: str
-    layout_config: list = []
+    layout_config: dict = {}
 
 @app.post("/api/settings")
 def save_settings(payload: SettingsPayload):

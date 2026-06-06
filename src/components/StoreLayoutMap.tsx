@@ -9,9 +9,16 @@ interface Aisle {
 interface StoreLayoutMapProps {
   layoutConfig: Aisle[];
   hoveredRec: any;
+  overflowCategories?: string[];
+  extraLinesNeeded?: number;
 }
 
-export default function StoreLayoutMap({ layoutConfig, hoveredRec }: StoreLayoutMapProps) {
+export default function StoreLayoutMap({ 
+  layoutConfig, 
+  hoveredRec, 
+  overflowCategories = [], 
+  extraLinesNeeded = 0 
+}: StoreLayoutMapProps) {
   const [viewMode, setViewMode] = useState<'placement' | 'heatmap'>('placement');
   const [lineCoords, setLineCoords] = useState<{ x1: number; y1: number; x2: number; y2: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -123,6 +130,24 @@ export default function StoreLayoutMap({ layoutConfig, hoveredRec }: StoreLayout
         </div>
       </div>
 
+      {/* Overflow Warning Banner */}
+      {overflowCategories && overflowCategories.length > 0 && (
+        <div className="mb-6 p-4 bg-amber-500/5 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40 rounded-xl flex items-start gap-3.5 transition-all text-amber-300">
+          <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20 shrink-0">
+            <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="font-bold text-xs text-amber-200">Space Constraint Warning ({overflowCategories.length} Categories Overflowing)</h4>
+            <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+              The following categories cannot fit in your configured layout: <span className="text-amber-400 font-semibold">{overflowCategories.join(', ')}</span>. 
+              We recommend creating at least <span className="text-indigo-400 font-bold">{extraLinesNeeded} more Line(s)</span> in your <span className="font-semibold text-slate-350">Business Settings</span> to accommodate all items.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Grid Floorplan container */}
       <div 
         ref={containerRef}
@@ -161,7 +186,7 @@ export default function StoreLayoutMap({ layoutConfig, hoveredRec }: StoreLayout
                   )}
                 </div>
 
-                {/* 2x2 Slots Visual Grid */}
+                {/* Slots Visual Grid */}
                 <div className="grid grid-cols-2 gap-2">
                   {aisle.slots.map((slot, index) => {
                     const isAisleSourceSlot = isSource && slot && hoveredRec.item_b && slot.toLowerCase().includes(hoveredRec.item_b.toLowerCase().split(' ')[0]);

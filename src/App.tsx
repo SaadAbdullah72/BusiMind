@@ -227,6 +227,8 @@ export default function App() {
                 depletionRisks={scanResult?.depletion_risks}
                 layoutRecommendations={scanResult?.layout_recommendations}
                 layoutConfig={scanResult?.layout_config}
+                overflowCategories={scanResult?.overflow_categories}
+                extraLinesNeeded={scanResult?.extra_lines_needed}
               />
             )}
             {activeTab === 'chatbot' && <OperationsChatbot userEmail={userEmail || ''} />}

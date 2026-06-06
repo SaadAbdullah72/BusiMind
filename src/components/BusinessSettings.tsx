@@ -1,28 +1,5 @@
 import { useState, useEffect } from 'react';
 
-interface Aisle {
-  id: string;
-  name: string;
-  slots: string[]; // Array of size 4
-}
-
-const CATEGORIES = [
-  "",
-  "Cooking Oil",
-  "Tea",
-  "Sugar",
-  "Flour",
-  "Milk",
-  "Yogurt",
-  "Soap",
-  "Detergent",
-  "Soft Drinks",
-  "Spices",
-  "Snacks",
-  "Confectionery",
-  "Frozen Foods"
-];
-
 export default function BusinessSettings({ userEmail }: { userEmail: string }) {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -36,11 +13,9 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
   const [customerPassword, setCustomerPassword] = useState('');
   const [staffEmail, setStaffEmail] = useState('');
 
-  // Layout State
-  const [aisles, setAisles] = useState<Aisle[]>([
-    { id: '1', name: 'Line 1', slots: ['Cooking Oil', 'Tea', 'Flour', 'Sugar'] },
-    { id: '2', name: 'Line 2', slots: ['Milk', 'Yogurt', 'Soap', 'Detergent'] }
-  ]);
+  // Layout State (simplified to numbers)
+  const [aislesCount, setAislesCount] = useState(3);
+  const [slotsPerAisle, setSlotsPerAisle] = useState(4);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -54,8 +29,9 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
           setCustomerPassword(data.customer_password || '');
           setStaffEmail(data.staff_email || '');
         }
-        if (data.layout_config && Array.isArray(data.layout_config) && data.layout_config.length > 0) {
-          setAisles(data.layout_config);
+        if (data.layout_config && typeof data.layout_config === 'object') {
+          setAislesCount(data.layout_config.aisles_count !== undefined ? data.layout_config.aisles_count : 3);
+          setSlotsPerAisle(data.layout_config.slots_per_aisle !== undefined ? data.layout_config.slots_per_aisle : 4);
         }
       } catch (err) {
         console.error(err);
@@ -80,7 +56,10 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
           customer_email: customerEmail,
           customer_password: customerPassword,
           staff_email: staffEmail,
-          layout_config: aisles
+          layout_config: {
+            aisles_count: aislesCount,
+            slots_per_aisle: slotsPerAisle
+          }
         })
       });
       const data = await res.json();
@@ -90,33 +69,6 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleAddAisle = () => {
-    const nextId = (aisles.length > 0 ? Math.max(...aisles.map(a => parseInt(a.id) || 0)) + 1 : 1).toString();
-    setAisles(prev => [
-      ...prev,
-      { id: nextId, name: `Line ${nextId}`, slots: ['', '', '', ''] }
-    ]);
-  };
-
-  const handleRemoveAisle = (id: string) => {
-    setAisles(prev => prev.filter(a => a.id !== id));
-  };
-
-  const handleAisleNameChange = (id: string, name: string) => {
-    setAisles(prev => prev.map(a => a.id === id ? { ...a, name } : a));
-  };
-
-  const handleSlotChange = (aisleId: string, slotIndex: number, category: string) => {
-    setAisles(prev => prev.map(a => {
-      if (a.id === aisleId) {
-        const updatedSlots = [...a.slots];
-        updatedSlots[slotIndex] = category;
-        return { ...a, slots: updatedSlots };
-      }
-      return a;
-    }));
   };
 
   if (fetching) return <div className="p-8 text-slate-400">Loading settings...</div>;
@@ -141,7 +93,7 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
           </div>
 
           {/* Glassmorphic Tabs */}
-          <div className="flex bg-[#121216]/80 p-1 rounded-xl border border-[#1e1e24]">
+          <div className="flex bg-[#121216]/80 p-0.5 rounded-xl border border-[#1e1e24]">
             <button
               onClick={() => setActiveSubTab('credentials')}
               className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
@@ -160,7 +112,7 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              Store Layout Planner
+              Store Layout Config
             </button>
           </div>
         </div>
@@ -211,112 +163,45 @@ export default function BusinessSettings({ userEmail }: { userEmail: string }) {
             </div>
           )}
 
-          {/* TAB 2: STORE LAYOUT PLANNER */}
+          {/* TAB 2: STORE LAYOUT CONFIG */}
           {activeSubTab === 'layout' && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-in fade-in duration-300">
               <div className="p-5 bg-indigo-500/5 border border-indigo-500/20 rounded-xl text-xs leading-relaxed text-indigo-300">
-                💡 <strong>How it works:</strong> Define your physical aisles/lines. Each line represents a shelving block containing 4 slots (Front Left, Front Right, Back Left, Back Right). The AI cross-references this layout with POS transaction co-occurrences to recommend high-affinity item groupings visually on the Dashboard!
+                💡 <strong>Dynamic Floor Planner:</strong> Set the physical layout parameters of your store. The AI will automatically analyze your inventory categories and purchase frequencies to fit them into the optimal shelves, alerting you if any categories overflow your current store capacity.
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {aisles.map((aisle) => (
-                  <div key={aisle.id} className="p-5 rounded-xl bg-[#121216] border border-[#1e1e24] flex flex-col justify-between">
-                    <div>
-                      {/* Aisle Name and Remove */}
-                      <div className="flex justify-between items-center mb-4">
-                        <input
-                          type="text"
-                          value={aisle.name}
-                          onChange={(e) => handleAisleNameChange(aisle.id, e.target.value)}
-                          className="bg-transparent font-bold text-sm text-slate-200 border-b border-transparent hover:border-slate-600 focus:border-indigo-500 focus:outline-none py-0.5 px-1 max-w-[150px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveAisle(aisle.id)}
-                          className="p-1 text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
-                          title="Remove Aisle"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {/* 2x2 Shelf Slots */}
-                      <div className="grid grid-cols-2 gap-3 mt-2">
-                        {/* Slot 0: Front Left */}
-                        <div className="p-2.5 bg-[#0a0a0c] border border-slate-800 rounded-lg">
-                          <span className="block text-[9px] font-bold text-indigo-400 tracking-wider uppercase mb-1">Front Left (Slot 1)</span>
-                          <select
-                            value={aisle.slots[0] || ""}
-                            onChange={(e) => handleSlotChange(aisle.id, 0, e.target.value)}
-                            className="w-full bg-[#121216] text-xs text-slate-300 border border-slate-700/40 rounded px-1.5 py-1 focus:outline-none focus:border-indigo-500"
-                          >
-                            {CATEGORIES.map(cat => (
-                              <option key={cat} value={cat}>{cat || "Empty"}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        {/* Slot 1: Front Right */}
-                        <div className="p-2.5 bg-[#0a0a0c] border border-slate-800 rounded-lg">
-                          <span className="block text-[9px] font-bold text-indigo-400 tracking-wider uppercase mb-1">Front Right (Slot 2)</span>
-                          <select
-                            value={aisle.slots[1] || ""}
-                            onChange={(e) => handleSlotChange(aisle.id, 1, e.target.value)}
-                            className="w-full bg-[#121216] text-xs text-slate-300 border border-slate-700/40 rounded px-1.5 py-1 focus:outline-none focus:border-indigo-500"
-                          >
-                            {CATEGORIES.map(cat => (
-                              <option key={cat} value={cat}>{cat || "Empty"}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        {/* Slot 2: Back Left */}
-                        <div className="p-2.5 bg-[#0a0a0c] border border-slate-800 rounded-lg">
-                          <span className="block text-[9px] font-bold text-indigo-400 tracking-wider uppercase mb-1">Back Left (Slot 3)</span>
-                          <select
-                            value={aisle.slots[2] || ""}
-                            onChange={(e) => handleSlotChange(aisle.id, 2, e.target.value)}
-                            className="w-full bg-[#121216] text-xs text-slate-300 border border-slate-700/40 rounded px-1.5 py-1 focus:outline-none focus:border-indigo-500"
-                          >
-                            {CATEGORIES.map(cat => (
-                              <option key={cat} value={cat}>{cat || "Empty"}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        {/* Slot 3: Back Right */}
-                        <div className="p-2.5 bg-[#0a0a0c] border border-slate-800 rounded-lg">
-                          <span className="block text-[9px] font-bold text-indigo-400 tracking-wider uppercase mb-1">Back Right (Slot 4)</span>
-                          <select
-                            value={aisle.slots[3] || ""}
-                            onChange={(e) => handleSlotChange(aisle.id, 3, e.target.value)}
-                            className="w-full bg-[#121216] text-xs text-slate-300 border border-slate-700/40 rounded px-1.5 py-1 focus:outline-none focus:border-indigo-500"
-                          >
-                            {CATEGORIES.map(cat => (
-                              <option key={cat} value={cat}>{cat || "Empty"}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
+              <div className="p-6 rounded-xl bg-[#121216] border border-[#1e1e24] space-y-6">
+                <h3 className="font-semibold text-slate-300 text-sm uppercase tracking-wider">Store Capacity Config</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">Number of Aisles / Lines</label>
+                    <p className="text-[10px] text-slate-500 mb-3 leading-relaxed">How many physical shelving lines are set up in your store?</p>
+                    <input
+                      required
+                      type="number"
+                      min="1"
+                      max="12"
+                      value={aislesCount}
+                      onChange={e => setAislesCount(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full bg-[#0a0a0c] border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
+                    />
                   </div>
-                ))}
 
-                {/* Add Aisle Block */}
-                <button
-                  type="button"
-                  onClick={handleAddAisle}
-                  className="p-8 rounded-xl border border-dashed border-slate-850 hover:border-indigo-500/50 bg-[#121216]/30 hover:bg-[#121216]/60 flex flex-col items-center justify-center gap-3.5 transition-all group cursor-pointer text-slate-400 hover:text-indigo-400"
-                >
-                  <div className="w-10 h-10 rounded-full border border-dashed border-slate-750 group-hover:border-indigo-500/40 flex items-center justify-center">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wide">Capacity per Aisle (Slots / Items)</label>
+                    <p className="text-[10px] text-slate-500 mb-3 leading-relaxed">How many distinct product categories can each aisle accommodate?</p>
+                    <input
+                      required
+                      type="number"
+                      min="1"
+                      max="8"
+                      value={slotsPerAisle}
+                      onChange={e => setSlotsPerAisle(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full bg-[#0a0a0c] border border-slate-700/50 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
+                    />
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider">Add Aisle / Line</span>
-                </button>
+                </div>
               </div>
             </div>
           )}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import StoreLayoutMap from './StoreLayoutMap';
 
-export default function RetailOverview({ kpis, swot, onScanComplete, scanning, depletionRisks, layoutRecommendations, layoutConfig }: any) {
+export default function RetailOverview({ kpis, swot, onScanComplete, scanning, depletionRisks, layoutRecommendations, layoutConfig, overflowCategories, extraLinesNeeded }: any) {
   const [hoveredRec, setHoveredRec] = useState<any>(null);
   return (
     <div className="space-y-6">
@@ -185,6 +185,8 @@ export default function RetailOverview({ kpis, swot, onScanComplete, scanning, d
           <StoreLayoutMap 
             layoutConfig={layoutConfig} 
             hoveredRec={hoveredRec} 
+            overflowCategories={overflowCategories}
+            extraLinesNeeded={extraLinesNeeded}
           />
         </div>
 
