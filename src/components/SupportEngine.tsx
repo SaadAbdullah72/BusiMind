@@ -6,10 +6,30 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const isPausedRef = useRef(isPaused);
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [results, setResults] = useState<Record<string, any>>({});
   const [progress, setProgress] = useState(0);
   const [sendingTest, setSendingTest] = useState(false);
+
+  useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
+
+  // Load state from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('support_engine_state');
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.emails && parsed.emails.length > 0) {
+          setEmails(parsed.emails);
+          setResults(parsed.results || {});
+        }
+      } catch (e) {}
+    }
+  }, []);
 
   const sendTestEmails = async () => {
     setSendingTest(true);
@@ -39,6 +59,7 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
       const res = await fetch(`/api/support/live-inbox?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       setEmails(data);
+      localStorage.setItem('support_engine_state', JSON.stringify({ emails: data, results }));
     } catch (err) {
       console.error(err);
     } finally {
@@ -52,12 +73,20 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
 
 
   const processAll = async () => {
+    if (processing) {
+      setIsPaused(true);
+      return;
+    }
+    
+    setIsPaused(false);
     setProcessing(true);
     let count = 0;
     
-    // We will process them sequentially to avoid rate limits, or in small batches.
-    // Since there are 100, we'll do them sequentially for visual effect.
-    for (const email of emails) {
+    let currentResults = { ...results };
+    let currentEmails = [ ...emails ];
+    
+    for (const email of currentEmails) {
+      if (isPausedRef.current) break;
       if (email.status !== 'unread') {
         count++;
         continue;
@@ -77,20 +106,24 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
         });
         const data = await res.json();
         
-        // Update local results
-        setResults(prev => ({...prev, [email.message_id]: data}));
+        currentResults = {...currentResults, [email.message_id]: data};
+        setResults(currentResults);
         
-        // Mark as read locally
-        setEmails(prev => prev.map(e => e.message_id === email.message_id ? {...e, status: data.intent === 'COMPLAINT' ? 'escalated' : 'replied'} : e));
+        currentEmails = currentEmails.map(e => e.message_id === email.message_id ? {...e, status: data.intent === 'COMPLAINT' ? 'escalated' : 'replied'} : e);
+        setEmails(currentEmails);
+        
+        localStorage.setItem('support_engine_state', JSON.stringify({ emails: currentEmails, results: currentResults }));
       } catch (err) {
         console.error(err);
       }
       count++;
-      setProgress(Math.round((count / emails.length) * 100));
-      // Add a 3 second delay to avoid hitting LLM rate limits (Groq allows ~30 RPM)
-      await new Promise(r => setTimeout(r, 3000));
+      setProgress(Math.round((count / currentEmails.length) * 100));
+      
+      if (isPausedRef.current) break;
+      await new Promise(r => setTimeout(r, 1000));
     }
     setProcessing(false);
+    setIsPaused(false);
   };
 
   return (
@@ -106,11 +139,15 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
             <button onClick={sendTestEmails} disabled={loading || processing || sendingTest} className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-slate-600 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
               {sendingTest ? 'Sending...' : 'Send Test'}
             </button>
-            <button onClick={fetchInbox} disabled={loading || processing || sendingTest} className="px-2.5 py-1.5 bg-slate-800/20 hover:bg-slate-800/40 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-[#1a1a24]/80 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
+            <button onClick={fetchInbox} disabled={loading || (processing && !isPaused) || sendingTest} className="px-2.5 py-1.5 bg-slate-800/20 hover:bg-slate-800/40 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-[#1a1a24]/80 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
               {loading ? 'Fetching...' : 'Fetch'}
             </button>
-            <button onClick={processAll} disabled={loading || processing || sendingTest || emails.length === 0} className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-[10px] rounded-lg font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 uppercase tracking-wider">
-              {processing ? `Processing ${progress}%` : 'Run Automation'}
+            <button 
+              onClick={processAll} 
+              disabled={loading || sendingTest || emails.length === 0} 
+              className={`px-2.5 py-1.5 text-white text-[10px] rounded-lg font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 uppercase tracking-wider ${processing ? 'bg-orange-500 hover:bg-orange-600' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+            >
+              {processing ? `Pause Automation (${progress}%)` : 'Run Automation'}
             </button>
           </div>
         </div>
