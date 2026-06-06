@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 
 
-export default function SupportEngine() {
+export default function SupportEngine({ userEmail }: { userEmail: string }) {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -14,7 +14,11 @@ export default function SupportEngine() {
   const sendTestEmails = async () => {
     setSendingTest(true);
     try {
-      const res = await fetch('/api/support/send-mock-emails', { method: 'POST' });
+      const res = await fetch('/api/support/send-mock-emails', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: userEmail })
+      });
       const data = await res.json();
       if (res.ok) {
         alert(data.message);
@@ -32,7 +36,7 @@ export default function SupportEngine() {
   const fetchInbox = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/support/live-inbox`);
+      const res = await fetch(`/api/support/live-inbox?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       setEmails(data);
     } catch (err) {
@@ -43,8 +47,8 @@ export default function SupportEngine() {
   };
 
   useEffect(() => {
-    fetchInbox();
-  }, []);
+    if (userEmail) fetchInbox();
+  }, [userEmail]);
 
 
   const processAll = async () => {
@@ -60,14 +64,15 @@ export default function SupportEngine() {
       }
       setSelectedEmail(email); // Show currently processing
       try {
-        const res = await fetch('/api/support/resolve-live', {
+        const res = await fetch(`/api/support/resolve-live`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             message_id: email.message_id, 
             message: email.body, 
             sender: email.sender,
-            subject: email.subject
+            subject: email.subject,
+            email: userEmail
           })
         });
         const data = await res.json();

@@ -13,6 +13,24 @@ const TEMPLATES = {
 export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubProps) {
   const [uploading, setUploading] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, boolean>>({});
+  const [policies, setPolicies] = useState<any[]>([]);
+
+  const fetchPolicies = async () => {
+    try {
+      const res = await fetch(`/api/policies?email=${encodeURIComponent(userEmail)}`);
+      const data = await res.json();
+      setPolicies(data);
+      if (data.length > 0) {
+        setUploadedFiles(prev => ({ ...prev, 'Policy': true }));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchPolicies();
+  }, [userEmail]);
 
   const handleDownload = (type: keyof typeof TEMPLATES) => {
     const element = document.createElement("a");
@@ -76,6 +94,7 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
       const data = await res.json();
       if (res.ok && data.status === 'success') {
         setUploadedFiles(prev => ({ ...prev, 'Policy': true }));
+        fetchPolicies();
         onUploadSuccess('Policy');
       } else {
         alert('Upload failed: ' + data.message);
@@ -85,6 +104,18 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
     } finally {
       setUploading(null);
       e.target.value = '';
+    }
+  };
+
+  const deletePolicy = async (doc_id: string) => {
+    if (!confirm('Are you sure you want to delete this document?')) return;
+    try {
+      const res = await fetch(`/api/policies/${doc_id}?email=${encodeURIComponent(userEmail)}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchPolicies();
+      }
+    } catch (err) {
+      alert('Error deleting document');
     }
   };
 
@@ -121,21 +152,26 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
 
         {/* Business Policy Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          {uploadedFiles['Policy'] && (
-            <div className="absolute top-0 right-0 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-3 py-1 rounded-bl-lg flex items-center shadow-lg backdrop-blur-sm border-b border-l border-emerald-500/30">
-              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-              UPLOADED
-            </div>
-          )}
           <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mb-4 border border-purple-500/30">
              <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           </div>
           <h3 className="text-md font-bold text-slate-200">2. Business Policy (PDF)</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-6">Required for AI automated email responses and query handling.</p>
+          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple PDFs for the AI to use as context.</p>
           
+          <div className="w-full text-left mb-4 space-y-2">
+            {policies.map(p => (
+              <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50">
+                <span className="text-xs text-slate-300 truncate w-3/4">{p.filename}</span>
+                <button onClick={() => deletePolicy(p.doc_id)} className="text-red-400 hover:text-red-300 p-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+              </div>
+            ))}
+          </div>
+
           <div className="flex w-full mt-auto">
-             <label className={`w-full py-2.5 ${uploadedFiles['Policy'] ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' : 'bg-purple-600 hover:bg-purple-500 text-white border border-transparent'} text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
-               {uploading === 'Policy' ? 'Extracting Text...' : (uploadedFiles['Policy'] ? 'Replace PDF File' : 'Upload PDF')}
+             <label className={`w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
+               {uploading === 'Policy' ? 'Extracting Text...' : 'Upload New PDF'}
                <input type="file" accept=".pdf" className="hidden" onChange={uploadPdfFile} />
              </label>
           </div>

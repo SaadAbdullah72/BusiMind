@@ -5,8 +5,8 @@ import random
 import uuid
 import time
 
-SENDER_EMAIL = "cursorthee@gmail.com"
-SENDER_PASSWORD = "lrryxbudjhjkjvnv"
+SENDER_EMAIL = "saad489254@gmail.com"
+SENDER_PASSWORD = "zwchnmjmppazdfym"
 RECEIVER_EMAIL = "cursorthee@gmail.com"
 
 templates = [

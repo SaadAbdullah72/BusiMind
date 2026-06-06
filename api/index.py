@@ -37,6 +37,7 @@ if MONGO_URI:
     pos_collection = db["pos_logs"]
     emails_collection = db["customer_emails"]
     policies_collection = db["business_policies"]
+    settings_collection = db["business_settings"]
 else:
     mongo_client = None
     users_collection = None
@@ -46,6 +47,7 @@ else:
     pos_collection = None
     emails_collection = None
     policies_collection = None
+    settings_collection = None
 
 from fastapi import File, UploadFile, Form
 import PyPDF2
@@ -518,14 +520,67 @@ async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
         for page in reader.pages:
             policy_text += page.extract_text() + "\n"
             
-        policies_collection.update_one(
-            {"email": email},
-            {"$set": {"policy_text": policy_text.strip(), "updated_at": datetime.utcnow()}},
-            upsert=True
-        )
+        import uuid
+        doc_id = str(uuid.uuid4())
+        
+        policies_collection.insert_one({
+            "email": email,
+            "doc_id": doc_id,
+            "filename": file.filename,
+            "policy_text": policy_text.strip(),
+            "uploaded_at": datetime.utcnow()
+        })
         return {"status": "success", "message": "Business Policy PDF uploaded and extracted successfully."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+@app.get("/api/policies")
+def get_policies(email: str = None):
+    if not email or policies_collection is None:
+        return []
+    records = list(policies_collection.find({"email": email}, {"_id": 0, "policy_text": 0})) # Exclude text to save bandwidth
+    return records
+
+@app.delete("/api/policies/{doc_id}")
+def delete_policy(doc_id: str, email: str):
+    if policies_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    policies_collection.delete_one({"email": email, "doc_id": doc_id})
+    return {"status": "success", "message": "Document deleted."}
+
+class SettingsPayload(BaseModel):
+    email: str
+    smtp_email: str
+    smtp_password: str
+    customer_email: str
+    customer_password: str
+    staff_email: str
+
+@app.post("/api/settings")
+def save_settings(payload: SettingsPayload):
+    if settings_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    
+    settings_collection.update_one(
+        {"email": payload.email},
+        {"$set": {
+            "smtp_email": payload.smtp_email,
+            "smtp_password": payload.smtp_password,
+            "customer_email": payload.customer_email,
+            "customer_password": payload.customer_password,
+            "staff_email": payload.staff_email,
+            "updated_at": datetime.utcnow()
+        }},
+        upsert=True
+    )
+    return {"status": "success", "message": "Settings saved successfully."}
+
+@app.get("/api/settings")
+def get_settings(email: str):
+    if settings_collection is None:
+        return {}
+    record = settings_collection.find_one({"email": email}, {"_id": 0})
+    return record or {}
 
 class SupportRequest(BaseModel):
     email: str
@@ -569,14 +624,24 @@ def seed_dummy_emails(payload: dict):
     emails_collection.insert_many(dummy_emails)
     return {"status": "success", "message": "100 dummy emails seeded."}
 
+class MockEmailPayload(BaseModel):
+    email: str
+
 @app.post("/api/support/send-mock-emails")
-def send_mock_live_emails(payload: dict = None):
-    customer_email = os.getenv("CUSTOMER_EMAIL")
-    customer_pass = os.getenv("CUSTOMER_PASSWORD")
-    smtp_email = os.getenv("SMTP_EMAIL")
+def send_mock_live_emails(payload: MockEmailPayload):
+    if settings_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+        
+    settings = settings_collection.find_one({"email": payload.email})
+    if not settings:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "Business settings not configured. Please setup your credentials in Settings."})
+
+    customer_email = settings.get("customer_email")
+    customer_pass = settings.get("customer_password")
+    smtp_email = settings.get("smtp_email")
 
     if not customer_email or not customer_pass or not smtp_email:
-        return JSONResponse(status_code=500, content={"status": "error", "message": "Customer or SMTP Credentials not found in .env"})
+        return JSONResponse(status_code=400, content={"status": "error", "message": "Customer or SMTP Credentials not found in Business Settings."})
 
     queries = [
         # Solvable by PDF
@@ -686,9 +751,16 @@ def resolve_customer_support(request: SupportRequest):
     }
 
 @app.get("/api/support/live-inbox")
-def get_live_inbox():
-    smtp_email = os.getenv("SMTP_EMAIL")
-    smtp_pass = os.getenv("SMTP_PASSWORD")
+def get_live_inbox(email: str = None):
+    if not email or settings_collection is None:
+        return []
+        
+    settings = settings_collection.find_one({"email": email})
+    if not settings:
+        return []
+
+    smtp_email = settings.get("smtp_email")
+    smtp_pass = settings.get("smtp_password")
     if not smtp_email or not smtp_pass:
         return []
     
@@ -757,6 +829,7 @@ class LiveResolveRequest(BaseModel):
     message: str
     sender: str
     subject: str
+    email: str
 
 @app.post("/api/support/resolve-live")
 def resolve_live_email(req: LiveResolveRequest):
@@ -765,10 +838,9 @@ def resolve_live_email(req: LiveResolveRequest):
     # Fetch Policy Document for context
     policy_doc = "No specific policy document uploaded."
     if policies_collection is not None:
-        # For simplicity, fetching the first policy available or matching by a hypothetical admin email
-        record = policies_collection.find_one({}) # In a real SaaS, filter by req.email or user's email
-        if record and "policy_text" in record:
-            policy_doc = record["policy_text"]
+        records = list(policies_collection.find({"email": req.email}))
+        if records:
+            policy_doc = "\n\n".join([rec.get("policy_text", "") for rec in records])
 
     # Step 1: Classifier & RAG Verification
     classify_prompt = (
@@ -817,9 +889,16 @@ def resolve_live_email(req: LiveResolveRequest):
         auto_reply = "We have received your email. Our human support team will get back to you shortly."
 
     # Email Action via SMTP
-    smtp_email = os.getenv("SMTP_EMAIL")
-    smtp_pass = os.getenv("SMTP_PASSWORD")
-    staff_email = os.getenv("STAFF_EMAIL", "trustvault3.help@gmail.com")
+    if settings_collection is None:
+        return {"action_taken": "Error: DB not configured"}
+        
+    settings = settings_collection.find_one({"email": req.email})
+    if not settings:
+        return {"action_taken": "Error: Settings not configured"}
+
+    smtp_email = settings.get("smtp_email")
+    smtp_pass = settings.get("smtp_password")
+    staff_email = settings.get("staff_email", "trustvault3.help@gmail.com")
     action_taken = "Auto-Reply Sent"
 
     try:
