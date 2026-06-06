@@ -178,7 +178,7 @@ def get_llm():
     from langchain_groq import ChatGroq
     return ChatGroq(
         temperature=0.2,
-        model_name="llama3-70b-8192",
+        model_name="llama-3.3-70b-versatile",
         api_key=os.getenv("GROQ_API_KEY")
     )
 
