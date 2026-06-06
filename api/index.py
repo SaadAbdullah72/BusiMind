@@ -626,12 +626,13 @@ def get_live_inbox():
         mail.login(smtp_email, smtp_pass)
         mail.select("inbox")
         
-        # Search for unread emails with our special subject filter
-        status, messages = mail.search(None, '(UNSEEN SUBJECT "bueiness queirues")')
+        # Search for all unread emails, filter in python to avoid IMAP search string bugs
+        status, messages = mail.search(None, '(UNSEEN)')
         email_ids = messages[0].split()
         
         results = []
-        for e_id in email_ids[-20:]: # Get latest 20 to be safe
+        # Get latest 50 unseen to process
+        for e_id in email_ids[-50:]:
             status, msg_data = mail.fetch(e_id, '(RFC822)')
             for response_part in msg_data:
                 if isinstance(response_part, tuple):
@@ -642,6 +643,10 @@ def get_live_inbox():
                             subject = subject.decode(encoding or "utf-8")
                         except:
                             subject = subject.decode("utf-8", errors="ignore")
+                    
+                    # Filter by subject in Python
+                    if "bueiness queirues" not in subject.lower() and "business queries" not in subject.lower():
+                        continue
                             
                     sender = msg.get("From")
                     body = ""
