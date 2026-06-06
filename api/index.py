@@ -731,6 +731,11 @@ def health_check():
         status["langchain_groq"] = str(e)
     return status
 
+import hashlib
+
+def compute_hash(content: str) -> str:
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
 @app.post("/api/upload/inventory")
 def upload_inventory(payload: UploadRequest):
     if inventory_collection is None:
@@ -739,12 +744,18 @@ def upload_inventory(payload: UploadRequest):
         f = io.StringIO(payload.content.strip())
         reader = csv.DictReader(f)
         records = list(reader)
+        content_hash = compute_hash(payload.content.strip())
+        # Check for duplicate by hash
+        existing = inventory_collection.find_one({"email": payload.email, "hash": content_hash})
+        if existing:
+            return JSONResponse(status_code=400, content={"status": "error", "message": "Duplicate inventory file detected."})
         doc_id = str(uuid.uuid4())
         inventory_collection.insert_one({
             "email": payload.email,
             "doc_id": doc_id,
             "filename": payload.filename,
             "data": records,
+            "hash": content_hash,
             "updated_at": datetime.utcnow()
         })
         return {"status": "success", "message": f"Successfully loaded {len(records)} inventory items."}
@@ -776,12 +787,18 @@ def upload_pos(payload: UploadRequest):
         f = io.StringIO(payload.content.strip())
         reader = csv.DictReader(f)
         records = list(reader)
+        content_hash = compute_hash(payload.content.strip())
+        # Check for duplicate by hash
+        existing = pos_collection.find_one({"email": payload.email, "hash": content_hash})
+        if existing:
+            return JSONResponse(status_code=400, content={"status": "error", "message": "Duplicate POS file detected."})
         doc_id = str(uuid.uuid4())
         pos_collection.insert_one({
             "email": payload.email,
             "doc_id": doc_id,
             "filename": payload.filename,
             "data": records,
+            "hash": content_hash,
             "updated_at": datetime.utcnow()
         })
         return {"status": "success", "message": f"Successfully loaded {len(records)} POS transactions."}
@@ -844,18 +861,24 @@ async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
     try:
         pdf_bytes = await file.read()
+        # Compute hash of PDF content for duplicate detection
+        content_hash = hashlib.sha256(pdf_bytes).hexdigest()
+        existing = policies_collection.find_one({"email": email, "hash": content_hash})
+        if existing:
+            return JSONResponse(status_code=400, content={"status": "error", "message": "Duplicate policy PDF detected."})
+        
         reader = PyPDF2.PdfReader(io.BytesIO(pdf_bytes))
         policy_text = ""
         for page in reader.pages:
             policy_text += page.extract_text() + "\n"
-            
+
         doc_id = str(uuid.uuid4())
-        
         policies_collection.insert_one({
             "email": email,
             "doc_id": doc_id,
             "filename": file.filename,
             "policy_text": policy_text.strip(),
+            "hash": content_hash,
             "uploaded_at": datetime.utcnow()
         })
         return {"status": "success", "message": "Business Policy PDF uploaded and extracted successfully."}

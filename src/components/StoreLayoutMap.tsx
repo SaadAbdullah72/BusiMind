@@ -23,7 +23,7 @@ export default function StoreLayoutMap({
   extraLinesNeeded = 0,
   onHoverRecChange
 }: StoreLayoutMapProps) {
-  const [viewMode, setViewMode] = useState<'placement' | 'heatmap'>('placement');
+  // Removed viewMode: only placement map is shown
   const [aisleCenters, setAisleCenters] = useState<{ [id: string]: { x: number; y: number } }>({});
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -77,17 +77,8 @@ export default function StoreLayoutMap({
     return 'bg-slate-900/60 border-slate-700/40 text-slate-300';
   };
 
-  const getSalesHeatClass = (cat: string) => {
-    if (!cat) return 'bg-slate-950/80 border-slate-900 opacity-20 text-slate-600';
-    const c = cat.toLowerCase();
-    if (c.includes('oil') || c.includes('tea')) {
-      return 'bg-red-500/20 border-red-500/60 shadow-lg shadow-red-500/10 text-red-200';
-    }
-    if (c.includes('milk') || c.includes('detergent') || c.includes('sugar')) {
-      return 'bg-orange-500/20 border-orange-500/60 shadow-lg shadow-orange-500/10 text-orange-200';
-    }
-    return 'bg-yellow-500/10 border-yellow-500/35 text-yellow-300';
-  };
+  // Heatmap styling removed – always use category colors.
+  // If you need future heatmap support, re‑introduce getSalesHeatClass.
 
   const isAisleHighlighted = (aisleId: string) => {
     if (!hoveredRec) return false;
@@ -109,25 +100,7 @@ export default function StoreLayoutMap({
           <p className="text-[10px] text-slate-400 mt-0.5">Supermarket floor affinity visualization (Dotted paths show co-occurring items).</p>
         </div>
 
-        {/* View Switcher Toggle */}
-        <div className="flex bg-[#121216]/80 p-0.5 rounded-lg border border-[#1e1e24] text-[10px] font-bold">
-          <button
-            onClick={() => setViewMode('placement')}
-            className={`px-3 py-1 rounded transition-all cursor-pointer ${
-              viewMode === 'placement' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Placement Map
-          </button>
-          <button
-            onClick={() => setViewMode('heatmap')}
-            className={`px-3 py-1 rounded transition-all cursor-pointer ${
-              viewMode === 'heatmap' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Sales Heatmap
-          </button>
-        </div>
+        {/* View mode toggle removed – only placement view is kept */}
       </div>
 
       {/* Overflow Warning Banner */}
@@ -196,9 +169,7 @@ export default function StoreLayoutMap({
                       <div 
                         key={index}
                         className={`p-2 border rounded-lg text-center flex flex-col justify-center min-h-[55px] transition-all ${
-                          viewMode === 'heatmap' 
-                            ? getSalesHeatClass(slot)
-                            : getCategoryColor(slot)
+                          getCategoryColor(slot)
                         } ${isAisleSourceSlot ? 'ring-2 ring-orange-500 shadow-md animate-pulse' : ''} ${
                           isAisleTargetSlot ? 'ring-2 ring-emerald-500 shadow-md animate-pulse' : ''
                         }`}
