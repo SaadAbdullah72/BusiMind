@@ -9,3 +9,4 @@ pymongo
 passlib[bcrypt]
 bcrypt
 PyPDF2
+python-multipart
