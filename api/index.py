@@ -217,19 +217,11 @@ def analyze_expiry_risk(email: str, current_date: str) -> dict:
                     "days_left": days_left, "waste_units": waste_volume,
                     "potential_loss": potential_loss, "expiry_date": item["expiry_date"]
                 })
-    llm = _get_llm()
-    prompt = (
-        f"You are the Creative Marketing Manager at RetailMind Supermarket.\n"
-        f"We have the following items nearing expiry that will be wasted unless sold:\n"
-        f"{json.dumps(risky_items, indent=2)}\n\n"
-        f"Draft a short, catchy, and professional dynamic discount promo message or Buy One Get One (BOGO) bundle "
-        f"advertisement to clear these products before they expire. Keep it under 180 characters."
-    )
-    try:
-        response = llm.invoke(prompt)
-        promo_text = response.content.strip()
-    except Exception:
-        promo_text = "Special Clearing Discount: 30% Off on dairy and fresh essentials today only!"
+    promo_text = "Special Clearing Discount: 30% Off on items nearing expiry!"
+    if len(risky_items) > 0:
+        names = [i["name"] for i in risky_items[:2]]
+        promo_text = f"Clearance Alert: Buy One Get One Free on {', '.join(names)} and more!"
+        
     return {"evaluation_date": current_date, "items_at_risk": risky_items, "suggested_promotional_ad": promo_text}
 
 def audit_competitor_pricing(email: str) -> dict:
@@ -255,18 +247,11 @@ def audit_competitor_pricing(email: str) -> dict:
                 "margin_reducton": difference if is_profitable else 0,
                 "status": "Price Match Profitable" if is_profitable else "Price Match Unprofitable"
             })
-    llm = _get_llm()
-    prompt = (
-        f"You are the Pricing Strategist at RetailMind Supermarket.\n"
-        f"We found the following price mismatches where competitors are cheaper:\n"
-        f"{json.dumps(price_deviations, indent=2)}\n\n"
-        f"Provide a brief, professional summary of our pricing strategy regarding these items."
-    )
-    try:
-        response = llm.invoke(prompt)
-        pricing_notes = response.content.strip()
-    except Exception:
-        pricing_notes = "Maintain price match where cost margin allows."
+    pricing_notes = "Maintain price match where cost margin allows."
+    if price_deviations:
+        profitable_matches = sum(1 for d in price_deviations if d["status"] == "Price Match Profitable")
+        pricing_notes = f"We recommend matching prices for {profitable_matches} out of {len(price_deviations)} items where margin remains profitable."
+        
     return {"deviations": price_deviations, "pricing_strategy_summary": pricing_notes}
 
 def generate_purchase_order(email: str, product_key: str, order_quantity: int) -> dict:
