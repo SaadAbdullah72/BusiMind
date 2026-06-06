@@ -7,8 +7,6 @@ import SupportEngine from './components/SupportEngine';
 import LoginScreen from './components/LoginScreen';
 import DataSyncHub from './components/DataSyncHub';
 import BusinessSettings from './components/BusinessSettings';
-import ExpiryDesk from './components/ExpiryDesk';
-import PricingGuard from './components/PricingGuard';
 import ProcurementCenter from './components/ProcurementCenter';
 import OperationsChatbot from './components/OperationsChatbot';
 
@@ -34,7 +32,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
   const [userEmail, setUserEmail] = useState<string | null>(localStorage.getItem('userEmail'));
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'datasync' | 'support' | 'settings' | 'expiry' | 'pricing' | 'procurement' | 'chatbot'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'datasync' | 'support' | 'settings' | 'procurement' | 'chatbot'>('dashboard');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
   const [scanResult, setScanResult] = useState<any>(null);
@@ -180,16 +178,6 @@ export default function App() {
                   <span className="font-semibold text-xs">AI Operations Chatbot</span>
                 </button>
 
-                <button onClick={() => setActiveTab('expiry')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'expiry' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  <span className="font-semibold text-xs">Expiry Desk</span>
-                </button>
-
-                <button onClick={() => setActiveTab('pricing')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'pricing' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
-                  <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 15l3-3 3 3m0-6l-3 3-3-3"></path></svg>
-                  <span className="font-semibold text-xs">Pricing Guard</span>
-                </button>
-
                 <button onClick={() => setActiveTab('procurement')} className={`w-full flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all ${activeTab === 'procurement' ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg' : 'text-slate-400 hover:bg-[#121216]/50 hover:text-slate-200'}`}>
                   <svg className="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                   <span className="font-semibold text-xs">Procurement Center</span>
@@ -246,8 +234,6 @@ export default function App() {
                 layoutRecommendations={scanResult?.layout_recommendations}
               />
             )}
-            {activeTab === 'expiry' && <ExpiryDesk expiryData={scanResult?.expiry} />}
-            {activeTab === 'pricing' && <PricingGuard pricingData={scanResult?.pricing} />}
             {activeTab === 'procurement' && <ProcurementCenter procurementData={scanResult?.procurement} />}
             {activeTab === 'chatbot' && <OperationsChatbot userEmail={userEmail || ''} />}
             {activeTab === 'support' && <SupportEngine userEmail={userEmail || ''} />}
