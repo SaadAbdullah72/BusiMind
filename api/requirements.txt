@@ -8,3 +8,4 @@ google-auth
 pymongo
 passlib[bcrypt]
 bcrypt
+PyPDF2

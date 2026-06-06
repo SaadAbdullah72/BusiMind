@@ -36,6 +36,7 @@ if MONGO_URI:
     competitors_collection = db["competitors"]
     pos_collection = db["pos_logs"]
     emails_collection = db["customer_emails"]
+    policies_collection = db["business_policies"]
 else:
     mongo_client = None
     users_collection = None
@@ -44,6 +45,10 @@ else:
     competitors_collection = None
     pos_collection = None
     emails_collection = None
+    policies_collection = None
+
+from fastapi import File, UploadFile, Form
+import PyPDF2
 
 import imaplib
 import email as email_lib
@@ -502,6 +507,26 @@ def upload_pos(payload: UploadRequest):
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
+@app.post("/api/upload/policy")
+async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
+    if policies_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    try:
+        pdf_bytes = await file.read()
+        reader = PyPDF2.PdfReader(io.BytesIO(pdf_bytes))
+        policy_text = ""
+        for page in reader.pages:
+            policy_text += page.extract_text() + "\n"
+            
+        policies_collection.update_one(
+            {"email": email},
+            {"$set": {"policy_text": policy_text.strip(), "updated_at": datetime.utcnow()}},
+            upsert=True
+        )
+        return {"status": "success", "message": "Business Policy PDF uploaded and extracted successfully."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
 class SupportRequest(BaseModel):
     email: str
     message: str
@@ -626,8 +651,8 @@ def get_live_inbox():
         mail.login(smtp_email, smtp_pass)
         mail.select("inbox")
         
-        # Search for all emails, filter in python to avoid IMAP search string bugs
-        status, messages = mail.search(None, '(ALL)')
+        # Search for unread emails, filter in python to avoid IMAP search string bugs
+        status, messages = mail.search(None, '(UNSEEN)')
         email_ids = messages[0].split()
         
         results = []
@@ -690,12 +715,24 @@ class LiveResolveRequest(BaseModel):
 @app.post("/api/support/resolve-live")
 def resolve_live_email(req: LiveResolveRequest):
     llm = _get_llm()
-    # Step 1: Classifier
+    
+    # Fetch Policy Document for context
+    policy_doc = "No specific policy document uploaded."
+    if policies_collection:
+        # For simplicity, fetching the first policy available or matching by a hypothetical admin email
+        record = policies_collection.find_one({}) # In a real SaaS, filter by req.email or user's email
+        if record and "policy_text" in record:
+            policy_doc = record["policy_text"]
+
+    # Step 1: Classifier & RAG Verification
     classify_prompt = (
-        f"Analyze this email: '{req.message}'.\n"
-        f"Classify strictly into 'order_status', 'faq', or 'complaint'.\n"
-        f"Extract Transaction ID (TXXXX). If none, output 'none'.\n"
-        f"Return ONLY JSON: {{\"intent\": \"category\", \"extracted_id\": \"id\"}}"
+        f"Analyze this customer email: '{req.message}'.\n"
+        f"Available Business Policy context:\n\"\"\"{policy_doc}\"\"\"\n\n"
+        f"Can this customer's query be fully answered using ONLY the provided Business Policy context? "
+        f"If the policy does not explicitly cover it, or if they are extremely angry/demanding an escalation, classify the intent as 'complaint'. "
+        f"Otherwise, classify it as 'faq'.\n"
+        f"Extract any Transaction/Order ID (TXXXX) if present. If none, output 'none'.\n"
+        f"Return ONLY valid JSON format exactly like: {{\"intent\": \"faq\" or \"complaint\", \"extracted_id\": \"id\"}}"
     )
     try:
         res = llm.invoke(classify_prompt).content.strip()
@@ -706,30 +743,30 @@ def resolve_live_email(req: LiveResolveRequest):
         extracted_id = classification.get("extracted_id", "none")
     except Exception as e:
         print("LLM Classification Error:", e)
-        intent, extracted_id = "faq", "none"
+        intent, extracted_id = "complaint", "none"
 
-    db_context = "No specific DB context."
-    if intent == "order_status" and extracted_id != "none" and pos_collection:
-        # Search all users for this transaction ID just in case
-        records = pos_collection.find({})
-        for r in records:
-            if "data" in r:
-                for row in r["data"]:
-                    if row.get("TransactionId", "").strip().lower() == extracted_id.lower():
-                        db_context = f"Found Order Data: {row}"
-                        break
+    # Step 2: Generate English Reply
+    db_context = f"Business Policy Context: {policy_doc}"
     
-    reply_prompt = (
-        f"Customer says: '{req.message}'\n"
-        f"DB Data: {db_context}\n"
-        f"Write a professional email reply in Roman Urdu.\n"
-        f"If 'complaint' category, tell them it's forwarded to trustvault3.help@gmail.com and we will fix it ASAP."
-    )
+    if intent == "complaint":
+        reply_prompt = (
+            f"Customer says: '{req.message}'\n"
+            f"The issue cannot be resolved by the policy or requires human escalation.\n"
+            f"Write a highly professional and empathetic email reply in English assuring them that their issue has been escalated to our human management team (staff@trustvault) and they will be contacted shortly to resolve it."
+        )
+    else:
+        reply_prompt = (
+            f"Customer says: '{req.message}'\n"
+            f"Business Policy Context: {policy_doc}\n"
+            f"Write a friendly, highly professional, and perfectly formatted email reply in English addressing their query.\n"
+            f"You MUST use ONLY the information provided in the Business Policy Context. Do NOT make up rules or policies."
+        )
+        
     try:
         auto_reply = llm.invoke(reply_prompt).content.strip()
     except Exception as e:
         print("LLM Reply Generation Error:", e)
-        auto_reply = "We have received your query and will reply shortly."
+        auto_reply = "We have received your email. Our human support team will get back to you shortly."
 
     # Email Action via SMTP
     smtp_email = os.getenv("SMTP_EMAIL")
