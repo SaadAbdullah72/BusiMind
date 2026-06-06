@@ -226,6 +226,7 @@ export default function App() {
                 scanning={scanning}
                 depletionRisks={scanResult?.depletion_risks}
                 layoutRecommendations={scanResult?.layout_recommendations}
+                layoutConfig={scanResult?.layout_config}
               />
             )}
             {activeTab === 'chatbot' && <OperationsChatbot userEmail={userEmail || ''} />}

@@ -335,6 +335,22 @@ def analyze_purchase_patterns(email: str) -> list:
     sorted_pairs = sorted(pair_counts.items(), key=lambda x: x[1], reverse=True)
     top_pairs = sorted_pairs[:5]
     
+    # Load user layout settings
+    layout_config = []
+    if settings_collection is not None:
+        settings = settings_collection.find_one({"email": email})
+        if settings:
+            layout_config = settings.get("layout_config", [])
+
+    layout_desc = ""
+    if layout_config:
+        layout_desc = "Current Supermarket Layout Configuration:\n"
+        for aisle in layout_config:
+            slots_str = ", ".join([s if s else "Empty" for s in aisle.get("slots", [])])
+            layout_desc += f"- Aisle ID '{aisle.get('id')}': Named '{aisle.get('name')}', holding slots: [{slots_str}]\n"
+    else:
+        layout_desc = "No layout configuration is set by the user yet.\n"
+    
     recommendations = []
     if top_pairs:
         pairs_desc = ""
@@ -345,9 +361,18 @@ def analyze_purchase_patterns(email: str) -> list:
             f"You are a Retail Merchandising Expert at RetailMind AI.\n"
             f"Based on POS transaction logs, here are the top items purchased together in the supermarket:\n"
             f"{pairs_desc}\n"
-            f"Suggest 3 high-impact store shelf rearrangement ideas or promotional bundles to increase cross-selling. "
-            f"Return ONLY valid JSON as a list of dicts. Each dict must contain keys: 'title', 'reason', 'placement_tip'.\n"
-            f"No markdown wrappers."
+            f"Here is the user's current physical store aisle layout configuration:\n"
+            f"{layout_desc}\n"
+            f"Suggest 3 high-impact store shelf rearrangement recommendations. "
+            f"Analyze their current positions in the layout and identify if they are placed in different lines. "
+            f"Recommend moving them closer (e.g. adjacent slots or same line) to increase cross-selling. "
+            f"Return ONLY valid JSON as a list of dicts. Each dict must contain keys: "
+            f"'title', 'reason', 'placement_tip', 'source_aisle_id', 'target_aisle_id', 'item_a', 'item_b'. "
+            f"For 'source_aisle_id' and 'target_aisle_id', search the layout config to see if the items fit any slot. "
+            f"For example, if you suggest moving item B (e.g., Lipton Tea, currently in Aisle '2') to item A's Aisle (e.g., Cooking Oil, in Aisle '1'), "
+            f"set 'source_aisle_id' to '2', and 'target_aisle_id' to '1'. "
+            f"If the items are not configured in the layout or the layout is empty, use null (None) for 'source_aisle_id' and 'target_aisle_id'.\n"
+            f"Return NO markdown wrappers."
         )
         try:
             response = _get_llm().invoke(prompt)
@@ -365,17 +390,29 @@ def analyze_purchase_patterns(email: str) -> list:
             {
                 "title": "Dalda Oil & Lipton Tea Endcap Display",
                 "reason": "These items have strong breakfast/grocery co-occurrence.",
-                "placement_tip": "Position Lipton Tea boxes on the endcap of Aisle 4 directly facing the Cooking Oil section."
+                "placement_tip": "Position Lipton Tea boxes on the endcap of Aisle 4 directly facing the Cooking Oil section.",
+                "source_aisle_id": None,
+                "target_aisle_id": None,
+                "item_a": "Dalda Cooking Oil",
+                "item_b": "Lipton Tea"
             },
             {
                 "title": "Laundry Detergent & Lux Soap Cross-Merchandising",
                 "reason": "Surf Excel and Ariel detergent purchases frequently co-occur with personal care items.",
-                "placement_tip": "Place Lux soap bars on the checkout impulse racks and beside the detergent displays."
+                "placement_tip": "Place Lux soap bars on the checkout impulse racks and beside the detergent displays.",
+                "source_aisle_id": None,
+                "target_aisle_id": None,
+                "item_a": "Surf Excel",
+                "item_b": "Lux Soap"
             },
             {
                 "title": "Breakfast Bundle Promotion",
                 "reason": "Nestle Milkpak shows strong daily purchase volume across all segments.",
-                "placement_tip": "Create a 'Breakfast Bundle' display near the entrance featuring Nestle Milkpak 1L alongside tea."
+                "placement_tip": "Create a 'Breakfast Bundle' display near the entrance featuring Nestle Milkpak 1L alongside tea.",
+                "source_aisle_id": None,
+                "target_aisle_id": None,
+                "item_a": "Nestle Milkpak",
+                "item_b": "Lipton Tea"
             }
         ]
     return recommendations
@@ -508,6 +545,13 @@ def run_diagnostics_stream(email: str):
         # Co-occurrence Layout Recommendations
         layout_recs = analyze_purchase_patterns(email)
 
+        # Load user layout settings
+        layout_config = []
+        if settings_collection is not None:
+            settings = settings_collection.find_one({"email": email})
+            if settings:
+                layout_config = settings.get("layout_config", [])
+
         final_payload = {
             "kpis": {
                 "total_revenue": f"{total_revenue} PKR",
@@ -523,7 +567,8 @@ def run_diagnostics_stream(email: str):
             "procurement": reorder_pos,
             "swot": swot_data,
             "depletion_risks": depletion_risks,
-            "layout_recommendations": layout_recs
+            "layout_recommendations": layout_recs,
+            "layout_config": layout_config
         }
         yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
     except Exception as e:
@@ -700,6 +745,7 @@ class SettingsPayload(BaseModel):
     customer_email: str
     customer_password: str
     staff_email: str
+    layout_config: list = []
 
 @app.post("/api/settings")
 def save_settings(payload: SettingsPayload):
@@ -714,6 +760,7 @@ def save_settings(payload: SettingsPayload):
             "customer_email": payload.customer_email,
             "customer_password": payload.customer_password,
             "staff_email": payload.staff_email,
+            "layout_config": payload.layout_config,
             "updated_at": datetime.utcnow()
         }},
         upsert=True
