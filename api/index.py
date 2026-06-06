@@ -35,6 +35,7 @@ if MONGO_URI:
     inventory_collection = db["inventory"]
     competitors_collection = db["competitors"]
     pos_collection = db["pos_logs"]
+    emails_collection = db["customer_emails"]
 else:
     mongo_client = None
     users_collection = None
@@ -42,6 +43,7 @@ else:
     inventory_collection = None
     competitors_collection = None
     pos_collection = None
+    emails_collection = None
 
 import bcrypt
 
@@ -492,6 +494,118 @@ def upload_pos(payload: UploadRequest):
         return {"status": "success", "message": f"Successfully loaded {len(records)} POS transactions."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+class SupportRequest(BaseModel):
+    email: str
+    message: str
+    message_id: str = None
+
+@app.post("/api/support/seed")
+def seed_dummy_emails(payload: dict):
+    user_email = payload.get("email")
+    if not user_email or emails_collection is None:
+        return {"status": "error", "message": "Missing email or DB."}
+    
+    dummy_emails = []
+    templates = [
+        ("order_status", "Mera order {id} abhi tak nahi aya, kab milega?"),
+        ("order_status", "Please track my order {id}, status update chahiye."),
+        ("order_status", "Order {id} dispatch ho gaya hai ya nahi?"),
+        ("faq", "Delivery charges kitne hain Karachi ke liye?"),
+        ("faq", "Kya credit card accept karte hain delivery pe?"),
+        ("faq", "Shop ki timings kya hain?"),
+        ("complaint", "Mera saman toota hua nikla hai, main case karunga!"),
+        ("complaint", "Rude rider behaviour, I want a refund now."),
+        ("complaint", "Ghalat item bhej diya hai, wapis le jao isko."),
+    ]
+    ids = ["T1001", "T1002", "T1003", "T1004", "T1005", "T1006", "T1007", "T1008"]
+    
+    import uuid
+    for i in range(100):
+        cat, tmpl = random.choice(templates)
+        msg = tmpl.replace("{id}", random.choice(ids))
+        dummy_emails.append({
+            "message_id": str(uuid.uuid4()),
+            "user_email": user_email,
+            "subject": f"Customer Inquiry #{random.randint(1000, 9999)}",
+            "body": msg,
+            "status": "unread", # unread, replied, escalated
+            "created_at": datetime.utcnow()
+        })
+    
+    emails_collection.delete_many({"user_email": user_email})
+    emails_collection.insert_many(dummy_emails)
+    return {"status": "success", "message": "100 dummy emails seeded."}
+
+@app.get("/api/support/inbox")
+def get_inbox(email: str = None):
+    if not email or emails_collection is None:
+        return []
+    records = list(emails_collection.find({"user_email": email}, {"_id": 0}))
+    return records
+
+@app.post("/api/support/resolve")
+def resolve_customer_support(request: SupportRequest):
+    llm = _get_llm()
+    # Step 1: Classifier & Extraction
+    classify_prompt = (
+        f"Analyze the following customer email/message: '{request.message}'.\n"
+        f"1. Classify the intent into EXACTLY ONE of these categories: 'order_status', 'faq', or 'complaint'.\n"
+        f"2. Extract any mentioned Order/Transaction ID (e.g., T1001, etc). If none, output 'none'.\n"
+        f"Return ONLY valid JSON: {{\"intent\": \"category\", \"extracted_id\": \"id\"}}"
+    )
+    try:
+        res = llm.invoke(classify_prompt).content.strip()
+        if res.startswith("```json"): res = res[7:]
+        if res.endswith("```"): res = res[:-3]
+        classification = json.loads(res.strip())
+        intent = classification.get("intent", "faq")
+        extracted_id = classification.get("extracted_id", "none")
+    except:
+        intent, extracted_id = "faq", "none"
+
+    db_context = "No specific database context needed."
+    
+    # Step 2 & 3: Database Lookup & Reply Generation
+    if intent == "order_status":
+        order_details = "Not Found"
+        if extracted_id.lower() != "none" and pos_collection:
+            record = pos_collection.find_one({"email": request.email})
+            if record and "data" in record:
+                for row in record["data"]:
+                    if row.get("TransactionId", "").strip().lower() == extracted_id.lower():
+                        order_details = str(row)
+                        break
+        db_context = f"Found Order Data: {order_details}"
+        reply_prompt = (
+            f"Customer Message: '{request.message}'\n"
+            f"Database Lookup Result: {db_context}\n"
+            f"Write a friendly, professional email reply to the customer in Roman Urdu.\n"
+            f"If order found, confirm the item and state it's being shipped. If not found, ask for the correct ID."
+        )
+    elif intent == "complaint":
+        reply_prompt = (
+            f"Customer Message: '{request.message}'\n"
+            f"Write a highly apologetic email reply in Roman Urdu assuring them that the issue has been escalated to management and they will be contacted shortly."
+        )
+    else:
+        reply_prompt = (
+            f"Customer Message: '{request.message}'\n"
+            f"Write a friendly FAQ reply in Roman Urdu addressing their general query."
+        )
+
+    try:
+        auto_reply = llm.invoke(reply_prompt).content.strip()
+    except Exception as e:
+        auto_reply = f"System Error generating reply: {str(e)}"
+
+    return {
+        "intent": intent.upper(),
+        "extracted_id": extracted_id,
+        "database_context": db_context,
+        "auto_reply": auto_reply,
+        "action_taken": "Forwarded to Staff (WhatsApp/Slack)" if intent == "complaint" else "Auto-Reply Sent via Email Node"
+    }
 
 @app.get("/api/stream")
 def stream_diagnostics(email: str = None):
