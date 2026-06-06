@@ -13,10 +13,56 @@ import csv
 import time
 import tempfile
 import traceback
+import random
+import string
+import smtplib
+from email.message import EmailMessage
 from datetime import datetime
 from dotenv import load_dotenv
+from pymongo import MongoClient
+from passlib.context import CryptContext
 
 load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI")
+if MONGO_URI:
+    mongo_client = MongoClient(MONGO_URI)
+    db = mongo_client["RetailMind"]
+    users_collection = db["users"]
+    otps_collection = db["otps"]
+else:
+    mongo_client = None
+    users_collection = None
+    otps_collection = None
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+SMTP_EMAIL = os.getenv("SMTP_EMAIL")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+def send_otp_email(to_email: str, otp: str):
+    if not SMTP_EMAIL or not SMTP_PASSWORD:
+        print(f"Mock sending OTP {otp} to {to_email}")
+        return
+    msg = EmailMessage()
+    msg.set_content(f"Your RetailMind AI Password Reset OTP is: {otp}\n\nIt will expire in 10 minutes.")
+    msg['Subject'] = "RetailMind AI - Password Reset OTP"
+    msg['From'] = SMTP_EMAIL
+    msg['To'] = to_email
+
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(SMTP_EMAIL, SMTP_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
 
 # ── FastAPI App ───────────────────────────────────────────────────────────────
 app = FastAPI(title="RetailMind AI API")
@@ -446,6 +492,11 @@ def handle_simulation(request: SimulationRequest):
 class GoogleLoginRequest(BaseModel):
     token: str
 
+class RegisterRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
 class LoginRequest(BaseModel):
     email: str
     password: str
@@ -462,13 +513,32 @@ class ResetPasswordRequest(BaseModel):
 def get_config():
     return {"google_client_id": os.getenv("VITE_GOOGLE_CLIENT_ID")}
 
+@app.post("/api/auth/register")
+def register_user(payload: RegisterRequest):
+    if users_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    if users_collection.find_one({"email": payload.email}):
+        return JSONResponse(status_code=400, content={"status": "error", "message": "Email already registered."})
+    users_collection.insert_one({
+        "name": payload.name,
+        "email": payload.email,
+        "password": get_password_hash(payload.password),
+        "auth_provider": "local",
+        "created_at": datetime.utcnow()
+    })
+    return {"status": "success", "message": "User registered successfully."}
+
 @app.post("/api/auth/login")
 def credentials_login(payload: LoginRequest):
-    admin_email = "saad489254@gmail.com"
-    admin_password = "admin123"
-    if payload.email.strip() == admin_email and payload.password == admin_password:
-        return {"status": "success", "email": admin_email}
-    return JSONResponse(status_code=401, content={"status": "error", "message": "Invalid email or password."})
+    if users_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    user = users_collection.find_one({"email": payload.email})
+    if not user or "password" not in user:
+        return JSONResponse(status_code=401, content={"status": "error", "message": "Invalid email or password."})
+    if not verify_password(payload.password, user["password"]):
+        return JSONResponse(status_code=401, content={"status": "error", "message": "Invalid email or password."})
+    
+    return {"status": "success", "email": user["email"], "name": user.get("name", "")}
 
 @app.post("/api/auth/google")
 def google_auth(payload: GoogleLoginRequest):
@@ -476,26 +546,59 @@ def google_auth(payload: GoogleLoginRequest):
     if not client_id:
         return JSONResponse(status_code=400, content={"status": "error", "message": "Google Client ID not configured on backend."})
     try:
-        from google.oauth2 import idtoken
+        from google.oauth2 import id_token
         from google.auth.transport import requests as google_requests
-        idinfo = idtoken.verify_oauth2_token(payload.token, google_requests.Request(), client_id)
+        idinfo = id_token.verify_oauth2_token(payload.token, google_requests.Request(), client_id)
         email = idinfo.get("email")
         name = idinfo.get("name")
-        if email != "saad489254@gmail.com":
-            return JSONResponse(status_code=401, content={"status": "error", "message": f"Unauthorized email: {email}"})
+        
+        if users_collection is not None:
+            user = users_collection.find_one({"email": email})
+            if not user:
+                users_collection.insert_one({
+                    "name": name,
+                    "email": email,
+                    "auth_provider": "google",
+                    "created_at": datetime.utcnow()
+                })
+        
         return {"status": "success", "email": email, "name": name}
     except Exception as e:
         return JSONResponse(status_code=400, content={"status": "error", "message": f"Token verification failed: {str(e)}"})
 
 @app.post("/api/auth/forgot-password")
 def forgot_password(payload: ForgotPasswordRequest):
-    if payload.email.strip() == "saad489254@gmail.com":
-        return {"status": "success", "message": "OTP sent successfully.", "otp": "489254"}
-    return JSONResponse(status_code=404, content={"status": "error", "message": "Email address not found."})
+    if users_collection is None or otps_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    user = users_collection.find_one({"email": payload.email})
+    if not user:
+        return JSONResponse(status_code=404, content={"status": "error", "message": "Email address not found."})
+        
+    otp = "".join(random.choices(string.digits, k=6))
+    otps_collection.update_one(
+        {"email": payload.email},
+        {"$set": {"otp": otp, "created_at": datetime.utcnow()}},
+        upsert=True
+    )
+    
+    send_otp_email(payload.email, otp)
+    return {"status": "success", "message": "OTP sent successfully."}
 
 @app.post("/api/auth/reset-password")
 def reset_password(payload: ResetPasswordRequest):
-    if payload.email.strip() == "saad489254@gmail.com" and payload.otp == "489254":
-        return {"status": "success", "message": "Password reset successfully."}
-    return JSONResponse(status_code=400, content={"status": "error", "message": "Invalid OTP code."})
+    if otps_collection is None or users_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    record = otps_collection.find_one({"email": payload.email, "otp": payload.otp})
+    if not record:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "Invalid or expired OTP."})
+        
+    time_diff = (datetime.utcnow() - record["created_at"]).total_seconds()
+    if time_diff > 600:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "OTP expired."})
+        
+    hashed_pwd = get_password_hash(payload.new_password)
+    users_collection.update_one({"email": payload.email}, {"$set": {"password": hashed_pwd}})
+    otps_collection.delete_one({"_id": record["_id"]})
+    
+    return {"status": "success", "message": "Password reset successfully."}
 
