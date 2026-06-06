@@ -21,6 +21,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from passlib.context import CryptContext
+import uuid
+from bson import ObjectId
 
 load_dotenv()
 
@@ -91,6 +93,12 @@ def send_otp_email(to_email: str, otp: str):
     server.login(SMTP_EMAIL, SMTP_PASSWORD)
     server.send_message(msg)
     server.quit()
+
+def safe_object_id(val: str):
+    try:
+        return ObjectId(val)
+    except Exception:
+        return None
 
 # ── FastAPI App ───────────────────────────────────────────────────────────────
 app = FastAPI(title="RetailMind AI API")
@@ -784,28 +792,50 @@ def upload_pos(payload: UploadRequest):
 def get_inventory_files(email: str):
     if inventory_collection is None:
         return []
-    records = list(inventory_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 0}))
+    records = []
+    for doc in inventory_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 1}):
+        records.append({
+            "doc_id": str(doc.get("doc_id") or doc["_id"]),
+            "filename": doc.get("filename") or "Inventory CSV"
+        })
     return records
 
 @app.delete("/api/inventory/{doc_id}")
 def delete_inventory(doc_id: str, email: str):
     if inventory_collection is None:
         return JSONResponse(status_code=500, content={"status": "error"})
-    inventory_collection.delete_one({"doc_id": doc_id, "email": email})
+    query = {"email": email}
+    obj_id = safe_object_id(doc_id)
+    if obj_id:
+        query["$or"] = [{"doc_id": doc_id}, {"_id": obj_id}]
+    else:
+        query["doc_id"] = doc_id
+    inventory_collection.delete_one(query)
     return {"status": "success"}
 
 @app.get("/api/pos")
 def get_pos_files(email: str):
     if pos_collection is None:
         return []
-    records = list(pos_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 0}))
+    records = []
+    for doc in pos_collection.find({"email": email}, {"doc_id": 1, "filename": 1, "_id": 1}):
+        records.append({
+            "doc_id": str(doc.get("doc_id") or doc["_id"]),
+            "filename": doc.get("filename") or "POS Sales CSV"
+        })
     return records
 
 @app.delete("/api/pos/{doc_id}")
 def delete_pos(doc_id: str, email: str):
     if pos_collection is None:
         return JSONResponse(status_code=500, content={"status": "error"})
-    pos_collection.delete_one({"doc_id": doc_id, "email": email})
+    query = {"email": email}
+    obj_id = safe_object_id(doc_id)
+    if obj_id:
+        query["$or"] = [{"doc_id": doc_id}, {"_id": obj_id}]
+    else:
+        query["doc_id"] = doc_id
+    pos_collection.delete_one(query)
     return {"status": "success"}
 
 @app.post("/api/upload/policy")
@@ -819,7 +849,6 @@ async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
         for page in reader.pages:
             policy_text += page.extract_text() + "\n"
             
-        import uuid
         doc_id = str(uuid.uuid4())
         
         policies_collection.insert_one({
@@ -837,14 +866,25 @@ async def upload_policy(email: str = Form(...), file: UploadFile = File(...)):
 def get_policies(email: str = None):
     if not email or policies_collection is None:
         return []
-    records = list(policies_collection.find({"email": email}, {"_id": 0, "policy_text": 0})) # Exclude text to save bandwidth
+    records = []
+    for doc in policies_collection.find({"email": email}, {"policy_text": 0}):
+        records.append({
+            "doc_id": str(doc.get("doc_id") or doc["_id"]),
+            "filename": doc.get("filename") or "Business Policy Document"
+        })
     return records
 
 @app.delete("/api/policies/{doc_id}")
 def delete_policy(doc_id: str, email: str):
     if policies_collection is None:
         return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
-    policies_collection.delete_one({"email": email, "doc_id": doc_id})
+    query = {"email": email}
+    obj_id = safe_object_id(doc_id)
+    if obj_id:
+        query["$or"] = [{"doc_id": doc_id}, {"_id": obj_id}]
+    else:
+        query["doc_id"] = doc_id
+    policies_collection.delete_one(query)
     return {"status": "success", "message": "Document deleted."}
 
 class SettingsPayload(BaseModel):
