@@ -626,8 +626,8 @@ def get_live_inbox():
         mail.login(smtp_email, smtp_pass)
         mail.select("inbox")
         
-        # Search for all unread emails, filter in python to avoid IMAP search string bugs
-        status, messages = mail.search(None, '(UNSEEN)')
+        # Search for all emails, filter in python to avoid IMAP search string bugs
+        status, messages = mail.search(None, '(ALL)')
         email_ids = messages[0].split()
         
         results = []
