@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import './index.css';
 
 // Component imports
@@ -40,7 +40,8 @@ export default function App() {
   const [pricingData, setPricingData] = useState<any>(null);
   const [procurementData, setProcurementData] = useState<any>(null);
 
-  const [uploadStatus, setUploadStatus] = useState({ inventory: false, competitors: false, pos: false });
+  const [scanning, setScanning] = useState(false);
+  const [progress, setProgress] = useState<any>(null);
 
 
   const runDiagnosticScan = () => {
@@ -276,7 +277,7 @@ export default function App() {
             {activeTab === 'expiry' && <ExpiryDesk expiryData={expiryData} />}
             {activeTab === 'pricing' && <PricingGuard pricingData={pricingData} />}
             {activeTab === 'procurement' && <ProcurementCenter procurementData={procurementData} />}
-            {activeTab === 'support' && <SupportEngine userEmail={userEmail || ''} />}
+            {activeTab === 'support' && <SupportEngine />}
             {activeTab === 'sandbox' && <RetailSandbox />}
           </div>
         </main>

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SupportEngineProps {
   userEmail: string;
 }
 
-export default function SupportEngine({ userEmail }: SupportEngineProps) {
+export default function SupportEngine() {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
