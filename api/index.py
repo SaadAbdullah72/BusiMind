@@ -32,10 +32,16 @@ if MONGO_URI:
     db = mongo_client["RetailMind"]
     users_collection = db["users"]
     otps_collection = db["otps"]
+    inventory_collection = db["inventory"]
+    competitors_collection = db["competitors"]
+    pos_collection = db["pos_logs"]
 else:
     mongo_client = None
     users_collection = None
     otps_collection = None
+    inventory_collection = None
+    competitors_collection = None
+    pos_collection = None
 
 import bcrypt
 
@@ -82,54 +88,72 @@ app.add_middleware(
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# MOCK DATA (from mock_data.py)
+# DATA LOADERS (MongoDB)
 # ══════════════════════════════════════════════════════════════════════════════
-DEFAULT_CSV = """TransactionId,Timestamp,ItemName,Quantity,PricePaid,PaymentMethod,CustomerLoyaltyId
-T1001,14:02,Dalda Cooking Oil 5L,2,4500,Card,L9281
-T1002,14:15,Nestle Milkpak 1L,6,1800,Cash,L1203
-T1003,14:30,Surf Excel 1kg,1,460,Cash,None
-T1004,15:10,Yogurt Pack 1kg,4,1200,Card,L8491
-T1005,15:45,Nestle Everyday 1kg,1,1490,Card,None
-T1006,16:20,Tapal Danedar 900g,3,4050,Cash,L3921
-T1007,17:05,Dalda Cooking Oil 5L,1,2250,Card,L4820
-T1008,17:40,Yogurt Pack 1kg,5,1500,Cash,L1203
-"""
+def load_inventory(email: str):
+    if inventory_collection is None:
+        return {}
+    record = inventory_collection.find_one({"email": email})
+    if not record or "data" not in record:
+        return {}
+    inv = {}
+    for row in record["data"]:
+        key = row.get("ItemName", "").strip().lower()
+        if key:
+            inv[key] = {
+                "name": row.get("ItemName", ""),
+                "category": row.get("Category", "General"),
+                "stock": int(float(row.get("Stock", 0))),
+                "unit": row.get("Unit", "units"),
+                "cost_price": float(row.get("CostPrice", 0)),
+                "retail_price": float(row.get("RetailPrice", 0)),
+                "expiry_date": row.get("ExpiryDate", ""),
+                "low_threshold": int(float(row.get("LowThreshold", 10))),
+                "sales_velocity_daily": int(float(row.get("SalesVelocityDaily", 1))),
+                "supplier": row.get("Supplier", "Unknown"),
+                "supplier_lead_days": int(float(row.get("SupplierLeadDays", 3)))
+            }
+    return inv
 
-INITIAL_INVENTORY = {
-    "dalda_oil": {
-        "name": "Dalda Cooking Oil 5L", "category": "Pantry", "stock": 45, "unit": "tins",
-        "cost_price": 1850, "retail_price": 2250, "expiry_date": "2027-02-15",
-        "low_threshold": 15, "sales_velocity_daily": 8, "supplier": "Dalda Foods Ltd", "supplier_lead_days": 3
-    },
-    "surf_excel": {
-        "name": "Surf Excel 1kg", "category": "Household", "stock": 35, "unit": "packs",
-        "cost_price": 340, "retail_price": 460, "expiry_date": "2028-05-10",
-        "low_threshold": 10, "sales_velocity_daily": 5, "supplier": "Unilever Pakistan", "supplier_lead_days": 4
-    },
-    "nestle_milkpak": {
-        "name": "Nestle Milkpak 1L", "category": "Dairy", "stock": 8, "unit": "cartons",
-        "cost_price": 240, "retail_price": 300, "expiry_date": "2026-06-12",
-        "low_threshold": 25, "sales_velocity_daily": 15, "supplier": "Nestle Pakistan Ltd", "supplier_lead_days": 2
-    },
-    "yogurt_pack": {
-        "name": "Yogurt Pack 1kg", "category": "Dairy", "stock": 38, "unit": "cups",
-        "cost_price": 200, "retail_price": 300, "expiry_date": "2026-06-09",
-        "low_threshold": 10, "sales_velocity_daily": 6, "supplier": "Nestle Pakistan Ltd", "supplier_lead_days": 1
-    },
-    "tapal_danedar": {
-        "name": "Tapal Danedar 900g", "category": "Beverages", "stock": 4, "unit": "boxes",
-        "cost_price": 1100, "retail_price": 1350, "expiry_date": "2027-11-20",
-        "low_threshold": 15, "sales_velocity_daily": 7, "supplier": "Tapal Tea Ltd", "supplier_lead_days": 3
-    }
-}
+def save_inventory(email: str, inv: dict):
+    if inventory_collection is None:
+        return
+    data = []
+    for key, item in inv.items():
+        data.append({
+            "ItemName": item["name"],
+            "Category": item["category"],
+            "Stock": str(item["stock"]),
+            "Unit": item["unit"],
+            "CostPrice": str(item["cost_price"]),
+            "RetailPrice": str(item["retail_price"]),
+            "ExpiryDate": item["expiry_date"],
+            "LowThreshold": str(item["low_threshold"]),
+            "SalesVelocityDaily": str(item["sales_velocity_daily"]),
+            "Supplier": item["supplier"],
+            "SupplierLeadDays": str(item["supplier_lead_days"])
+        })
+    inventory_collection.update_one(
+        {"email": email},
+        {"$set": {"data": data, "updated_at": datetime.utcnow()}},
+        upsert=True
+    )
 
-COMPETITOR_PRICES = {
-    "dalda_oil": {"our_price": 2250, "competitor_price": 2130, "competitor_name": "Metro Cash & Carry", "cost_price": 1850},
-    "surf_excel": {"our_price": 460, "competitor_price": 425, "competitor_name": "Carrefour Supermarket", "cost_price": 340},
-    "nestle_milkpak": {"our_price": 300, "competitor_price": 300, "competitor_name": "Metro Cash & Carry", "cost_price": 240},
-    "yogurt_pack": {"our_price": 300, "competitor_price": 310, "competitor_name": "Chase Up Grocery", "cost_price": 200},
-    "tapal_danedar": {"our_price": 1350, "competitor_price": 1320, "competitor_name": "Metro Cash & Carry", "cost_price": 1100}
-}
+def load_competitors(email: str):
+    if competitors_collection is None:
+        return {}
+    record = competitors_collection.find_one({"email": email})
+    if not record or "data" not in record:
+        return {}
+    comp = {}
+    for row in record["data"]:
+        key = row.get("ItemName", "").strip().lower()
+        if key:
+            comp[key] = {
+                "competitor_price": float(row.get("CompetitorPrice", 0)),
+                "competitor_name": row.get("CompetitorName", "Competitor")
+            }
+    return comp
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TOOLS (from tools.py) — LLM & Inventory helpers
@@ -151,27 +175,11 @@ def _get_llm():
         _llm_instance = get_llm()
     return _llm_instance
 
-def load_inventory():
-    if not os.path.exists(INVENTORY_FILE):
-        with open(INVENTORY_FILE, "w") as f:
-            json.dump(INITIAL_INVENTORY, f, indent=4)
-        return INITIAL_INVENTORY
-    try:
-        with open(INVENTORY_FILE, "r") as f:
-            return json.load(f)
-    except Exception:
-        return INITIAL_INVENTORY
 
-def save_inventory(inv):
-    with open(INVENTORY_FILE, "w") as f:
-        json.dump(inv, f, indent=4)
-
-# Initialize inventory on cold start
-load_inventory()
 
 # ── Tool Functions ────────────────────────────────────────────────────────────
-def analyze_expiry_risk(current_date: str) -> dict:
-    inv = load_inventory()
+def analyze_expiry_risk(email: str, current_date: str) -> dict:
+    inv = load_inventory(email)
     curr_dt = datetime.strptime(current_date, "%Y-%m-%d")
     risky_items = []
     for key, item in inv.items():
@@ -202,10 +210,11 @@ def analyze_expiry_risk(current_date: str) -> dict:
         promo_text = "Special Clearing Discount: 30% Off on dairy and fresh essentials today only!"
     return {"evaluation_date": current_date, "items_at_risk": risky_items, "suggested_promotional_ad": promo_text}
 
-def audit_competitor_pricing() -> dict:
-    inv = load_inventory()
+def audit_competitor_pricing(email: str) -> dict:
+    inv = load_inventory(email)
+    comp_prices = load_competitors(email)
     price_deviations = []
-    for key, comp_data in COMPETITOR_PRICES.items():
+    for key, comp_data in comp_prices.items():
         item = inv.get(key)
         if not item:
             continue
@@ -238,8 +247,8 @@ def audit_competitor_pricing() -> dict:
         pricing_notes = "Maintain price match where cost margin allows."
     return {"deviations": price_deviations, "pricing_strategy_summary": pricing_notes}
 
-def generate_purchase_order(product_key: str, order_quantity: int) -> dict:
-    inv = load_inventory()
+def generate_purchase_order(email: str, product_key: str, order_quantity: int) -> dict:
+    inv = load_inventory(email)
     item = inv.get(product_key)
     if not item:
         return {"error": f"Product key '{product_key}' not found in inventory."}
@@ -267,8 +276,8 @@ def generate_purchase_order(product_key: str, order_quantity: int) -> dict:
         "supplier_email_draft": email_draft
     }
 
-def check_inventory_supplies(treatments_performed: str) -> dict:
-    inv = load_inventory()
+def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
+    inv = load_inventory(email)
     sales_list = [s.strip().lower() for s in treatments_performed.split(",") if s.strip()]
     deductions = {}
     for s in sales_list:
@@ -282,19 +291,22 @@ def check_inventory_supplies(treatments_performed: str) -> dict:
         updated_inv[key] = item
         if new_stock <= item["low_threshold"]:
             alerts.append(f"Low Stock Alert: {item['name']} is at {new_stock} {item['unit']} (Safety Limit: {item['low_threshold']})")
-    save_inventory(updated_inv)
+    save_inventory(email, updated_inv)
     return {"sales_processed": sales_list, "deductions_applied": deductions, "current_stock": updated_inv, "alerts": alerts}
 
 # ══════════════════════════════════════════════════════════════════════════════
 # AGENT (from agent.py) — Diagnostic pipeline
 # ══════════════════════════════════════════════════════════════════════════════
-def run_diagnostics_stream(csv_content: str):
-    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Parsing uploaded daily POS transaction logs...'})}\n\n"
+def run_diagnostics_stream(email: str):
+    yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
     time.sleep(0.5)
 
-    f = io.StringIO(csv_content.strip())
-    reader = csv.DictReader(f)
-    transactions = list(reader)
+    record = pos_collection.find_one({"email": email}) if pos_collection else None
+    transactions = record.get("data", []) if record else []
+    
+    if not transactions:
+        yield f"data: {json.dumps({'agent': 'Error', 'status': 'No POS data uploaded. Please upload files in Data Sync Hub.'})}\n\n"
+        return
 
     total_transactions = len(transactions)
     total_revenue = 0
@@ -313,30 +325,23 @@ def run_diagnostics_stream(csv_content: str):
 
     # Expiry Risk
     yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': 'Scanning shelf inventory for upcoming product expiry dates...'})}\n\n"
-    expiry_data = analyze_expiry_risk("2026-06-05")
+    expiry_data = analyze_expiry_risk(email, "2026-06-05")
     num_items = len(expiry_data['items_at_risk'])
     yield f"data: {json.dumps({'agent': 'Expiry Optimizer', 'status': f'Found {num_items} categories nearing expiry. Discount campaign drafted.'})}\n\n"
 
     # Pricing Guard
     yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': 'Comparing pricing against competitor databases...'})}\n\n"
-    pricing_data = audit_competitor_pricing()
+    pricing_data = audit_competitor_pricing(email)
     num_gaps = len(pricing_data['deviations'])
     yield f"data: {json.dumps({'agent': 'Pricing Auditor', 'status': f'Found {num_gaps} price gaps. Match recommendations calculated.'})}\n\n"
 
     # Inventory update
     yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': 'Updating current stock levels...'})}\n\n"
-    key_mapping = {
-        "dalda cooking oil 5l": "dalda_oil", "surf excel 1kg": "surf_excel",
-        "nestle milkpak 1l": "nestle_milkpak", "yogurt pack 1kg": "yogurt_pack",
-        "tapal danedar 900g": "tapal_danedar"
-    }
     sales_list = []
     for row in transactions:
         item = row.get("ItemName", "").strip().lower()
-        key = key_mapping.get(item)
-        if key:
-            sales_list.append(key)
-    inv_res = check_inventory_supplies(", ".join(sales_list))
+        sales_list.append(item)
+    inv_res = check_inventory_supplies(email, ", ".join(sales_list))
     num_alerts = len(inv_res['alerts'])
     yield f"data: {json.dumps({'agent': 'Inventory Watchdog', 'status': f'Inventory updated. Low stock alerts: {num_alerts}.'})}\n\n"
 
@@ -344,9 +349,10 @@ def run_diagnostics_stream(csv_content: str):
     yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': 'Generating restock purchase orders...'})}\n\n"
     reorder_pos = []
     for alert in inv_res["alerts"]:
-        for key in ["nestle_milkpak", "tapal_danedar"]:
-            if key in alert:
-                po = generate_purchase_order(key, 30)
+        # Find item in alert text to trigger PO
+        for key, item in load_inventory(email).items():
+            if item["name"] in alert:
+                po = generate_purchase_order(email, key, 30)
                 reorder_pos.append(po)
     yield f"data: {json.dumps({'agent': 'Procurement Planner', 'status': f'Auto-drafted {len(reorder_pos)} Purchase Orders.'})}\n\n"
 
@@ -399,14 +405,13 @@ def run_diagnostics_stream(csv_content: str):
     yield f"data: {json.dumps({'agent': 'Orchestrator', 'status': 'complete', 'result': final_payload})}\n\n"
 
 # ══════════════════════════════════════════════════════════════════════════════
-# GLOBAL STATE
-# ══════════════════════════════════════════════════════════════════════════════
-active_csv_content = DEFAULT_CSV
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # API ROUTES
 # ══════════════════════════════════════════════════════════════════════════════
 class UploadRequest(BaseModel):
+    email: str
     filename: str
     content: str
 
@@ -437,31 +442,75 @@ def health_check():
         status["langchain_groq"] = str(e)
     return status
 
-@app.post("/api/upload")
-def handle_upload(request: UploadRequest):
-    global active_csv_content
+@app.post("/api/upload/inventory")
+def upload_inventory(payload: UploadRequest):
+    if inventory_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
     try:
-        active_csv_content = request.content
-        return {"status": "success", "message": f"Successfully loaded {request.filename}."}
+        f = io.StringIO(payload.content.strip())
+        reader = csv.DictReader(f)
+        records = list(reader)
+        inventory_collection.update_one(
+            {"email": payload.email},
+            {"$set": {"data": records, "updated_at": datetime.utcnow()}},
+            upsert=True
+        )
+        return {"status": "success", "message": f"Successfully loaded {len(records)} inventory items."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+@app.post("/api/upload/competitors")
+def upload_competitors(payload: UploadRequest):
+    if competitors_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    try:
+        f = io.StringIO(payload.content.strip())
+        reader = csv.DictReader(f)
+        records = list(reader)
+        competitors_collection.update_one(
+            {"email": payload.email},
+            {"$set": {"data": records, "updated_at": datetime.utcnow()}},
+            upsert=True
+        )
+        return {"status": "success", "message": f"Successfully loaded {len(records)} competitor records."}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+@app.post("/api/upload/pos")
+def upload_pos(payload: UploadRequest):
+    if pos_collection is None:
+        return JSONResponse(status_code=500, content={"status": "error", "message": "Database not configured"})
+    try:
+        f = io.StringIO(payload.content.strip())
+        reader = csv.DictReader(f)
+        records = list(reader)
+        pos_collection.update_one(
+            {"email": payload.email},
+            {"$set": {"data": records, "updated_at": datetime.utcnow()}},
+            upsert=True
+        )
+        return {"status": "success", "message": f"Successfully loaded {len(records)} POS transactions."}
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
 @app.get("/api/stream")
-def stream_diagnostics():
-    global active_csv_content
+def stream_diagnostics(email: str = None):
+    if not email:
+        return JSONResponse(status_code=400, content={"error": "email is required"})
     return StreamingResponse(
-        run_diagnostics_stream(active_csv_content),
+        run_diagnostics_stream(email),
         media_type="text/event-stream"
     )
 
 @app.get("/api/inventory")
-def get_inventory_route():
-    return load_inventory()
+def get_inventory_route(email: str = None):
+    if not email:
+        return {}
+    return load_inventory(email)
 
 @app.post("/api/inventory/reset")
 def reset_inventory():
-    save_inventory(INITIAL_INVENTORY)
-    return INITIAL_INVENTORY
+    return {"message": "Reset disabled in dynamic mode."}
 
 @app.post("/api/simulate")
 def handle_simulation(request: SimulationRequest):

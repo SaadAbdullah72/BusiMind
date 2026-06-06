@@ -8,6 +8,7 @@ import PricingGuard from './components/PricingGuard';
 import ProcurementCenter from './components/ProcurementCenter';
 import RetailSandbox from './components/RetailSandbox';
 import LoginScreen from './components/LoginScreen';
+import DataSyncHub from './components/DataSyncHub';
 
 // Default initial state
 const defaultKPIs = {
@@ -31,61 +32,21 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
   const [userEmail, setUserEmail] = useState(() => localStorage.getItem('userEmail'));
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'expiry' | 'pricing' | 'procurement' | 'sandbox'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'expiry' | 'pricing' | 'procurement' | 'sandbox' | 'datasync'>('datasync');
   const [kpis, setKpis] = useState(defaultKPIs);
   const [swot, setSwot] = useState(defaultSWOT);
   const [expiryData, setExpiryData] = useState<any>(null);
   const [pricingData, setPricingData] = useState<any>(null);
   const [procurementData, setProcurementData] = useState<any>(null);
 
+  const [uploadStatus, setUploadStatus] = useState({ inventory: false, competitors: false, pos: false });
 
-  const [uploading, setUploading] = useState(false);
-  const [scanning, setScanning] = useState(false);
-  const [progress, setProgress] = useState<any>(null);
-  const [uploadedFile, setUploadedFile] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const text = event.target?.result as string;
-      try {
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, content: text })
-        });
-        const data = await res.json();
-        if (data.status === 'success') {
-          setUploadedFile(file.name);
-        } else {
-          alert('Upload failed: ' + data.message);
-        }
-      } catch (err) {
-        alert('Error uploading file to API.');
-      } finally {
-        setUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-      }
-    };
-    reader.onerror = () => {
-      alert('Error reading file');
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    };
-    reader.readAsText(file);
-  };
 
   const runDiagnosticScan = () => {
     setScanning(true);
     setProgress({ agent: 'Initializing', status: 'Connecting to diagnostics stream...' });
     
-    const eventSource = new EventSource('/api/stream');
+    const eventSource = new EventSource(`/api/stream?email=${encodeURIComponent(userEmail || '')}`);
     
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -177,39 +138,6 @@ export default function App() {
               </span>
             </div>
           )}
-          
-          <input
-            type="file"
-            accept=".csv,.txt"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading || scanning}
-            className="px-4 py-2.5 bg-[#121216] hover:bg-[#1b1b22] disabled:opacity-50 border border-[#1e1e24] hover:border-slate-600 rounded-xl text-xs font-semibold transition-all shadow-md flex items-center space-x-2 text-slate-200 cursor-pointer"
-          >
-            {uploading ? (
-              <span>Uploading Data...</span>
-            ) : (
-              <>
-                <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                </svg>
-                <span>Upload POS Logs</span>
-              </>
-            )}
-          </button>
-
-          {uploadedFile && (
-            <div className="px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl flex items-center space-x-2 animate-pulse">
-              <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <span className="text-xs text-emerald-300 font-semibold">{uploadedFile}</span>
-            </div>
-          )}
 
           <button
             onClick={handleSignOut}
@@ -227,6 +155,18 @@ export default function App() {
           <div className="space-y-6">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-2">Intelligence Modules</span>
             <nav className="space-y-2">
+              <button
+                onClick={() => setActiveTab('datasync')}
+                className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                  activeTab === 'datasync'
+                    ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 shadow-lg shadow-orange-500/10'
+                    : 'border border-transparent text-slate-400 hover:bg-[#121216] hover:text-slate-200'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span>Data Sync Hub</span>
+              </button>
+
               <button
                 onClick={() => setActiveTab('dashboard')}
                 className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
@@ -304,6 +244,14 @@ export default function App() {
         {/* Content View Workspace */}
         <main className="flex-1 overflow-y-auto p-8 relative">
           <div className="max-w-6xl mx-auto w-full h-full pb-20">
+            {activeTab === 'datasync' && (
+              <DataSyncHub 
+                userEmail={userEmail || ''} 
+                onUploadSuccess={(type) => {
+                  setUploadStatus(prev => ({ ...prev, [type.toLowerCase()]: true }));
+                }}
+              />
+            )}
             {activeTab === 'dashboard' && (
               <RetailOverview
                 kpis={kpis}
