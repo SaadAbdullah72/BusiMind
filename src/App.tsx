@@ -262,7 +262,7 @@ export default function App() {
               <DataSyncHub 
                 userEmail={userEmail || ''} 
                 onUploadSuccess={(type) => {
-                  setUploadStatus(prev => ({ ...prev, [type.toLowerCase()]: true }));
+                  console.log(`${type} uploaded successfully`);
                 }}
               />
             )}
