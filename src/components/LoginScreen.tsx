@@ -305,7 +305,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <img 
               src="/login_hero.png" 
               alt="Cyborg visual" 
-              className="w-full h-full object-cover object-top opacity-90 transition-transform duration-700 hover:scale-[1.02]"
+              className="w-full h-full object-cover object-[center_15%] opacity-90 transition-transform duration-700 hover:scale-[1.02]"
             />
             {/* Seamless fade overlay for Mobile (bottom fade) and Desktop (right fade) */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-[#070708]/80 to-transparent lg:opacity-0 opacity-100 h-full"></div>

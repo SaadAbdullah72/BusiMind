@@ -8,7 +8,7 @@ import LoginScreen from './components/LoginScreen';
 import DataSyncHub from './components/DataSyncHub';
 import BusinessSettings from './components/BusinessSettings';
 import OperationsChatbot from './components/OperationsChatbot';
-import HRDashboard from './components/HRDashboard';
+
 
 // Default initial state
 const defaultKPIs = {
@@ -114,7 +114,7 @@ export default function App() {
       backgroundAttachment: 'fixed'
     }}>
       {/* Background Ambience Layer */}
-      <div className="absolute inset-0 bg-[#030303]/90 backdrop-blur-[2px] z-0"></div>
+      <div className="absolute inset-0 bg-[#030303]/70 backdrop-blur-[2px] z-0"></div>
       
       {/* Top Header */}
       <header className="bg-[#0c0c0e]/80 backdrop-blur-md border-b border-[#1c1c22]/80 px-4 md:px-6 py-3 md:py-4 flex flex-wrap items-center justify-between shadow-lg sticky top-0 z-40 relative">
@@ -132,8 +132,33 @@ export default function App() {
                 )}
               </svg>
             </button>
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-transparent border border-slate-700 rounded-xl flex items-center justify-center overflow-hidden">
-               <img src="/logo-corporate.png" alt="RetailMind Logo" className="w-8 h-8 object-cover" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
+               <div className="logo-scene w-8 h-8 md:w-10 md:h-10">
+                 <div className="logo-3d-object">
+                   {/* Edges */}
+                   {Array.from({ length: 6 }).map((_, i) => (
+                     <div key={`edge-${i}`} className="logo-face" style={{ transform: `translateZ(${i - 3}px)` }}>
+                       <div className="w-full h-full rounded-full border-[2px] border-orange-600 bg-transparent" />
+                     </div>
+                   ))}
+                   {/* Front */}
+                   <div className="logo-face" style={{ transform: 'translateZ(3.5px)' }}>
+                     <div className="w-full h-full rounded-full border border-orange-400 bg-[#050505] flex items-center justify-center">
+                       <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                     </div>
+                   </div>
+                   {/* Back */}
+                   <div className="logo-face" style={{ transform: 'translateZ(-3.5px) rotateY(180deg)' }}>
+                     <div className="w-full h-full rounded-full border border-orange-400 bg-[#050505] flex items-center justify-center">
+                       <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                     </div>
+                   </div>
+                 </div>
+               </div>
             </div>
             <div>
               <h1 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight leading-none">
@@ -242,16 +267,7 @@ export default function App() {
                   Support Engine
                 </button>
 
-                <button 
-                  onClick={() => { setActiveTab('hr'); setIsMobileMenuOpen(false); }} 
-                  className={`w-full text-left px-4 py-2.5 rounded-lg transition-all cursor-pointer text-xs font-semibold ${
-                    activeTab === 'hr' 
-                      ? 'bg-slate-800 text-slate-100' 
-                      : 'text-slate-400 hover:bg-[#121216] hover:text-slate-200'
-                  }`}
-                >
-                  HR Management
-                </button>
+
 
                 <button 
                   onClick={() => { setActiveTab('settings'); setIsMobileMenuOpen(false); }} 
@@ -279,8 +295,8 @@ export default function App() {
         </aside>
 
         {/* Content View Workspace */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 relative w-full bg-[#030303]/60 backdrop-blur-md">
-          <div className="max-w-6xl mx-auto w-full h-full pb-20">
+        <main className="flex-1 overflow-y-auto p-2 md:p-8 relative w-full bg-[#030303]/60 backdrop-blur-md">
+          <div className="max-w-6xl mx-auto w-full h-full pb-20 overflow-x-hidden">
             {activeTab !== 'dashboard' && (
               <div className="mb-6">
                 <button 
@@ -315,7 +331,7 @@ export default function App() {
             )}
             {activeTab === 'chatbot' && <OperationsChatbot userEmail={userEmail || ''} />}
             {activeTab === 'support' && <SupportEngine userEmail={userEmail || ''} />}
-            {activeTab === 'hr' && <HRDashboard />}
+
             {activeTab === 'settings' && <BusinessSettings userEmail={userEmail || ''} />}
           </div>
         </main>
