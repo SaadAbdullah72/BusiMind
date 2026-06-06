@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#030303] text-slate-200 font-sans relative overflow-hidden flex flex-col" style={{
-      backgroundImage: "url('/bg-corporate.png')",
+      backgroundImage: "url('/premium_bg.png')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed'
@@ -132,8 +132,8 @@ export default function App() {
                 )}
               </svg>
             </button>
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
-               <div className="logo-scene w-8 h-8 md:w-10 md:h-10">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
+               <div className="logo-scene w-10 h-10 md:w-12 md:h-12">
                  <div className="logo-3d-object">
                    {/* Edges */}
                    {Array.from({ length: 6 }).map((_, i) => (
@@ -161,8 +161,8 @@ export default function App() {
                </div>
             </div>
             <div>
-              <h1 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight leading-none">
-                RetailMind AI
+              <h1 className="text-xl md:text-2xl font-bold text-slate-100 tracking-tight leading-none">
+                Retail AI
               </h1>
               <span className="text-[9px] md:text-[10px] text-slate-500 font-semibold tracking-widest uppercase block mt-1">
                 Corporate Intelligence Hub
