@@ -330,14 +330,33 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               <div className="logo-scene relative">
                 <div className="logo-glow"></div>
                 <div className="logo-3d-object">
+                  {/* Edges (Thickness) */}
+                  {Array.from({ length: 16 }).map((_, i) => (
+                    <div key={`edge-${i}`} className="logo-face" style={{ transform: `translateZ(${i - 8}px)` }}>
+                      <div className="w-[120px] h-[120px] rounded-full border-[4px] border-orange-600 bg-transparent" />
+                    </div>
+                  ))}
+
                   {/* Front floating layer */}
-                  <div className="logo-face" style={{ transform: 'translateZ(1px)' }}>
-                    <img src="/logo-corporate.png" alt="Corporate Logo" className="w-32 h-32 rounded-full object-cover border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,1)]" />
+                  <div className="logo-face" style={{ transform: 'translateZ(9px)' }}>
+                    <div className="w-[120px] h-[120px] rounded-full border-2 border-orange-400 bg-gradient-to-br from-[#121215] to-[#050505] shadow-[0_0_30px_rgba(249,115,22,0.8),inset_0_0_15px_rgba(249,115,22,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
+                       <div className="absolute inset-0 bg-orange-500/10 blur-xl rounded-full"></div>
+                       <svg className="w-10 h-10 text-orange-400 mb-1 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.2">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                       <span className="text-[11px] font-black text-white tracking-widest uppercase z-10" style={{ textShadow: '0 0 10px rgba(249,115,22,1)' }}>Retail AI</span>
+                    </div>
                   </div>
                   
-                  {/* Back floating layer (gives hologram depth) */}
-                  <div className="logo-face" style={{ transform: 'translateZ(-1px) rotateY(180deg)' }}>
-                    <img src="/logo-corporate.png" alt="Corporate Logo" className="w-32 h-32 rounded-full object-cover border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
+                  {/* Back floating layer */}
+                  <div className="logo-face" style={{ transform: 'translateZ(-9px) rotateY(180deg)' }}>
+                    <div className="w-[120px] h-[120px] rounded-full border-2 border-orange-400 bg-gradient-to-br from-[#121215] to-[#050505] shadow-[0_0_30px_rgba(249,115,22,0.8),inset_0_0_15px_rgba(249,115,22,0.5)] flex flex-col items-center justify-center relative overflow-hidden">
+                       <div className="absolute inset-0 bg-orange-500/10 blur-xl rounded-full"></div>
+                       <svg className="w-10 h-10 text-orange-400 mb-1 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)] z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.2">
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.974 0-5.699-.5-8.15-1.353m16.3 0C19.349 11.025 15.86 12 12 12s-7.349-.975-10.15-2.853M12 12v9" />
+                       </svg>
+                       <span className="text-[11px] font-black text-white tracking-widest uppercase z-10" style={{ textShadow: '0 0 10px rgba(249,115,22,1)' }}>Retail AI</span>
+                    </div>
                   </div>
                 </div>
               </div>
