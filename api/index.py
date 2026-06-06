@@ -570,7 +570,7 @@ def seed_dummy_emails(payload: dict):
     return {"status": "success", "message": "100 dummy emails seeded."}
 
 @app.post("/api/support/send-mock-emails")
-def send_mock_live_emails(payload: dict):
+def send_mock_live_emails(payload: dict = None):
     smtp_email = os.getenv("SMTP_EMAIL")
     smtp_pass = os.getenv("SMTP_PASSWORD")
 
