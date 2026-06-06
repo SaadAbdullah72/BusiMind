@@ -48,9 +48,6 @@ export default function App() {
       if (data.status === 'complete') {
         setKpis(data.result.kpis);
         setSwot(data.result.swot);
-        setExpiryData(data.result.expiry);
-        setPricingData(data.result.pricing);
-        setProcurementData(data.result.procurement);
         
         setScanning(false);
         setProgress(null);
