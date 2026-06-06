@@ -10,6 +10,16 @@ const TEMPLATES = {
   pos: "TransactionId,Timestamp,ItemName,Quantity,PricePaid,PaymentMethod,CustomerLoyaltyId\nT1001,14:02,Dalda Cooking Oil 5L,2,4500,Card,L9281\nT1002,14:15,Surf Excel 1kg,1,460,Cash,None"
 };
 
+/**
+ * DataSyncHub Component
+ * 
+ * Centralized portal for store managers to upload crucial operational datasets 
+ * including Inventory (CSV), Point of Sale logs (CSV), and Business Policies (PDFs).
+ * Handles file reading, parsing, API submission, and state synchronization.
+ * 
+ * @param userEmail - The currently authenticated user's email address.
+ * @param onUploadSuccess - Callback triggered when a file is successfully uploaded.
+ */
 export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubProps) {
   const [uploading, setUploading] = useState<string | null>(null);
   const [policies, setPolicies] = useState<any[]>([]);
@@ -161,7 +171,7 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
   };
 
   return (
-    <div className="bg-[#121216]/80 backdrop-blur-md border border-[#1e1e24] rounded-2xl p-8 shadow-2xl">
+    <div className="bg-[#121216]/80 backdrop-blur-md border border-[#1e1e24] rounded-2xl p-5 md:p-8 shadow-2xl">
       <h2 className="text-2xl font-bold text-slate-100 mb-2">Data Sync Hub</h2>
       <p className="text-sm text-slate-400 mb-8">
         Upload your store's CSV files to power the AI Diagnostic Engine. The AI uses this exact data to make real-world decisions.
@@ -170,8 +180,8 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Inventory Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 border border-blue-500/30">
-             <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+             1
           </div>
           <h3 className="text-md font-bold text-slate-200">1. Current Inventory</h3>
           <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs for AI to verify stock & Expiry Optimization.</p>
@@ -184,16 +194,16 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
                 </div>
               ) : (
                 inventoryFiles.map(f => (
-                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-blue-500/30">
-                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={f.filename || 'Inventory CSV'}>
-                      📊 {f.filename || 'Inventory CSV'}
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'Inventory CSV'}>
+                      {f.filename || 'Inventory CSV'}
                     </span>
                     <button 
                       onClick={() => deleteInventory(f.doc_id)} 
-                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Delete
                     </button>
                   </div>
                 ))
@@ -202,9 +212,11 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('inventory')} className="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors" title="Download Template">⬇️ Tmpl</button>
-             <label className={`flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
-               {uploading === 'Inventory' ? 'Uploading...' : 'Upload New CSV'}
+             <button onClick={() => handleDownload('inventory')} className="w-1/3 py-2 bg-[#121216] hover:bg-slate-800 text-slate-300 text-[11px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40" title="Download Template">
+               Template
+             </button>
+             <label className={`flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] rounded-lg font-bold transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+               {uploading === 'Inventory' ? 'Uploading...' : 'Upload CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'inventory', 'Inventory')} />
              </label>
           </div>
@@ -212,8 +224,8 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
 
         {/* Business Policy Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mb-4 border border-purple-500/30">
-             <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+             2
           </div>
           <h3 className="text-md font-bold text-slate-200">2. Business Policy (PDF)</h3>
           <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple PDFs for the AI to use as context.</p>
@@ -226,16 +238,16 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
                 </div>
               ) : (
                 policies.map(p => (
-                  <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-purple-500/30">
-                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={p.filename || 'Business Policy Document'}>
-                      📄 {p.filename || 'Business Policy Document'}
+                  <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={p.filename || 'Business Policy Document'}>
+                      {p.filename || 'Business Policy Document'}
                     </span>
                     <button 
                       onClick={() => deletePolicy(p.doc_id)} 
-                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Delete
                     </button>
                   </div>
                 ))
@@ -244,8 +256,8 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full mt-auto">
-             <label className={`w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
-               {uploading === 'Policy' ? 'Extracting Text...' : 'Upload New PDF'}
+             <label className={`w-full py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] font-bold rounded-lg transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+               {uploading === 'Policy' ? 'Extracting Text...' : 'Upload PDF'}
                <input type="file" accept=".pdf" className="hidden" onChange={uploadPdfFile} />
              </label>
           </div>
@@ -253,8 +265,8 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
 
         {/* POS Logs Card */}
         <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4 border border-emerald-500/30">
-             <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+             3
           </div>
           <h3 className="text-md font-bold text-slate-200">3. Daily POS Sales</h3>
           <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs. Required for AI to verify historical purchases.</p>
@@ -267,16 +279,16 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
                 </div>
               ) : (
                 posFiles.map(f => (
-                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2.5 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-emerald-500/30">
-                    <span className="text-xs text-slate-300 truncate pr-2 flex-1" title={f.filename || 'POS Sales CSV'}>
-                      🛒 {f.filename || 'POS Sales CSV'}
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'POS Sales CSV'}>
+                      {f.filename || 'POS Sales CSV'}
                     </span>
                     <button 
                       onClick={() => deletePos(f.doc_id)} 
-                      className="text-slate-500 hover:text-red-400 p-1.5 rounded-md hover:bg-red-500/10 transition-colors"
+                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                      Delete
                     </button>
                   </div>
                 ))
@@ -285,9 +297,11 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('pos')} className="w-1/3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg font-medium transition-colors" title="Download Template">⬇️ Tmpl</button>
-             <label className={`flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white border border-transparent text-xs rounded-lg font-medium transition-colors cursor-pointer text-center relative overflow-hidden group`}>
-               {uploading === 'POS' ? 'Uploading...' : 'Upload New CSV'}
+             <button onClick={() => handleDownload('pos')} className="w-1/3 py-2 bg-[#121216] hover:bg-slate-800 text-slate-300 text-[11px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40" title="Download Template">
+               Template
+             </button>
+             <label className={`flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] rounded-lg font-bold transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+               {uploading === 'POS' ? 'Uploading...' : 'Upload CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'pos', 'POS')} />
              </label>
           </div>

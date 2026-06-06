@@ -67,6 +67,10 @@ SMTP_EMAIL = os.getenv("SMTP_EMAIL")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 def verify_password(plain_password, hashed_password):
+    """
+    Verifies a plain text password against a bcrypt hashed password.
+    Truncates the plain password to 72 bytes to comply with bcrypt limits.
+    """
     try:
         pwd_bytes = plain_password.encode('utf-8')[:72]
         hash_bytes = hashed_password.encode('utf-8')
@@ -75,11 +79,19 @@ def verify_password(plain_password, hashed_password):
         return False
 
 def get_password_hash(password):
+    """
+    Generates a bcrypt hash for a given password.
+    Truncates the password to 72 bytes to comply with bcrypt limits.
+    """
     pwd_bytes = password.encode("utf-8")[:72]
     hashed = bcrypt.hashpw(pwd_bytes, bcrypt.gensalt())
     return hashed.decode("utf-8")
 
 def send_otp_email(to_email: str, otp: str):
+    """
+    Sends an OTP (One-Time Password) to the specified email address via SMTP.
+    Used primarily for password reset functionalities.
+    """
     if not SMTP_EMAIL or not SMTP_PASSWORD:
         raise Exception("SMTP_EMAIL or SMTP_PASSWORD not set in backend.")
     
@@ -95,6 +107,10 @@ def send_otp_email(to_email: str, otp: str):
     server.quit()
 
 def safe_object_id(val: str):
+    """
+    Safely converts a string to a MongoDB ObjectId.
+    Returns None if the conversion fails.
+    """
     try:
         return ObjectId(val)
     except Exception:
@@ -115,6 +131,10 @@ app.add_middleware(
 # DATA LOADERS (MongoDB)
 # ══════════════════════════════════════════════════════════════════════════════
 def safe_int(val, default=0):
+    """
+    Safely converts a value to an integer.
+    Handles None and string representations of floats.
+    """
     try:
         if val is None:
             return default
@@ -123,6 +143,10 @@ def safe_int(val, default=0):
         return default
 
 def safe_float(val, default=0.0):
+    """
+    Safely converts a value to a float.
+    Returns the default value if conversion fails.
+    """
     try:
         if val is None:
             return default
@@ -131,6 +155,10 @@ def safe_float(val, default=0.0):
         return default
 
 def load_inventory(email: str):
+    """
+    Retrieves the inventory items for a specific user from MongoDB.
+    Normalizes keys and ensures data types are correct for computation.
+    """
     if inventory_collection is None:
         return {}
     records = list(inventory_collection.find({"email": email}))
@@ -159,6 +187,10 @@ def load_inventory(email: str):
     return inv
 
 def save_inventory(email: str, inv: dict):
+    """
+    Saves or updates the inventory dictionary for a specific user in MongoDB.
+    Creates an aggregated state document to track temporary deductions.
+    """
     if inventory_collection is None:
         return
     data = []
@@ -186,6 +218,10 @@ def save_inventory(email: str, inv: dict):
     )
 
 def load_competitors(email: str):
+    """
+    Retrieves competitor pricing data for a specific user from MongoDB.
+    Returns a dictionary mapping item names (lowercase) to competitor details.
+    """
     if competitors_collection is None:
         return {}
     record = competitors_collection.find_one({"email": email})
@@ -225,6 +261,10 @@ def _get_llm():
 
 # ── Tool Functions ────────────────────────────────────────────────────────────
 def analyze_expiry_risk(email: str, current_date: str) -> dict:
+    """
+    Scans inventory to find items nearing expiration within a 10-day window.
+    Calculates potential financial loss and suggests promotional clearance campaigns.
+    """
     inv = load_inventory(email)
     curr_dt = datetime.strptime(current_date, "%Y-%m-%d")
     risky_items = []
@@ -249,6 +289,10 @@ def analyze_expiry_risk(email: str, current_date: str) -> dict:
     return {"evaluation_date": current_date, "items_at_risk": risky_items, "suggested_promotional_ad": promo_text}
 
 def audit_competitor_pricing(email: str) -> dict:
+    """
+    Compares internal inventory prices against recorded competitor pricing.
+    Identifies profitable price-matching opportunities to stay competitive without losing margin.
+    """
     inv = load_inventory(email)
     comp_prices = load_competitors(email)
     price_deviations = []
@@ -279,6 +323,10 @@ def audit_competitor_pricing(email: str) -> dict:
     return {"deviations": price_deviations, "pricing_strategy_summary": pricing_notes}
 
 def generate_purchase_order(email: str, product_key: str, order_quantity: int) -> dict:
+    """
+    Generates a formal purchase order (PO) for a specific product.
+    Calculates total costs and drafts an email template for the supplier.
+    """
     inv = load_inventory(email)
     item = inv.get(product_key)
     if not item:
@@ -295,6 +343,10 @@ def generate_purchase_order(email: str, product_key: str, order_quantity: int) -
     }
 
 def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
+    """
+    Deducts items from inventory based on processed POS sales.
+    Generates low-stock alerts if item quantities fall below their predefined safety threshold.
+    """
     inv = load_inventory(email)
     sales_list = [s.strip().lower() for s in treatments_performed.split(",") if s.strip()]
     deductions = {}
@@ -317,6 +369,10 @@ def check_inventory_supplies(email: str, treatments_performed: str) -> dict:
 # ══════════════════════════════════════════════════════════════════════════════
 
 def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
+    """
+    Analyzes transaction histories to compute item category co-occurrences.
+    Maps categories to physical store shelf layouts (aisles/slots) prioritizing cross-selling metrics.
+    """
     # 1. Map item names to categories
     item_to_category = {}
     for key, inv_item in inventory_items.items():
@@ -477,6 +533,10 @@ def build_fitted_layout(email: str, transactions: list, inventory_items: dict):
     }
 
 def analyze_purchase_patterns(email: str) -> list:
+    """
+    Identifies high-frequency item pairs bought together using point-of-sale data.
+    Utilizes an LLM to generate strategic shelf-rearrangement recommendations to optimize physical layout.
+    """
     if pos_collection is None:
         return []
     records = list(pos_collection.find({"email": email}))
@@ -636,6 +696,10 @@ def analyze_purchase_patterns(email: str) -> list:
     return recommendations
 
 def run_diagnostics_stream(email: str):
+    """
+    Main orchestrator generator function that runs the diagnostic pipeline via Server-Sent Events (SSE).
+    Sequentially activates multiple agents (Expiry, Pricing, Inventory, SWOT) and streams their status to the client.
+    """
     try:
         yield f"data: {json.dumps({'agent': 'Operations Analyst', 'status': 'Fetching POS transactions from database...'})}\n\n"
         time.sleep(0.5)

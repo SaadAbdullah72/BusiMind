@@ -3,12 +3,67 @@
 @theme {
   --color-brand-500: #3b82f6;
   --color-brand-600: #2563eb;
-  --color-dark-bg: #0f172a;
-  --color-dark-surface: #1e293b;
+  --color-dark-bg: #030303;
+  --color-dark-surface: #0a0a0f;
 }
 
 body {
-  background-color: var(--color-dark-bg);
+  background-color: #030303;
   color: #f8fafc;
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Roboto', 'Helvetica Neue', system-ui, sans-serif;
+  overflow-x: hidden;
 }
+
+/* Premium ambient animated glows */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.15;
+  }
+  33% {
+    transform: translate(30px, -45px) scale(1.15);
+    opacity: 0.35;
+  }
+  66% {
+    transform: translate(-25px, 25px) scale(0.92);
+    opacity: 0.25;
+  }
+}
+
+.animate-glow-slow {
+  animation: pulseGlow 18s infinite ease-in-out;
+}
+
+.animate-glow-medium {
+  animation: pulseGlow 14s infinite ease-in-out;
+  animation-delay: 2s;
+}
+
+.animate-glow-fast {
+  animation: pulseGlow 10s infinite ease-in-out;
+  animation-delay: 4s;
+}
+
+/* Thin modern scrollbars */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Custom premium card overlays */
+.premium-glass {
+  background: rgba(12, 12, 14, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+

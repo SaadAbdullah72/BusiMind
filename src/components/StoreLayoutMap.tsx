@@ -112,86 +112,37 @@ export default function StoreLayoutMap({
   };
 
   return (
-    <div className="relative overflow-hidden flex flex-col h-full" style={{
-      background: 'linear-gradient(145deg, rgba(8,8,12,0.95) 0%, rgba(12,12,18,0.9) 50%, rgba(8,10,15,0.95) 100%)',
-      backdropFilter: 'blur(24px)',
-      border: '1px solid rgba(255,255,255,0.04)',
-      borderRadius: '20px',
-      padding: '28px',
-      boxShadow: '0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03)'
-    }}>
+    <div className="relative overflow-hidden flex flex-col h-full bg-[#0c0c0e]/95 backdrop-blur-2xl border border-white/5 rounded-[20px] p-7 shadow-2xl">
       
       {/* Subtle grid background */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02]" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '40px 40px'
-      }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(rgba(255,255,255,0.1)_1px,_transparent_1px),_linear-gradient(90deg,_rgba(255,255,255,0.1)_1px,_transparent_1px)] bg-[size:40px_40px]" />
 
       {/* Ambient glow effects */}
-      <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full pointer-events-none" style={{
-        background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)'
-      }} />
-      <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full pointer-events-none" style={{
-        background: 'radial-gradient(circle, rgba(249,115,22,0.04) 0%, transparent 70%)'
-      }} />
+      <div className="absolute -top-32 -right-32 w-64 h-64 rounded-full pointer-events-none bg-[radial-gradient(circle,_rgba(99,102,241,0.06)_0%,_transparent_70%)]" />
+      <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full pointer-events-none bg-[radial-gradient(circle,_rgba(249,115,22,0.04)_0%,_transparent_70%)]" />
 
       {/* Header */}
       <div className="flex justify-between items-center mb-7 relative z-10">
         <div className="flex items-center gap-3">
-          <div style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))',
-            border: '1px solid rgba(99,102,241,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
+          <div className="w-[38px] h-[38px] rounded-xl bg-gradient-to-br from-indigo-500/15 to-purple-500/10 border border-indigo-500/20 flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(129,140,248,0.9)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
           </div>
           <div>
-            <h3 style={{
-              fontSize: '15px',
-              fontWeight: 700,
-              color: '#e2e8f0',
-              letterSpacing: '-0.01em',
-              lineHeight: 1.2
-            }}>
+            <h3 className="text-[14px] font-bold text-slate-200 tracking-tight leading-none">
               Store Floor Map
             </h3>
-            <p style={{
-              fontSize: '11.5px',
-              color: '#64748b',
-              marginTop: '2px',
-              fontWeight: 500
-            }}>
+            <p className="text-[10.5px] text-slate-500 mt-1.5 font-semibold">
               Product co-occurrence & shelf affinity
             </p>
           </div>
         </div>
 
         {recommendations.length > 0 && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 14px',
-            borderRadius: '10px',
-            background: 'rgba(99,102,241,0.08)',
-            border: '1px solid rgba(99,102,241,0.15)'
-          }}>
-            <div style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              background: '#818cf8',
-              boxShadow: '0 0 8px rgba(129,140,248,0.4)',
-              animation: 'pulse 2s ease-in-out infinite'
-            }} />
-            <span style={{ fontSize: '11px', fontWeight: 600, color: '#818cf8' }}>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+            <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.4)] animate-pulse" />
+            <span className="text-[10px] font-bold text-indigo-300">
               {recommendations.length} Pair{recommendations.length !== 1 ? 's' : ''} Detected
             </span>
           </div>
@@ -200,38 +151,19 @@ export default function StoreLayoutMap({
 
       {/* Overflow Warning */}
       {overflowCategories && overflowCategories.length > 0 && (
-        <div className="relative z-10" style={{
-          marginBottom: '24px',
-          padding: '14px 18px',
-          background: 'linear-gradient(135deg, rgba(245,158,11,0.06), rgba(217,119,6,0.03))',
-          border: '1px solid rgba(245,158,11,0.15)',
-          borderRadius: '14px',
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: '12px'
-        }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '10px',
-            background: 'rgba(245,158,11,0.1)',
-            border: '1px solid rgba(245,158,11,0.2)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0
-          }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="relative z-10 mb-6 p-3.5 bg-gradient-to-r from-amber-500/5 to-orange-500/5 border border-amber-500/15 rounded-xl flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
           <div>
-            <h4 style={{ fontSize: '12px', fontWeight: 700, color: '#fbbf24', marginBottom: '4px' }}>
+            <h4 className="text-xs font-bold text-amber-400 mb-1">
               Space Constraint — {overflowCategories.length} Categories Overflowing
             </h4>
-            <p style={{ fontSize: '11px', color: '#94a3b8', lineHeight: 1.5 }}>
-              <span style={{ color: '#f59e0b', fontWeight: 600 }}>{overflowCategories.join(', ')}</span> don't fit. 
-              Add <span style={{ color: '#818cf8', fontWeight: 700 }}>{extraLinesNeeded} more Line(s)</span> in Business Settings.
+            <p className="text-[10.5px] text-slate-400 leading-relaxed">
+              <span className="text-amber-500 font-semibold">{overflowCategories.join(', ')}</span> don't fit. 
+              Add <span className="text-indigo-400 font-bold">{extraLinesNeeded} more Line(s)</span> in Business Settings.
             </p>
           </div>
         </div>
@@ -240,30 +172,11 @@ export default function StoreLayoutMap({
       {/* Floor Map Container */}
       <div 
         ref={containerRef}
-        className="flex-1 relative"
-        style={{
-          border: '1px solid rgba(255,255,255,0.04)',
-          background: 'linear-gradient(180deg, rgba(6,6,10,0.8) 0%, rgba(10,10,16,0.6) 100%)',
-          borderRadius: '16px',
-          padding: '32px',
-          minHeight: '400px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        className="flex-1 relative border border-white/5 bg-gradient-to-b from-[#06060a]/80 to-[#0a0a10]/60 rounded-2xl p-8 min-h-[400px] flex items-center justify-center"
       >
         {/* Subtle floor grid */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          borderRadius: '16px',
-          overflow: 'hidden',
-          opacity: 0.03
-        }}>
-          <div style={{
-            width: '100%',
-            height: '100%',
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0)',
-            backgroundSize: '32px 32px'
-          }} />
+        <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden opacity-[0.03]">
+          <div className="w-full h-full bg-[radial-gradient(circle_at_1px_1px,_rgba(255,255,255,0.5)_1px,_transparent_0)] bg-[size:32px_32px]" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7 w-full max-w-3xl relative z-10">
@@ -276,85 +189,46 @@ export default function StoreLayoutMap({
               <div 
                 key={aisle.id} 
                 id={`aisle-${aisle.id}`}
-                style={{
-                  padding: '18px',
-                  borderRadius: '16px',
-                  border: isHighlighted 
+                className={`p-4.5 rounded-2xl transition-all duration-300 flex flex-col gap-3.5 border ${
+                  isHighlighted 
                     ? isSource 
-                      ? '1px solid rgba(249,115,22,0.5)' 
-                      : '1px solid rgba(16,185,129,0.5)'
-                    : '1px solid rgba(255,255,255,0.05)',
-                  background: isHighlighted
-                    ? isSource
-                      ? 'linear-gradient(135deg, rgba(249,115,22,0.06), rgba(234,88,12,0.02))'
-                      : 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(5,150,105,0.02))'
-                    : 'rgba(12,12,18,0.6)',
-                  boxShadow: isHighlighted 
-                    ? isSource 
-                      ? '0 8px 32px rgba(249,115,22,0.12), inset 0 1px 0 rgba(249,115,22,0.08)'
-                      : '0 8px 32px rgba(16,185,129,0.12), inset 0 1px 0 rgba(16,185,129,0.08)'
-                    : '0 2px 8px rgba(0,0,0,0.15)',
-                  transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
-                  transform: isHighlighted ? 'scale(1.02)' : 'scale(1)',
-                  display: 'flex',
-                  flexDirection: 'column' as const,
-                  gap: '14px'
-                }}
+                      ? 'border-orange-500/50 bg-gradient-to-br from-orange-500/5 to-orange-600/0 shadow-lg shadow-orange-500/5 scale-[1.02]' 
+                      : 'border-emerald-500/50 bg-gradient-to-br from-emerald-500/5 to-emerald-600/0 shadow-lg shadow-emerald-500/5 scale-[1.02]'
+                    : 'border-white/5 bg-[#0c0c12]/60 hover:border-white/10'
+                }`}
               >
                 {/* Aisle Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '7px',
-                      background: isHighlighted 
-                        ? isSource ? 'rgba(249,115,22,0.15)' : 'rgba(16,185,129,0.15)'
-                        : 'rgba(100,116,139,0.1)',
-                      border: isHighlighted
-                        ? isSource ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(16,185,129,0.3)'
-                        : '1px solid rgba(100,116,139,0.15)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '10px',
-                      fontWeight: 800,
-                      color: isHighlighted
-                        ? isSource ? '#fb923c' : '#34d399'
-                        : '#64748b'
-                    }}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold border ${
+                      isHighlighted 
+                        ? isSource 
+                          ? 'bg-orange-500/15 border-orange-500/30 text-orange-400' 
+                          : 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                        : 'bg-slate-500/10 border-slate-500/20 text-slate-500'
+                    }`}>
                       {aisle.id}
                     </div>
-                    <span style={{
-                      fontSize: '12px',
-                      fontWeight: 700,
-                      color: isHighlighted ? '#f1f5f9' : '#94a3b8',
-                      letterSpacing: '0.02em',
-                      textTransform: 'uppercase' as const
-                    }}>
+                    <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                      isHighlighted ? 'text-slate-100' : 'text-slate-400'
+                    }`}>
                       {aisle.name}
                     </span>
                   </div>
                   
                   {isHighlighted && (
-                    <span style={{
-                      fontSize: '9px',
-                      fontWeight: 700,
-                      padding: '3px 8px',
-                      borderRadius: '6px',
-                      textTransform: 'uppercase' as const,
-                      letterSpacing: '0.06em',
-                      background: isSource ? 'rgba(249,115,22,0.12)' : 'rgba(16,185,129,0.12)',
-                      color: isSource ? '#fb923c' : '#34d399',
-                      border: isSource ? '1px solid rgba(249,115,22,0.25)' : '1px solid rgba(16,185,129,0.25)'
-                    }}>
+                    <span className={`text-[8.5px] font-bold uppercase tracking-widest px-2 py-0.5 rounded border ${
+                      isSource 
+                        ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' 
+                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                    }`}>
                       {isSource ? "Source" : "Target"}
                     </span>
                   )}
                 </div>
 
                 {/* Slots Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <div className="grid grid-cols-2 gap-2">
                   {aisle.slots.map((slot, index) => {
                     const isAisleSourceSlot = isSource && slot && hoveredRec?.item_b && slot.toLowerCase().includes(hoveredRec.item_b.toLowerCase().split(' ')[0]);
                     const isAisleTargetSlot = isTarget && slot && hoveredRec?.item_a && slot.toLowerCase().includes(hoveredRec.item_a.toLowerCase().split(' ')[0]);
@@ -365,8 +239,6 @@ export default function StoreLayoutMap({
                       <div 
                         key={index}
                         style={{
-                          padding: '10px 8px',
-                          borderRadius: '10px',
                           border: isSlotHighlighted 
                             ? isAisleSourceSlot 
                               ? '1.5px solid rgba(249,115,22,0.5)' 
@@ -377,46 +249,25 @@ export default function StoreLayoutMap({
                               ? 'rgba(249,115,22,0.08)'
                               : 'rgba(16,185,129,0.08)'
                             : colors.bg,
-                          boxShadow: isSlotHighlighted
-                            ? isAisleSourceSlot
-                              ? '0 0 16px rgba(249,115,22,0.15), inset 0 0 12px rgba(249,115,22,0.05)'
-                              : '0 0 16px rgba(16,185,129,0.15), inset 0 0 12px rgba(16,185,129,0.05)'
-                            : `0 0 12px ${colors.glow}`,
-                          textAlign: 'center' as const,
-                          display: 'flex',
-                          flexDirection: 'column' as const,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minHeight: '62px',
-                          transition: 'all 0.3s ease',
-                          position: 'relative' as const
                         }}
+                        className={`p-2.5 rounded-xl text-center flex flex-col items-center justify-center min-h-[62px] transition-all duration-300 relative ${
+                          isSlotHighlighted
+                            ? isAisleSourceSlot
+                              ? 'shadow-[0_0_16px_rgba(249,115,22,0.15),_inset_0_0_12px_rgba(249,115,22,0.05)]'
+                              : 'shadow-[0_0_16px_rgba(16,185,129,0.15),_inset_0_0_12px_rgba(16,185,129,0.05)]'
+                            : ''
+                        }`}
                       >
-                        <span style={{ fontSize: '16px', marginBottom: '3px', lineHeight: 1 }}>
+                        <span className="text-[15px] mb-1.5 leading-none">
                           {getCategoryIcon(slot)}
                         </span>
-                        <span style={{
-                          fontSize: '10.5px',
-                          fontWeight: 700,
-                          color: isSlotHighlighted
-                            ? isAisleSourceSlot ? '#fb923c' : '#34d399'
-                            : colors.text,
-                          lineHeight: 1.2,
-                          maxWidth: '100%',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap' as const
-                        }}>
+                        <span 
+                          style={{ color: isSlotHighlighted ? (isAisleSourceSlot ? '#fb923c' : '#34d399') : colors.text }}
+                          className="text-[10px] font-bold leading-tight max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                        >
                           {slot || "Empty"}
                         </span>
-                        <span style={{
-                          fontSize: '8px',
-                          fontWeight: 600,
-                          color: '#475569',
-                          marginTop: '2px',
-                          textTransform: 'uppercase' as const,
-                          letterSpacing: '0.05em'
-                        }}>
+                        <span className="text-[7.5px] font-bold text-slate-600 mt-1 uppercase tracking-wider">
                           Slot {index + 1}
                         </span>
                       </div>
@@ -473,7 +324,6 @@ export default function StoreLayoutMap({
             const curveOffset = Math.max(40, dist * 0.25);
             const midX = (pt1.x + pt2.x) / 2;
             const midY = (pt1.y + pt2.y) / 2;
-            // Perpendicular offset for the control point
             const nx = -dy / dist;
             const ny = dx / dist;
             const ctrlX = midX + nx * curveOffset;
@@ -481,7 +331,6 @@ export default function StoreLayoutMap({
 
             return (
               <g key={idx}>
-                {/* Glow layer */}
                 {isHovered && (
                   <path 
                     d={`M ${pt1.x} ${pt1.y} Q ${ctrlX} ${ctrlY} ${pt2.x} ${pt2.y}`} 
@@ -493,7 +342,6 @@ export default function StoreLayoutMap({
                     filter="url(#glow-strong)"
                   />
                 )}
-                {/* Main curve */}
                 <path 
                   d={`M ${pt1.x} ${pt1.y} Q ${ctrlX} ${ctrlY} ${pt2.x} ${pt2.y}`} 
                   fill="none" 
@@ -508,7 +356,6 @@ export default function StoreLayoutMap({
                     animation: isHovered ? 'dashFlow 1.2s linear infinite' : 'none'
                   }}
                 />
-                {/* Endpoint dots */}
                 {isHovered && (
                   <>
                     <circle cx={pt1.x} cy={pt1.y} r="4" fill="#f97316" opacity="0.7" filter="url(#glow-soft)">
@@ -543,7 +390,6 @@ export default function StoreLayoutMap({
           const ny = dx / dist;
           const ctrlX = midXBase + nx * curveOffset;
           const ctrlY = midYBase + ny * curveOffset;
-          // Quadratic bezier midpoint at t=0.5
           const midX = 0.25 * pt1.x + 0.5 * ctrlX + 0.25 * pt2.x;
           const midY = 0.25 * pt1.y + 0.5 * ctrlY + 0.25 * pt2.y;
 
@@ -562,74 +408,44 @@ export default function StoreLayoutMap({
                 left: midX, 
                 top: midY,
                 transform: 'translate(-50%, -50%)',
-                zIndex: 30,
-                padding: isHovered ? '6px 14px' : '5px 10px',
-                borderRadius: '10px',
-                fontSize: isHovered ? '11px' : '10px',
-                fontWeight: 700,
-                border: isHovered 
-                  ? '1px solid rgba(139,92,246,0.4)'
-                  : '1px solid rgba(100,116,139,0.2)',
-                background: isHovered 
-                  ? 'linear-gradient(135deg, rgba(249,115,22,0.2), rgba(139,92,246,0.15), rgba(16,185,129,0.2))'
-                  : 'rgba(15,15,22,0.9)',
-                backdropFilter: 'blur(12px)',
-                boxShadow: isHovered 
-                  ? '0 8px 24px rgba(139,92,246,0.2), 0 0 1px rgba(255,255,255,0.1)'
-                  : '0 2px 8px rgba(0,0,0,0.3)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                opacity: isHovered ? 1 : 0.65,
-                pointerEvents: 'auto' as const,
-                userSelect: 'none' as const,
-                whiteSpace: 'nowrap' as const
               }}
+              className={`z-30 rounded-xl font-bold cursor-pointer flex items-center gap-1.5 transition-all duration-300 pointer-events-auto select-none whitespace-nowrap backdrop-blur-md ${
+                isHovered 
+                  ? 'px-3.5 py-1.5 text-[11px] border border-purple-500/40 bg-gradient-to-br from-orange-500/10 via-purple-500/10 to-emerald-500/10 shadow-lg shadow-purple-500/10 opacity-100 scale-105'
+                  : 'px-2.5 py-1 text-[10px] border border-slate-500/10 bg-[#0c0c12]/90 shadow-md opacity-70'
+              }`}
               onMouseEnter={() => onHoverRecChange && onHoverRecChange(rec)}
               onMouseLeave={() => onHoverRecChange && onHoverRecChange(null)}
             >
-              <span style={{ color: '#fb923c' }}>{shortB}</span>
-              <span style={{ 
-                fontSize: '8px', 
-                color: isHovered ? '#a78bfa' : '#475569',
-                fontWeight: 800
-              }}>⟷</span>
-              <span style={{ color: '#34d399' }}>{shortA}</span>
+              <span className="text-orange-400">{shortB}</span>
+              <span className={`text-[8px] font-bold ${isHovered ? 'text-purple-400' : 'text-slate-600'}`}>⟷</span>
+              <span className="text-emerald-400">{shortA}</span>
             </div>
           );
         })}
       </div>
 
       {/* Footer stats */}
-      <div className="relative z-10" style={{
-        marginTop: '16px',
-        paddingTop: '14px',
-        borderTop: '1px solid rgba(255,255,255,0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '3px', background: 'linear-gradient(135deg, #818cf8, #6366f1)' }} />
-            <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 500 }}>{activeLayout.length} Lines</span>
+      <div className="relative z-10 mt-4 pt-3.5 border-t border-white/5 flex justify-between items-center text-[10px] text-slate-500 font-medium">
+        <div className="flex gap-5">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-sm bg-gradient-to-br from-indigo-400 to-indigo-600" />
+            <span>{activeLayout.length} Lines</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '3px', background: 'linear-gradient(135deg, #f97316, #ea580c)' }} />
-            <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 500 }}>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-sm bg-gradient-to-br from-orange-400 to-orange-600" />
+            <span>
               {activeLayout.reduce((s, a) => s + a.slots.filter(Boolean).length, 0)} Products
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '3px', background: 'linear-gradient(135deg, #10b981, #059669)' }} />
-            <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 500 }}>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-sm bg-gradient-to-br from-emerald-400 to-emerald-600" />
+            <span>
               {recommendations.length} Co-occurrence{recommendations.length !== 1 ? 's' : ''}
             </span>
           </div>
         </div>
-        <span style={{ fontSize: '10px', color: '#374151', fontWeight: 500 }}>
+        <span className="text-slate-600">
           Hover badges to trace paths
         </span>
       </div>

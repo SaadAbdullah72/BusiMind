@@ -213,57 +213,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 flex flex-col font-sans antialiased relative overflow-hidden select-none">
-      <style>{`
-        .logo-scene {
-          perspective: 1200px;
-          width: 150px;
-          height: 150px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 1rem;
-        }
-        .logo-3d-object {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          transform-style: preserve-3d;
-          animation: continuous-spin 10s linear infinite;
-        }
-        @keyframes continuous-spin {
-          0% { transform: rotateY(0deg) rotateX(10deg); }
-          100% { transform: rotateY(360deg) rotateX(10deg); }
-        }
-        .logo-face {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          backface-visibility: visible;
-          transform-style: preserve-3d;
-        }
-        .logo-glow {
-          position: absolute;
-          width: 150%;
-          height: 150%;
-          background: radial-gradient(circle, rgba(249,115,22,0.3) 0%, transparent 65%);
-          top: -25%;
-          left: -25%;
-          pointer-events: none;
-          animation: pulse-glow 3s ease-in-out infinite alternate;
-        }
-        @keyframes pulse-glow {
-          0% { opacity: 0.5; transform: scale(0.95); }
-          100% { opacity: 1; transform: scale(1.05); }
-        }
-      `}</style>
-      
-      {/* Background Decorative Glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
-
-      {/* Simulated Email / OTP Notification Banner */}
+      <div className="absolute inset-0 bg-[#030303]/90 backdrop-blur-[2px] z-0"></div>{/* Simulated Email / OTP Notification Banner */}
       {simulatedNotification && (
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 animate-slideDown">
           <div className="bg-[#0e0e11] border border-orange-500/30 rounded-2xl p-4 shadow-[0_4px_30px_rgba(249,115,22,0.15)] backdrop-blur-md flex items-start space-x-3.5">
@@ -291,7 +241,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           <div className="relative z-20 max-w-lg mt-6">
             <h2 className="text-4xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
               Into Successful<br />
-              <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-orange-400 bg-clip-text text-transparent">
+              <span className="text-slate-100">
                 Business.
               </span>
             </h2>
@@ -321,22 +271,11 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         </div>
 
         {/* Right Auth Panel */}
-        <div className="lg:col-span-5 flex flex-col justify-center px-6 py-12 md:px-16 lg:px-20 bg-[#070708] relative">
+        <div className="lg:col-span-5 flex flex-col justify-center px-6 py-8 md:py-12 md:px-16 lg:px-20 bg-[#070708] relative">
           
-          <div className="max-w-md w-full mx-auto space-y-8">
-            
-            {/* 3D Rotating Logo */}
+          <div className="max-w-md w-full mx-auto space-y-6 md:space-y-8">
+                  {/* Rotating Logo */}
             <div className="flex flex-col items-center">
-              <div className="logo-scene relative">
-                <div className="logo-glow"></div>
-                <div className="logo-3d-object">
-                  {/* Front floating layer */}
-                  <div className="logo-face" style={{ transform: 'translateZ(20px)' }}>
-                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_15px_rgba(249,115,22,1)]">
-                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="url(#orange-grad)" strokeWidth="5" className="opacity-100"/>
-                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="url(#amber-grad)" opacity="0.15" stroke="#fbbf24" strokeWidth="2"/>
-                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="#fbbf24" strokeWidth="2.5" strokeDasharray="3 3" opacity="0.8"/>
-                      <circle cx="50" cy="50" r="10" fill="#fff" className="animate-pulse shadow-[0_0_25px_#fff]"/>
                       <defs>
                         <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
                           <stop offset="0%" stopColor="#f97316" />
@@ -450,11 +389,10 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     </button>
                   </div>
 
-                  {/* Sign In Button */}
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_25px_rgba(249,115,22,0.3)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                    className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] transition-all text-sm relative overflow-hidden active:scale-[0.99] disabled:opacity-50 cursor-pointer"
                   >
                     {isLoading ? (
                       <div className="flex items-center justify-center space-x-2">
@@ -640,11 +578,11 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             
             {/* Spinning glowing portal */}
             <div className="relative w-24 h-24 mx-auto">
-              <div className="absolute inset-0 border-4 border-orange-500/10 rounded-full"></div>
-              <div className="absolute inset-0 border-4 border-t-orange-500 border-r-amber-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-3 border border-orange-500/30 border-dashed rounded-full animate-reverse-spin"></div>
+              <div className="absolute inset-0 border-4 border-slate-500/10 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-t-slate-500 border-r-slate-400 rounded-full animate-spin"></div>
+              <div className="absolute inset-3 border border-slate-500/30 border-dashed rounded-full animate-reverse-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-6 h-6 text-orange-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-slate-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 009 11V5a2 2 0 00-2-2H5a2 2 0 00-2 2v6a9 9 0 001.8 5.4L5 18.28" />
                 </svg>
               </div>
