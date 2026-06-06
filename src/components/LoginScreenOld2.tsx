@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 
 interface LoginScreenProps {
   onLoginSuccess: (email: string) => void;
@@ -267,7 +267,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
       {simulatedNotification && (
         <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 animate-slideDown">
           <div className="bg-[#0e0e11] border border-orange-500/30 rounded-2xl p-4 shadow-[0_4px_30px_rgba(249,115,22,0.15)] backdrop-blur-md flex items-start space-x-3.5">
-            <div className="text-2xl mt-0.5 animate-bounce">🔑</div>
+            <div className="text-2xl mt-0.5 animate-bounce">≡ƒöæ</div>
             <div className="flex-1 min-w-0">
               <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider">Secure Access Notification</h4>
               <p className="text-xs text-slate-300 mt-1 font-mono break-words">{simulatedNotification}</p>
@@ -276,7 +276,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               onClick={() => setSimulatedNotification(null)}
               className="text-slate-500 hover:text-slate-300 transition-colors text-xs font-bold"
             >
-              ✕
+              Γ£ò
             </button>
           </div>
         </div>
@@ -315,7 +315,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           {/* Bottom Branding info */}
           <div className="relative z-20 flex items-center space-x-2 text-xs text-slate-500 mt-auto">
             <span>Powered by BusiMind AI</span>
-            <span>•</span>
+            <span>ΓÇó</span>
             <span>v2.4.0-neural</span>
           </div>
         </div>
@@ -331,13 +331,33 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                 <div className="logo-glow"></div>
                 <div className="logo-3d-object">
                   {/* Front floating layer */}
-                  <div className="logo-face" style={{ transform: 'translateZ(1px)' }}>
-                    <img src="/logo-corporate.png" alt="Corporate Logo" className="w-32 h-32 rounded-full object-cover border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,1)]" />
+                  <div className="logo-face" style={{ transform: 'translateZ(20px)' }}>
+                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_15px_rgba(249,115,22,1)]">
+                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="url(#orange-grad)" strokeWidth="5" className="opacity-100"/>
+                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="url(#amber-grad)" opacity="0.15" stroke="#fbbf24" strokeWidth="2"/>
+                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="#fbbf24" strokeWidth="2.5" strokeDasharray="3 3" opacity="0.8"/>
+                      <circle cx="50" cy="50" r="10" fill="#fff" className="animate-pulse shadow-[0_0_25px_#fff]"/>
+                      <defs>
+                        <linearGradient id="orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#f97316" />
+                          <stop offset="100%" stopColor="#ea580c" />
+                        </linearGradient>
+                        <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#fbbf24" />
+                          <stop offset="100%" stopColor="#f59e0b" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
                   </div>
                   
                   {/* Back floating layer (gives hologram depth) */}
-                  <div className="logo-face" style={{ transform: 'translateZ(-1px) rotateY(180deg)' }}>
-                    <img src="/logo-corporate.png" alt="Corporate Logo" className="w-32 h-32 rounded-full object-cover border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]" />
+                  <div className="logo-face" style={{ transform: 'translateZ(-20px) rotateY(180deg)' }}>
+                    <svg viewBox="0 0 100 100" className="w-32 h-32 drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]">
+                      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="none" stroke="rgba(249,115,22,0.4)" strokeWidth="3"/>
+                      <polygon points="50,20 75,35 75,65 50,80 25,65 25,35" fill="none" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5"/>
+                      <path d="M50 20 L50 50 M25 35 L50 50 M75 35 L50 50 M25 65 L50 50 M75 65 L50 50 M50 80 L50 50" stroke="rgba(251,191,36,0.3)" strokeWidth="1.5" strokeDasharray="3 3"/>
+                      <circle cx="50" cy="50" r="5" fill="rgba(255,255,255,0.4)"/>
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -389,7 +409,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
+                        placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                         className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl pl-4 pr-11 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
                       />
                       <button
@@ -510,7 +530,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     onClick={() => { setView('login'); setError(''); }}
                     className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
                   >
-                    ← Back to Login
+                    ΓåÉ Back to Login
                   </button>
                 </form>
               </>
@@ -566,7 +586,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                         type={showNewPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="••••••••"
+                        placeholder="ΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇóΓÇó"
                         className="w-full bg-[#0a0a0c] border border-[#1e1e24] hover:border-slate-700 focus:border-orange-500 rounded-xl pl-4 pr-11 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
                       />
                       <button
@@ -601,7 +621,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
                     onClick={() => { setView('login'); setError(''); setInfoMessage(''); }}
                     className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
                   >
-                    ← Back to Login
+                    ΓåÉ Back to Login
                   </button>
                 </form>
               </>
