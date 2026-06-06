@@ -37,20 +37,23 @@ else:
     users_collection = None
     otps_collection = None
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__truncate_error=False)
+import bcrypt
 
 SMTP_EMAIL = os.getenv("SMTP_EMAIL")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        pwd_bytes = plain_password.encode('utf-8')[:72]
+        hash_bytes = hashed_password.encode('utf-8')
+        return bcrypt.checkpw(pwd_bytes, hash_bytes)
+    except Exception:
+        return False
 
 def get_password_hash(password):
-    # bcrypt >= 4.0 strict 72-byte limit workaround. Multi-byte chars can exceed 72 bytes even if len(str) <= 72.
-    b = password.encode("utf-8")
-    if len(b) > 72:
-        b = b[:72]
-    return pwd_context.hash(b.decode("utf-8", "ignore"))
+    pwd_bytes = password.encode("utf-8")[:72]
+    hashed = bcrypt.hashpw(pwd_bytes, bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 def send_otp_email(to_email: str, otp: str):
     if not SMTP_EMAIL or not SMTP_PASSWORD:
