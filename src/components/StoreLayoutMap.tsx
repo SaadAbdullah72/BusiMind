@@ -321,11 +321,12 @@ export default function StoreLayoutMap({
             const dx = pt2.x - pt1.x;
             const dy = pt2.y - pt1.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const curveOffset = Math.max(40, dist * 0.25);
+            const safeDist = dist === 0 ? 1 : dist;
+            const curveOffset = Math.max(40, safeDist * 0.25);
             const midX = (pt1.x + pt2.x) / 2;
             const midY = (pt1.y + pt2.y) / 2;
-            const nx = -dy / dist;
-            const ny = dx / dist;
+            const nx = -dy / safeDist;
+            const ny = dx / safeDist;
             const ctrlX = midX + nx * curveOffset;
             const ctrlY = midY + ny * curveOffset;
 
@@ -383,11 +384,12 @@ export default function StoreLayoutMap({
           const dx = pt2.x - pt1.x;
           const dy = pt2.y - pt1.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const curveOffset = Math.max(40, dist * 0.25);
+          const safeDist = dist === 0 ? 1 : dist;
+          const curveOffset = Math.max(40, safeDist * 0.25);
           const midXBase = (pt1.x + pt2.x) / 2;
           const midYBase = (pt1.y + pt2.y) / 2;
-          const nx = -dy / dist;
-          const ny = dx / dist;
+          const nx = -dy / safeDist;
+          const ny = dx / safeDist;
           const ctrlX = midXBase + nx * curveOffset;
           const ctrlY = midYBase + ny * curveOffset;
           const midX = 0.25 * pt1.x + 0.5 * ctrlX + 0.25 * pt2.x;
