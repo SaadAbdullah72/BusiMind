@@ -1,21 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 
-
-
 export default function SupportEngine({ userEmail }: { userEmail: string }) {
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const isPausedRef = useRef(isPaused);
   const [selectedEmail, setSelectedEmail] = useState<any>(null);
   const [results, setResults] = useState<Record<string, any>>({});
   const [progress, setProgress] = useState(0);
   const [sendingTest, setSendingTest] = useState(false);
-
-  useEffect(() => {
-    isPausedRef.current = isPaused;
-  }, [isPaused]);
+  const stopRequestedRef = useRef(false);
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -27,10 +20,23 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
           setEmails(parsed.emails);
           setResults(parsed.results || {});
           if (parsed.selectedEmail) setSelectedEmail(parsed.selectedEmail);
+          if (parsed.progress !== undefined) setProgress(parsed.progress);
         }
       } catch (e) {}
     }
   }, []);
+
+  // Sync state to localStorage whenever emails, results, selectedEmail, or progress changes
+  useEffect(() => {
+    if (emails.length > 0) {
+      localStorage.setItem('support_engine_state', JSON.stringify({
+        emails,
+        results,
+        selectedEmail,
+        progress
+      }));
+    }
+  }, [emails, results, selectedEmail, progress]);
 
   const sendTestEmails = async () => {
     setSendingTest(true);
@@ -60,7 +66,6 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
       const res = await fetch(`/api/support/live-inbox?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       setEmails(data);
-      localStorage.setItem('support_engine_state', JSON.stringify({ emails: data, results, selectedEmail }));
     } catch (err) {
       console.error(err);
     } finally {
@@ -68,30 +73,49 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
     }
   };
 
+  // Only auto-fetch on mount if no cached emails exist in localStorage
   useEffect(() => {
-    if (userEmail) fetchInbox();
+    const savedState = localStorage.getItem('support_engine_state');
+    let hasCachedEmails = false;
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.emails && parsed.emails.length > 0) {
+          hasCachedEmails = true;
+        }
+      } catch (e) {}
+    }
+    if (userEmail && !hasCachedEmails) {
+      fetchInbox();
+    }
   }, [userEmail]);
-
 
   const processAll = async () => {
     if (processing) {
-      setIsPaused(true);
+      // Toggle stop
+      stopRequestedRef.current = true;
+      setProcessing(false);
       return;
     }
     
-    setIsPaused(false);
+    stopRequestedRef.current = false;
     setProcessing(true);
-    let count = 0;
     
     let currentResults = { ...results };
     let currentEmails = [ ...emails ];
+    const totalEmails = currentEmails.length;
     
+    // Calculate initial processed count to support resume progress correctly
+    const processedCount = currentEmails.filter(e => e.status !== 'unread').length;
+    let count = processedCount;
+
     for (const email of currentEmails) {
-      if (isPausedRef.current) break;
+      if (stopRequestedRef.current) break;
+      
       if (email.status !== 'unread') {
-        count++;
         continue;
       }
+      
       setSelectedEmail(email); // Show currently processing
       try {
         const res = await fetch(`/api/support/resolve-live`, {
@@ -105,26 +129,34 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
             email: userEmail
           })
         });
+        
+        if (!res.ok) {
+          throw new Error("Resolution request failed");
+        }
+        
         const data = await res.json();
         
-        currentResults = {...currentResults, [email.message_id]: data};
+        currentResults = { ...currentResults, [email.message_id]: data };
         setResults(currentResults);
         
-        currentEmails = currentEmails.map(e => e.message_id === email.message_id ? {...e, status: data.intent === 'COMPLAINT' ? 'escalated' : 'replied'} : e);
+        currentEmails = currentEmails.map(e => 
+          e.message_id === email.message_id 
+            ? { ...e, status: data.intent === 'COMPLAINT' ? 'escalated' : 'replied' } 
+            : e
+        );
         setEmails(currentEmails);
-        
-        localStorage.setItem('support_engine_state', JSON.stringify({ emails: currentEmails, results: currentResults, selectedEmail: email }));
       } catch (err) {
         console.error(err);
       }
-      count++;
-      setProgress(Math.round((count / currentEmails.length) * 100));
       
-      if (isPausedRef.current) break;
+      count++;
+      setProgress(Math.round((count / totalEmails) * 100));
+      
+      if (stopRequestedRef.current) break;
       await new Promise(r => setTimeout(r, 1000));
     }
+    
     setProcessing(false);
-    setIsPaused(false);
   };
 
   return (
@@ -140,15 +172,15 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
             <button onClick={sendTestEmails} disabled={loading || processing || sendingTest} className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-slate-600 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
               {sendingTest ? 'Sending...' : 'Send Test'}
             </button>
-            <button onClick={fetchInbox} disabled={loading || (processing && !isPaused) || sendingTest} className="px-2.5 py-1.5 bg-slate-800/20 hover:bg-slate-800/40 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-[#1a1a24]/80 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
+            <button onClick={fetchInbox} disabled={loading || processing || sendingTest} className="px-2.5 py-1.5 bg-slate-800/20 hover:bg-slate-800/40 text-slate-300 text-[10px] rounded-lg font-bold transition-all border border-[#1a1a24]/80 cursor-pointer disabled:opacity-50 uppercase tracking-wider">
               {loading ? 'Fetching...' : 'Fetch'}
             </button>
             <button 
               onClick={processAll} 
               disabled={loading || sendingTest || emails.length === 0} 
-              className={`px-2.5 py-1.5 text-white text-[10px] rounded-lg font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 uppercase tracking-wider ${processing ? 'bg-orange-500 hover:bg-orange-600' : 'bg-indigo-600 hover:bg-indigo-500'}`}
+              className={`px-2.5 py-1.5 text-white text-[10px] rounded-lg font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 uppercase tracking-wider ${processing ? 'bg-rose-600 hover:bg-rose-500 animate-pulse' : 'bg-indigo-600 hover:bg-indigo-500'}`}
             >
-              {processing ? `Stop Automation (${progress}%)` : 'Run Automation'}
+              {processing ? `Stop Automation (${progress}%)` : progress > 0 && progress < 100 ? 'Resume Automation' : 'Run Automation'}
             </button>
           </div>
         </div>
@@ -164,7 +196,6 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
               key={email.message_id} 
               onClick={() => {
                 setSelectedEmail(email);
-                localStorage.setItem('support_engine_state', JSON.stringify({ emails, results, selectedEmail: email }));
               }}
               className={`p-4 cursor-pointer hover:bg-[#121216]/30 transition-all ${selectedEmail?.message_id === email.message_id ? 'bg-slate-800/20 border-l-2 border-l-slate-400' : ''}`}
             >
@@ -219,9 +250,9 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">Step 1: AI Classification</span>
                   {results[selectedEmail.message_id].intent === 'COMPLAINT' ? (
-                     <span className="px-2 py-0.5 bg-slate-800 border border-slate-700 text-white text-[8.5px] font-bold rounded uppercase tracking-wider">High Priority</span>
+                     <span className="px-2 py-0.5 bg-rose-950 border border-rose-800 text-rose-300 text-[8.5px] font-bold rounded uppercase tracking-wider">Escalated</span>
                   ) : (
-                     <span className="px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[8.5px] font-bold rounded uppercase tracking-wider">Standard</span>
+                     <span className="px-2 py-0.5 bg-indigo-950 border border-indigo-800 text-indigo-300 text-[8.5px] font-bold rounded uppercase tracking-wider">Auto-Replied</span>
                   )}
                 </div>
                 <div className="flex space-x-6">

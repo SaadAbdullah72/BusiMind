@@ -1377,30 +1377,68 @@ class LiveResolveRequest(BaseModel):
 
 @app.post("/api/support/resolve-live")
 def resolve_live_email(req: LiveResolveRequest):
-    # Fetch Policy Document for context
-    policy_doc = "No specific policy document uploaded."
+    # 1. Fetch Policy Document & Chunk
+    policy_chunks = []
     if policies_collection is not None:
         records = list(policies_collection.find({"email": req.email}))
-        if records:
-            policy_doc = "\n\n".join([rec.get("policy_text", "") for rec in records])
+        for doc in records:
+            fname = doc.get("filename", "Business Policy Document")
+            text = doc.get("policy_text", "")
+            paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+            for p in paragraphs:
+                if len(p) > 1000:
+                    words = p.split()
+                    current_chunk = []
+                    current_len = 0
+                    for word in words:
+                        current_chunk.append(word)
+                        current_len += len(word) + 1
+                        if current_len > 800:
+                            policy_chunks.append({
+                                "text": " ".join(current_chunk),
+                                "source": fname
+                            })
+                            current_chunk = []
+                            current_len = 0
+                    if current_chunk:
+                        policy_chunks.append({
+                            "text": " ".join(current_chunk),
+                            "source": fname
+                        })
+                else:
+                    policy_chunks.append({
+                        "text": p,
+                        "source": fname
+                    })
 
-    # Single Step: Classifier, RAG Verification & Reply Generation
+    # 2. Search Policy Chunks via BM25
+    relevant_policy = ""
+    if policy_chunks:
+        bm25 = SimpleBM25(policy_chunks)
+        matched = bm25.search(req.message, top_n=3)
+        if matched:
+            relevant_policy = "Relevant Store Policies:\n"
+            for chunk in matched:
+                relevant_policy += f"Source: {chunk['source']}\nContent:\n{chunk['text']}\n---\n"
+
+    # 3. Classifier, RAG Verification & Reply Generation Prompt
     classify_prompt = (
-        f"Analyze this customer email: '{req.message}'.\n"
-        f"Available Business Policy context:\n\"\"\"{policy_doc}\"\"\"\n\n"
-        f"CRITICAL INSTRUCTION: You must perform TWO tasks simultaneously:\n"
-        f"1. Determine if the query is answered by the Business Policy context. If yes, classify intent as 'faq'. "
-        f"ONLY classify as 'complaint' if the query is completely unrelated to the policy or if the customer explicitly demands human escalation.\n"
-        f"2. Generate the appropriate reply. If 'faq', write a highly professional email reply answering their query strictly using the policy context. "
-        f"If 'complaint', generate a short internal memo summarizing the issue for human staff.\n\n"
-        f"Extract any Transaction/Order ID (TXXXX) if present. If none, output 'none'.\n"
-        f"Return ONLY valid JSON format exactly like this:\n"
+        f"Analyze this customer email message: '{req.message}'.\n\n"
+        f"=== RELEVANT BUSINESS POLICY CONTEXT ===\n"
+        f"{relevant_policy if relevant_policy else 'No matching policy details found in store memory.'}\n\n"
+        f"CRITICAL INSTRUCTIONS:\n"
+        f"1. Check if the customer query is answered DIRECTLY and CLEARLY by the store policy context above.\n"
+        f"2. If yes, classify intent as 'faq' and generate a highly professional email reply in Roman Urdu answering their query strictly using the policy details.\n"
+        f"3. If the query is NOT answered by the policies, or if the customer is complaining about a bad experience, or demands a refund/human contact, classify intent as 'complaint' and generate a short internal escalation memo summarizing the customer's issue.\n"
+        f"4. Extract any Transaction/Order ID (e.g. T1001) if present. If none, output 'none'.\n\n"
+        f"Return ONLY valid JSON format matching this schema:\n"
         f"{{\n"
         f"  \"intent\": \"faq\" or \"complaint\",\n"
         f"  \"extracted_id\": \"id\",\n"
-        f"  \"reply\": \"Your generated text here\"\n"
+        f"  \"reply\": \"Your generated Urdu reply or internal staff memo here\"\n"
         f"}}"
     )
+
     try:
         print(f"LLM CLASSIFICATION PROMPT:\n{classify_prompt}\n")
         
@@ -1417,6 +1455,16 @@ def resolve_live_email(req: LiveResolveRequest):
         print("LLM Classification Error:", e)
         intent, extracted_id = "complaint", "none"
         auto_reply = "We have received your email. Our human support team will get back to you shortly."
+
+    # Look up database context if order ID is present
+    db_context = "No specific database context needed."
+    if extracted_id.lower() != "none" and pos_collection is not None:
+        record = pos_collection.find_one({"email": req.email})
+        if record and "data" in record:
+            for row in record["data"]:
+                if row.get("TransactionId", "").strip().lower() == extracted_id.lower():
+                    db_context = f"Found Order Data: {row}"
+                    break
 
     # Email Action via SMTP
     if settings_collection is None:
@@ -1445,7 +1493,7 @@ def resolve_live_email(req: LiveResolveRequest):
             msg['From'] = smtp_email
             msg['To'] = staff_email
             msg['Subject'] = f"ESCALATED: {req.subject}"
-            body = f"An email arrived from user {req.sender} that needs your attention.\n\nCustomer Message:\n{req.message}"
+            body = f"An email arrived from user {req.sender} that needs your attention.\n\nCustomer Message:\n{req.message}\n\nAI Escalation Memo:\n{auto_reply}"
             msg.attach(MIMEText(body, 'plain'))
             server.send_message(msg)
             action_taken = f"Forwarded to Staff ({staff_email})"
@@ -1654,6 +1702,191 @@ def reset_password(payload: ResetPasswordRequest):
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "error", "message": f"Server crash V4: {traceback.format_exc()}"})
 
+# ══════════════════════════════════════════════════════════════════════════════
+# ADVANCED RAG & BUSINESS INTELLIGENCE ENGINE FOR CHATBOT
+# ══════════════════════════════════════════════════════════════════════════════
+import re
+import math
+from collections import Counter
+
+def tokenize(text):
+    """Tokenize text for BM25 indexing/searching."""
+    return re.findall(r'\b\w+\b', text.lower())
+
+class SimpleBM25:
+    """Pure-Python implementation of BM25 Search Algorithm for serverless environments."""
+    def __init__(self, corpus):
+        self.corpus = corpus
+        self.corpus_size = len(corpus)
+        self.doc_len = [len(tokenize(d.get("text", ""))) for d in corpus]
+        self.avg_doc_len = sum(self.doc_len) / self.corpus_size if self.corpus_size > 0 else 0
+        self.doc_freqs = []
+        self.idf = {}
+        self.k1 = 1.5
+        self.b = 0.75
+        
+        nd = {}
+        for d in corpus:
+            tokens = tokenize(d.get("text", ""))
+            self.doc_freqs.append(Counter(tokens))
+            for t in set(tokens):
+                nd[t] = nd.get(t, 0) + 1
+                
+        for t, freq in nd.items():
+            self.idf[t] = math.log((self.corpus_size - freq + 0.5) / (freq + 0.5) + 1.0)
+            
+    def search(self, query, top_n=3):
+        query_tokens = tokenize(query)
+        scores = []
+        for idx, doc in enumerate(self.corpus):
+            score = 0.0
+            d_len = self.doc_len[idx]
+            freqs = self.doc_freqs[idx]
+            for token in query_tokens:
+                if token in freqs:
+                    f = freqs[token]
+                    idf = self.idf.get(token, 0.0)
+                    numerator = f * (self.k1 + 1)
+                    denominator = f + self.k1 * (1 - self.b + self.b * (d_len / self.avg_doc_len))
+                    score += idf * (numerator / denominator)
+            scores.append((score, doc))
+        
+        scores.sort(key=lambda x: x[0], reverse=True)
+        return [doc for score, doc in scores if score > 0.0][:top_n]
+
+def compute_pos_analytics(transactions, inventory_items):
+    """
+    Computes accurate, exhaustive sales analytics from POS transaction database.
+    Solves LLM calculation hallucinations and truncations.
+    """
+    item_categories = {}
+    item_retail_prices = {}
+    for key, item in inventory_items.items():
+        name_lower = item["name"].strip().lower()
+        item_categories[name_lower] = item["category"]
+        item_retail_prices[name_lower] = item["retail_price"]
+
+    total_revenue = 0
+    total_transactions = len(transactions)
+    unique_txs = set()
+    item_sales_qty = {}
+    item_revenue = {}
+    category_sales_qty = {}
+    category_revenue = {}
+
+    for tx in transactions:
+        tx_id = tx.get("TransactionId")
+        if tx_id:
+            unique_txs.add(tx_id)
+        
+        item_name = tx.get("ItemName", "").strip()
+        item_name_lower = item_name.lower()
+        qty = safe_int(tx.get("Quantity"), 1)
+        price_paid = safe_float(tx.get("PricePaid"), 0.0)
+        
+        # Estimate price if missing/zero and available in inventory
+        if price_paid == 0.0 and item_name_lower in item_retail_prices:
+            price_paid = item_retail_prices[item_name_lower] * qty
+            
+        total_revenue += price_paid
+        
+        if item_name:
+            item_sales_qty[item_name] = item_sales_qty.get(item_name, 0) + qty
+            item_revenue[item_name] = item_revenue.get(item_name, 0.0) + price_paid
+            
+            cat = item_categories.get(item_name_lower, "General")
+            category_sales_qty[cat] = category_sales_qty.get(cat, 0) + qty
+            category_revenue[cat] = category_revenue.get(cat, 0.0) + price_paid
+
+    # Supplement zero sales for inventory items not present in POS logs
+    for item in inventory_items.values():
+        name = item["name"]
+        if name not in item_sales_qty:
+            item_sales_qty[name] = 0
+            item_revenue[name] = 0.0
+
+    sorted_items_qty = sorted(item_sales_qty.items(), key=lambda x: x[1], reverse=True)
+    sorted_items_rev = sorted(item_revenue.items(), key=lambda x: x[1], reverse=True)
+    sorted_items_lowest = sorted(item_sales_qty.items(), key=lambda x: x[1])
+
+    summary = f"POS Sales Business Intelligence Report:\n"
+    summary += f"- Total Revenue: {total_revenue:,.2f} PKR\n"
+    summary += f"- Total Sales Items (Qty): {sum(item_sales_qty.values())} units\n"
+    summary += f"- Total Transaction Logs: {total_transactions}\n"
+    summary += f"- Unique Invoice Count: {len(unique_txs)}\n"
+    
+    if len(unique_txs) > 0:
+        summary += f"- Average Invoice Value: {(total_revenue / len(unique_txs)):,.2f} PKR\n"
+
+    summary += "\n--- TOP SELLING PRODUCTS (by Volume) ---\n"
+    for name, qty in sorted_items_qty[:10]:
+        rev = item_revenue.get(name, 0.0)
+        summary += f"- {name}: {qty} units sold (Revenue: {rev:,.2f} PKR)\n"
+
+    summary += "\n--- TOP SELLING PRODUCTS (by Revenue) ---\n"
+    for name, rev in sorted_items_rev[:10]:
+        qty = item_sales_qty.get(name, 0)
+        summary += f"- {name}: {rev:,.2f} PKR generated ({qty} units sold)\n"
+
+    summary += "\n--- LOWEST SELLING PRODUCTS (Bottom Performers) ---\n"
+    for name, qty in sorted_items_lowest[:10]:
+        rev = item_revenue.get(name, 0.0)
+        summary += f"- {name}: {qty} units sold (Revenue: {rev:,.2f} PKR)\n"
+
+    summary += "\n--- SALES BY CATEGORY ---\n"
+    sorted_cats = sorted(category_sales_qty.items(), key=lambda x: x[1], reverse=True)
+    for cat, qty in sorted_cats:
+        rev = category_revenue.get(cat, 0.0)
+        summary += f"- {cat}: {qty} units sold (Revenue: {rev:,.2f} PKR)\n"
+
+    return summary
+
+def get_smart_inventory_context(query, inventory_items):
+    """
+    Dynamically filters inventory items based on query keywords or matches.
+    Prevents prompt cluttering by only showing relevant stock details + high-level stats.
+    """
+    q_lower = query.lower()
+    q_tokens = tokenize(q_lower)
+    
+    matched_items = []
+    for key, item in inventory_items.items():
+        name = item["name"].lower()
+        cat = item["category"].lower()
+        supplier = item["supplier"].lower()
+        if any(token in name or token in cat or token in supplier for token in q_tokens) or name in q_lower:
+            matched_items.append(item)
+
+    context = ""
+    if matched_items:
+        context += f"Matching Inventory Details (Found {len(matched_items)} relevant items):\n"
+        for item in matched_items[:20]:
+            context += f"- Name: {item['name']}\n"
+            context += f"  Category: {item['category']}\n"
+            context += f"  Current Stock: {item['stock']} {item['unit']}\n"
+            context += f"  Retail Price: {item['retail_price']} PKR\n"
+            context += f"  Cost Price: {item['cost_price']} PKR\n"
+            context += f"  Safety Threshold (Low Stock): {item['low_threshold']} {item['unit']}\n"
+            context += f"  Sales Velocity: {item['sales_velocity_daily']} units/day\n"
+            context += f"  Supplier: {item['supplier']} (Lead Time: {item['supplier_lead_days']} days)\n"
+            context += f"  Expiry Date: {item['expiry_date']}\n\n"
+    
+    total_items = len(inventory_items)
+    total_stock_value = sum(item["stock"] * item["retail_price"] for item in inventory_items.values())
+    total_cost_value = sum(item["stock"] * item["cost_price"] for item in inventory_items.values())
+    low_stock_items = [item["name"] for item in inventory_items.values() if item["stock"] <= item["low_threshold"]]
+    
+    context += "General Inventory Health Summary:\n"
+    context += f"- Total unique products: {total_items}\n"
+    context += f"- Total Retail Value: {total_stock_value:,.2f} PKR\n"
+    context += f"- Total Cost Value: {total_cost_value:,.2f} PKR\n"
+    context += f"- Total Potential Profit: {(total_stock_value - total_cost_value):,.2f} PKR\n"
+    context += f"- Low Stock Items: {len(low_stock_items)} items\n"
+    if low_stock_items:
+        context += f"  Items below safety limit: {', '.join(low_stock_items[:10])}\n"
+        
+    return context
+
 class ChatbotRequest(BaseModel):
     email: str
     query: str
@@ -1664,69 +1897,88 @@ def store_chatbot(req: ChatbotRequest):
         email = req.email
         query = req.query
         
-        # 1. Load Inventory Context
+        # 1. Load Inventory & Get Smart Context
         inv = load_inventory(email)
-        inv_summary = ""
         if inv:
-            inv_summary = "Current Inventory Items:\n"
-            for key, item in inv.items():
-                inv_summary += f"- Name: {item['name']}, Category: {item['category']}, Stock: {item['stock']} {item['unit']}, Cost: {item['cost_price']} PKR, Retail: {item['retail_price']} PKR, Expiry: {item['expiry_date']}, Sales Velocity Daily: {item['sales_velocity_daily']}, Supplier: {item['supplier']}\n"
+            inventory_context = get_smart_inventory_context(query, inv)
         else:
-            inv_summary = "Inventory is currently empty.\n"
+            inventory_context = "Inventory is currently empty.\n"
             
-        # 2. Load POS Transactions Context
+        # 2. Load POS Logs & Compute Business Intelligence
         records = list(pos_collection.find({"email": email})) if pos_collection is not None else []
         transactions = []
         for r in records:
             transactions.extend(r.get("data", []))
             
-        pos_summary = ""
         if transactions:
-            total_rev = 0
-            item_sales = {}
-            for row in transactions:
-                qty = safe_int(row.get("Quantity"), 1)
-                price = safe_int(row.get("PricePaid"), 0)
-                item = row.get("ItemName", "").strip()
-                total_rev += price
-                if item:
-                    item_sales[item] = item_sales.get(item, 0) + qty
-            
-            bestseller = max(item_sales, key=item_sales.get) if item_sales else "None"
-            pos_summary = f"POS Sales Summary:\n- Total Sales Revenue: {total_rev} PKR\n- Total Transactions: {len(transactions)}\n- Bestselling Item: {bestseller}\n"
-            pos_summary += "\nDetails of POS Transactions:\n"
-            for t in transactions[:40]: # Limit to fits context window nicely
-                pos_summary += f"- Item: {t.get('ItemName')}, Quantity: {t.get('Quantity')}, Price Paid: {t.get('PricePaid')} PKR, Time: {t.get('Timestamp')}\n"
+            pos_context = compute_pos_analytics(transactions, inv)
         else:
-            pos_summary = "No POS transactions recorded.\n"
+            pos_context = "No POS transactions recorded.\n"
             
-        # 3. Load Business Policies Context
-        policies_context = ""
+        # 3. Load & Paragraph-Chunk Policy PDFs
+        policy_chunks = []
         if policies_collection is not None:
             policy_records = list(policies_collection.find({"email": email}))
-            if policy_records:
-                policies_context = "Business Policies:\n"
-                for doc in policy_records:
-                    policies_context += f"Document: {doc.get('filename')}\nContent:\n{doc.get('policy_text', '')}\n---\n"
+            for doc in policy_records:
+                fname = doc.get("filename", "Business Policy Document")
+                text = doc.get("policy_text", "")
+                
+                # Split text into paragraphs (double newline)
+                paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+                for p in paragraphs:
+                    if len(p) > 1000:
+                        words = p.split()
+                        current_chunk = []
+                        current_len = 0
+                        for word in words:
+                            current_chunk.append(word)
+                            current_len += len(word) + 1
+                            if current_len > 800:
+                                policy_chunks.append({
+                                    "text": " ".join(current_chunk),
+                                    "source": fname
+                                })
+                                current_chunk = []
+                                current_len = 0
+                        if current_chunk:
+                            policy_chunks.append({
+                                "text": " ".join(current_chunk),
+                                "source": fname
+                            })
+                    else:
+                        policy_chunks.append({
+                            "text": p,
+                            "source": fname
+                        })
+
+        # 4. Search Policy Chunks via BM25 Search Engine
+        policy_context = ""
+        if policy_chunks:
+            bm25 = SimpleBM25(policy_chunks)
+            matched_chunks = bm25.search(query, top_n=4)
+            if matched_chunks:
+                policy_context = "Relevant Business Policies & Rules:\n"
+                for chunk in matched_chunks:
+                    policy_context += f"Source: {chunk['source']}\nContent:\n{chunk['text']}\n---\n"
             else:
-                policies_context = "No business policies uploaded.\n"
+                policy_context = "No relevant policy documents matching this query were found in user memory.\n"
         else:
-            policies_context = "Business policies collection is unavailable.\n"
+            policy_context = "No business policy documents uploaded.\n"
             
-        # 4. Construct LLM Prompt
+        # 5. Construct Chatbot System Prompt
         chatbot_prompt = (
             f"You are the RetailMind AI Store Manager. You are an exceptionally smart, natural, and conversational AI assistant.\n"
-            f"Below is your innate memory and knowledge about your store (Inventory, POS Sales, Policies):\n\n"
-            f"=== YOUR INVENTORY DATA ===\n{inv_summary}\n"
-            f"=== YOUR POS SALES DATA ===\n{pos_summary}\n"
-            f"=== YOUR STORE POLICIES ===\n{policies_context}\n"
+            f"Below is your innate store memory compiled through RAG search and business intelligence analytics (Inventory, POS, Policies):\n\n"
+            f"=== YOUR INVENTORY DATA ===\n{inventory_context}\n"
+            f"=== YOUR POS SALES BUSINESS INTELLIGENCE ===\n{pos_context}\n"
+            f"=== YOUR RELEVANT POLICY DOCUMENTS ===\n{policy_context}\n"
             f"=== STORE OWNER'S QUERY ===\n{query}\n\n"
             f"CRITICAL RULES FOR YOUR RESPONSE:\n"
-            f"1. You MUST answer the STORE OWNER'S QUERY directly, accurately, and intelligently.\n"
-            f"2. If the user asks for calculations (e.g., top selling items, lowest sales, total revenue), CALCULATE it using your POS SALES DATA and give them the exact numbers.\n"
-            f"3. NEVER use phrases like 'Based on the provided data', 'According to the uploaded files', or 'The text contains'. This breaks the illusion. Treat the data as your own memory.\n"
-            f"4. ONLY if the user's query is literally just 'hi', 'hello', or completely blank, you should greet them. Otherwise, give the answer to their question.\n"
-            f"5. Answer strictly in elegant, professional business English. Give DIRECT, concise answers without listing every single item in the store.\n"
+            f"1. You MUST answer the STORE OWNER'S QUERY directly, accurately, and intelligently based on the context.\n"
+            f"2. For mathematical calculations (e.g., total sales, lowest seller, bestseller, average basket size), refer STRICTLY to the POS SALES BUSINESS INTELLIGENCE report above. Do NOT make up numbers.\n"
+            f"3. NEVER use phrases like 'Based on the provided data', 'According to the uploaded files', or 'The text contains'. This breaks the illusion of memory. Respond naturally, as if these figures are your own knowledge.\n"
+            f"4. ONLY if the user's query is literally just 'hi', 'hello', or completely blank, you should greet them. Otherwise, give the answer to their question directly.\n"
+            f"5. Answer strictly in elegant, professional business English. Keep answers crisp, direct, and structured.\n"
         )
         
         response = safe_llm_invoke(chatbot_prompt)
@@ -1736,4 +1988,5 @@ def store_chatbot(req: ChatbotRequest):
         import traceback
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
+
 
