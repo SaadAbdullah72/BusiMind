@@ -242,20 +242,34 @@ def load_competitors(email: str):
 # ══════════════════════════════════════════════════════════════════════════════
 INVENTORY_FILE = os.path.join(tempfile.gettempdir(), "retailmind_inventory.json")
 
-def get_llm():
+def get_llm(key_env="GROQ_API_KEY"):
     from langchain_groq import ChatGroq
+    api_key = os.getenv(key_env)
+    if not api_key:
+        api_key = os.getenv("GROQ_API_KEY")
     return ChatGroq(
         temperature=0.2,
         model_name="llama-3.1-8b-instant",
-        api_key=os.getenv("GROQ_API_KEY")
+        api_key=api_key,
+        max_retries=1
     )
 
-_llm_instance = None
+def safe_llm_invoke(prompt):
+    """Invokes LLM with automatic fallback to secondary API key on failure."""
+    try:
+        llm1 = get_llm("GROQ_API_KEY")
+        return llm1.invoke(prompt)
+    except Exception as e:
+        print(f"Primary API Key Failed: {e}. Trying Fallback GROQ_API_KEY_2...")
+        try:
+            llm2 = get_llm("GROQ_API_KEY_2")
+            return llm2.invoke(prompt)
+        except Exception as e2:
+            print(f"Secondary API Key also Failed: {e2}")
+            raise e2
+
 def _get_llm():
-    global _llm_instance
-    if _llm_instance is None:
-        _llm_instance = get_llm()
-    return _llm_instance
+    return get_llm("GROQ_API_KEY")
 
 
 
@@ -598,7 +612,7 @@ def analyze_purchase_patterns(email: str) -> list:
             f"Return NO markdown wrappers."
         )
         try:
-            response = _get_llm().invoke(prompt)
+            response = safe_llm_invoke(prompt)
             content = response.content.strip()
             if content.startswith("```json"):
                 content = content[7:]
@@ -785,7 +799,7 @@ def run_diagnostics_stream(email: str):
             f"No markdown wrappers."
         )
         try:
-            response = _get_llm().invoke(swot_prompt)
+            response = safe_llm_invoke(swot_prompt)
             swot_content = response.content.strip()
             if swot_content.startswith("```json"):
                 swot_content = swot_content[7:]
@@ -1266,7 +1280,9 @@ def resolve_customer_support(request: SupportRequest):
         )
 
     try:
-        auto_reply = llm.invoke(reply_prompt).content.strip()
+        print("DRAFTING AUTOMATED REPLY...")
+        auto_reply = safe_llm_invoke(reply_prompt).content.strip()
+        print(f"GENERATED REPLY:\n{auto_reply}\n")
     except Exception as e:
         auto_reply = f"System Error generating reply: {str(e)}"
 
@@ -1361,8 +1377,6 @@ class LiveResolveRequest(BaseModel):
 
 @app.post("/api/support/resolve-live")
 def resolve_live_email(req: LiveResolveRequest):
-    llm = _get_llm()
-    
     # Fetch Policy Document for context
     policy_doc = "No specific policy document uploaded."
     if policies_collection is not None:
@@ -1388,8 +1402,10 @@ def resolve_live_email(req: LiveResolveRequest):
         f"}}"
     )
     try:
-        res = llm.invoke(classify_prompt).content.strip()
-        import re
+        print(f"LLM CLASSIFICATION PROMPT:\n{classify_prompt}\n")
+        
+        res = safe_llm_invoke(classify_prompt).content.strip()
+        print(f"LLM RAW RESPONSE:\n{res}\n")
         json_match = re.search(r'\{.*\}', res, re.DOTALL)
         if json_match:
             res = json_match.group(0)
@@ -1487,7 +1503,6 @@ def reset_inventory():
 
 @app.post("/api/simulate")
 def handle_simulation(request: SimulationRequest):
-    llm = _get_llm()
     prompt = (
         f"You are the Operations Analyst at RetailMind Supermarket.\n"
         f"Simulate the following operational decision:\n"
@@ -1501,7 +1516,8 @@ def handle_simulation(request: SimulationRequest):
         f"No markdown wrapper."
     )
     try:
-        response = llm.invoke(prompt)
+        # Call LLM
+        response = safe_llm_invoke(prompt)
         content = response.content.strip()
         if content.startswith("```json"):
             content = content[7:]
@@ -1713,7 +1729,7 @@ def store_chatbot(req: ChatbotRequest):
             f"Always keep responses concise but complete, polite, and professional."
         )
         
-        response = _get_llm().invoke(chatbot_prompt)
+        response = safe_llm_invoke(chatbot_prompt)
         return {"response": response.content.strip()}
         
     except Exception as e:
