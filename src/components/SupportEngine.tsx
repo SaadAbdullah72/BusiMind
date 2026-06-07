@@ -26,6 +26,7 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
         if (parsed.emails && parsed.emails.length > 0) {
           setEmails(parsed.emails);
           setResults(parsed.results || {});
+          if (parsed.selectedEmail) setSelectedEmail(parsed.selectedEmail);
         }
       } catch (e) {}
     }
@@ -59,7 +60,7 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
       const res = await fetch(`/api/support/live-inbox?email=${encodeURIComponent(userEmail)}`);
       const data = await res.json();
       setEmails(data);
-      localStorage.setItem('support_engine_state', JSON.stringify({ emails: data, results }));
+      localStorage.setItem('support_engine_state', JSON.stringify({ emails: data, results, selectedEmail }));
     } catch (err) {
       console.error(err);
     } finally {
@@ -112,7 +113,7 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
         currentEmails = currentEmails.map(e => e.message_id === email.message_id ? {...e, status: data.intent === 'COMPLAINT' ? 'escalated' : 'replied'} : e);
         setEmails(currentEmails);
         
-        localStorage.setItem('support_engine_state', JSON.stringify({ emails: currentEmails, results: currentResults }));
+        localStorage.setItem('support_engine_state', JSON.stringify({ emails: currentEmails, results: currentResults, selectedEmail: email }));
       } catch (err) {
         console.error(err);
       }
@@ -147,7 +148,7 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
               disabled={loading || sendingTest || emails.length === 0} 
               className={`px-2.5 py-1.5 text-white text-[10px] rounded-lg font-bold transition-all shadow-md cursor-pointer disabled:opacity-50 uppercase tracking-wider ${processing ? 'bg-orange-500 hover:bg-orange-600' : 'bg-indigo-600 hover:bg-indigo-500'}`}
             >
-              {processing ? `Pause Automation (${progress}%)` : 'Run Automation'}
+              {processing ? `Stop Automation (${progress}%)` : 'Run Automation'}
             </button>
           </div>
         </div>
@@ -161,7 +162,10 @@ export default function SupportEngine({ userEmail }: { userEmail: string }) {
           {emails.map((email) => (
             <div 
               key={email.message_id} 
-              onClick={() => setSelectedEmail(email)}
+              onClick={() => {
+                setSelectedEmail(email);
+                localStorage.setItem('support_engine_state', JSON.stringify({ emails, results, selectedEmail: email }));
+              }}
               className={`p-4 cursor-pointer hover:bg-[#121216]/30 transition-all ${selectedEmail?.message_id === email.message_id ? 'bg-slate-800/20 border-l-2 border-l-slate-400' : ''}`}
             >
               <div className="flex items-center justify-between mb-1">
