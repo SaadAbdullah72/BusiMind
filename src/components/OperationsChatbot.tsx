@@ -61,6 +61,7 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const quickPrompts = [
@@ -70,15 +71,59 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
     { label: "Near Expiry Stock", text: "List any items in the inventory that are near their expiry date and recommend markdown strategies." }
   ];
 
+  // Fetch sessions from database on mount
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const res = await fetch(`/api/chatbot/sessions?email=${encodeURIComponent(userEmail)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.sessions && Array.isArray(data.sessions) && data.sessions.length > 0) {
+            setSessions(data.sessions);
+            const savedActive = localStorage.getItem('retailmind_active_session_id');
+            if (savedActive && data.sessions.some((s: any) => s.id === savedActive)) {
+              setActiveSessionId(savedActive);
+            } else {
+              setActiveSessionId(data.sessions[0].id);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch chat sessions from server", err);
+      } finally {
+        setHasLoaded(true);
+      }
+    };
+    if (userEmail) {
+      loadSessions();
+    }
+  }, [userEmail]);
+
   // Sync active session ID to localStorage
   useEffect(() => {
     localStorage.setItem('retailmind_active_session_id', activeSessionId);
   }, [activeSessionId]);
 
-  // Sync sessions to localStorage
+  // Sync sessions to database & localStorage
   useEffect(() => {
+    if (!hasLoaded) return;
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sessions));
-  }, [sessions]);
+
+    const syncToDB = async () => {
+      try {
+        await fetch('/api/chatbot/sessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userEmail, sessions })
+        });
+      } catch (err) {
+        console.error("Failed to sync chat sessions to database", err);
+      }
+    };
+    if (userEmail) {
+      syncToDB();
+    }
+  }, [sessions, userEmail, hasLoaded]);
 
   // Find the active session, fallback to the first session if not found
   const activeSession = sessions.find(s => s.id === activeSessionId) || sessions[0] || {
@@ -245,36 +290,36 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-auto md:h-[76vh] bg-[#0c0c0e]/60 backdrop-blur-md border border-[#1a1a24]/80 rounded-2xl overflow-hidden shadow-2xl relative">
+    <div className="flex flex-col md:flex-row h-auto md:h-[83vh] bg-[#0c0c0e]/60 backdrop-blur-md border border-[#1a1a24]/80 rounded-2xl overflow-hidden shadow-2xl relative">
       {/* Left Sidebar: Chat History */}
-      <div className="w-full md:w-[230px] bg-[#08080a]/90 border-r border-[#1a1a24]/80 flex flex-col h-48 md:h-full shrink-0">
-        <div className="p-3.5 border-b border-[#1a1a24]/80">
+      <div className="w-full md:w-[240px] bg-[#060609]/95 border-r border-[#1a1a24]/80 flex flex-col h-56 md:h-full shrink-0">
+        <div className="p-4 border-b border-[#1a1a24]/80">
           <button 
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center space-x-2 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 text-[11px] font-bold rounded-xl transition-all cursor-pointer uppercase tracking-wider"
+            className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-slate-950 text-[11px] font-extrabold rounded-xl transition-all shadow-[0_0_12px_rgba(249,115,22,0.25)] hover:shadow-[0_0_18px_rgba(249,115,22,0.4)] transform hover:-translate-y-0.5 border-none cursor-pointer uppercase tracking-wider"
           >
             <span>New Chat</span>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-2 space-y-1 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto p-2 space-y-1.5 scrollbar-thin">
           {sessions.map((session) => (
             <div 
               key={session.id}
               onClick={() => setActiveSessionId(session.id)}
-              className={`group w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all cursor-pointer border ${
+              className={`group w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all cursor-pointer border ${
                 session.id === activeSession.id 
-                  ? 'bg-slate-800/20 border-slate-700/20 text-slate-105 font-medium' 
+                  ? 'bg-slate-800/40 border-slate-700/30 text-white font-semibold shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' 
                   : 'border-transparent text-slate-400 hover:bg-[#121216]/40 hover:text-slate-200'
               }`}
             >
-              <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="flex items-center space-x-2.5 min-w-0 flex-1">
                 <span className={`text-[11px] truncate uppercase font-bold tracking-wider ${session.id === activeSession.id ? 'text-white' : 'text-slate-400'}`}>{session.title}</span>
               </div>
               
               <button 
                 onClick={(e) => handleDeleteSession(session.id, e)}
-                className="opacity-0 group-hover:opacity-60 p-1 hover:bg-red-500/10 hover:text-red-400 rounded transition-all ml-1 cursor-pointer"
+                className="opacity-0 group-hover:opacity-80 p-1 hover:bg-red-500/10 hover:text-red-400 rounded transition-all ml-1 cursor-pointer"
                 title="Delete session"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
@@ -287,42 +332,41 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
       </div>
 
       {/* Right Panel: Chat Workspace */}
-      <div className="flex-1 bg-[#060608]/90 flex flex-col h-[60vh] md:h-full overflow-hidden">
+      <div className="flex-1 bg-gradient-to-b from-[#060608]/98 to-[#0a0a0f]/98 flex flex-col h-[60vh] md:h-full overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-[#0c0c0e]/80 border-b border-[#1a1a24]/80 px-5 py-3 flex items-center justify-between">
+        <div className="bg-[#0c0c0f]/90 border-b border-[#181824] px-5 py-4 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
           <div className="flex items-center space-x-2.5">
             <div>
-              <h2 className="font-bold text-[12px] text-slate-200 uppercase tracking-widest">AI Store Assistant</h2>
+              <h2 className="font-extrabold text-[12px] text-slate-100 uppercase tracking-widest">AI Store Assistant</h2>
               <p className="text-[9.5px] text-slate-500 uppercase tracking-widest font-semibold">POS + Stock + Policies RAG Copilot</p>
             </div>
           </div>
-          <div className="flex items-center space-x-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-500 animate-pulse"></span>
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
             <span className="text-[9px] text-slate-400 font-bold tracking-wider uppercase">Active Session</span>
           </div>
         </div>
 
         {/* Chat Log & Grid */}
-        <div className="flex-1 overflow-y-auto p-5 scrollbar-thin flex flex-col">
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin flex flex-col">
           {activeSession.messages.length <= 1 ? (
-            <div className="max-w-xl mx-auto my-auto flex flex-col justify-center h-full text-center space-y-6 py-6">
+            <div className="max-w-xl mx-auto my-auto flex flex-col justify-center h-full text-center space-y-8 py-6">
               <div>
-                <h3 className="text-[15px] font-bold text-slate-200">How can I assist your business today?</h3>
-                <p className="text-[11px] text-slate-500 mt-1">
+                <h3 className="text-[16px] font-bold text-slate-100 uppercase tracking-wider">How can I assist your business today?</h3>
+                <p className="text-[11px] text-slate-500 mt-2 font-medium">
                   Ask professional queries about your inventory, customer transaction records, or shop policies.
                 </p>
               </div>
               
-              {/* Flexbox auto-adjusting tags instead of rigid grids */}
-              <div className="flex flex-wrap gap-2.5 justify-center">
+              <div className="flex flex-wrap gap-3.5 justify-center">
                 {quickPrompts.map((qp, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSend(qp.text)}
                     disabled={loading}
-                    className="p-3 bg-[#0c0c0e]/80 hover:bg-slate-800 border border-[#1a1a24]/80 hover:border-slate-600 rounded-xl text-left transition-all group cursor-pointer max-w-[260px] flex-grow flex flex-col justify-between"
+                    className="p-4 bg-gradient-to-b from-[#111116]/90 to-[#08080c]/95 hover:from-[#151520]/90 hover:to-[#0c0c12]/95 border border-[#1e1e2d] hover:border-indigo-500/30 rounded-xl text-left transition-all duration-300 group cursor-pointer max-w-[270px] flex-grow flex flex-col justify-between shadow-md hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(99,102,241,0.08)]"
                   >
-                    <h4 className="text-[10.5px] font-bold text-slate-350 group-hover:text-white transition-colors mb-1 uppercase tracking-widest">{qp.label}</h4>
+                    <h4 className="text-[10.5px] font-bold text-slate-300 group-hover:text-white transition-colors mb-2 uppercase tracking-widest">{qp.label}</h4>
                     <p className="text-[9.5px] text-slate-500 group-hover:text-slate-400 transition-colors leading-relaxed">
                       "{qp.text}"
                     </p>
@@ -331,22 +375,22 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
               </div>
             </div>
           ) : (
-            <div className="space-y-4 max-w-2xl mx-auto w-full flex-1">
+            <div className="space-y-5 max-w-3xl mx-auto w-full flex-1">
               {activeSession.messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex items-start space-x-2.5 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                    <div className={`w-7 h-7 rounded-lg shrink-0 flex items-center justify-center border text-[9px] font-bold uppercase ${
+                  <div className={`flex items-start space-x-3.5 max-w-[85%] ${msg.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                    <div className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center border text-[9px] font-bold uppercase transition-all ${
                       msg.sender === 'user' 
-                        ? 'bg-slate-800 border-slate-700 text-white' 
-                        : 'bg-slate-900 border-slate-800 text-slate-400'
+                        ? 'bg-gradient-to-tr from-slate-700 to-slate-800 border-slate-600/50 text-slate-200 shadow-[0_2px_8px_rgba(0,0,0,0.3)]' 
+                        : 'bg-gradient-to-tr from-orange-500 to-amber-400 border border-orange-400 text-slate-950 font-black shadow-[0_0_12px_rgba(249,115,22,0.3)]'
                     }`}>
                       {msg.sender === 'user' ? 'USR' : 'AI'}
                     </div>
                     
-                    <div className={`p-3.5 rounded-xl border leading-relaxed ${
+                    <div className={`p-4 rounded-2xl border leading-relaxed shadow-lg ${
                       msg.sender === 'user'
-                        ? 'bg-slate-800 border-slate-700 text-slate-200 rounded-tr-none'
-                        : 'bg-[#0c0c0e]/80 border-slate-800 text-slate-300 rounded-tl-none'
+                        ? 'bg-gradient-to-r from-[#1b1b26] to-[#14141e] border-slate-700/40 text-slate-200 rounded-tr-none shadow-black/10'
+                        : 'bg-[#0b0b10] border-indigo-500/10 text-slate-250 rounded-tl-none shadow-black/20'
                     }`}>
                       {formatMessageText(msg.text)}
                     </div>
@@ -356,11 +400,11 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
               
               {loading && (
                 <div className="flex justify-start">
-                  <div className="flex items-start space-x-2.5">
-                    <div className="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center border bg-slate-900 border-slate-800 text-[9px] font-bold text-slate-400 uppercase">
+                  <div className="flex items-start space-x-3.5">
+                    <div className="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center border bg-gradient-to-tr from-orange-500 to-amber-400 border border-orange-400 text-slate-950 font-black shadow-[0_0_12px_rgba(249,115,22,0.3)] uppercase">
                       AI
                     </div>
-                    <div className="bg-[#0c0c0e]/80 border-slate-800 text-slate-350 p-3 rounded-xl rounded-tl-none border shadow-md flex items-center space-x-1.5">
+                    <div className="bg-[#0b0b10] border-indigo-500/10 text-slate-350 p-4 rounded-2xl rounded-tl-none border shadow-md flex items-center space-x-1.5">
                       <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></span>
                       <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
                       <span className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -374,8 +418,8 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
         </div>
 
         {/* Input Form */}
-        <div className="p-3.5 bg-[#08080a]/90 border-t border-[#1a1a24]/80 mt-auto">
-          <div className="max-w-2xl mx-auto flex space-x-2.5">
+        <div className="p-4 bg-[#050508]/95 border-t border-[#1a1a24]/80 mt-auto shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+          <div className="max-w-3xl mx-auto flex space-x-3">
             <input
               type="text"
               value={input}
@@ -384,12 +428,12 @@ export default function OperationsChatbot({ userEmail }: { userEmail: string }) 
                 if (e.key === 'Enter') handleSend(input);
               }}
               placeholder="Ask anything about sales, stock status, or business policies in professional English..."
-              className="flex-1 bg-[#0c0c0e]/80 border border-[#1a1a24]/80 rounded-xl px-4 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-slate-500/50 transition-colors"
+              className="flex-1 bg-[#0a0a0f]/90 border border-slate-800 focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]"
             />
             <button
               onClick={() => handleSend(input)}
               disabled={loading || !input.trim()}
-              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center space-x-1.5 cursor-pointer shrink-0 uppercase tracking-wider"
+              className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-extrabold rounded-xl shadow-[0_0_15px_rgba(99,102,241,0.25)] hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all transform hover:-translate-y-0.5 border-none flex items-center space-x-2 cursor-pointer shrink-0 uppercase tracking-wider disabled:opacity-50"
             >
               <span className="text-[11px]">Send</span>
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">

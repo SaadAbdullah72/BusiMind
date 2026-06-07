@@ -14,7 +14,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const [error, setError] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState('');
 
   // Forgot Password / OTP States
   const [resetEmail, setResetEmail] = useState('');
@@ -67,7 +66,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   const handleGoogleCredentialResponse = async (response: any) => {
     setError('');
     setIsLoading(true);
-    setLoadingStep('Verifying Google authorization token...');
     
     try {
       const res = await fetch('/api/auth/google', {
@@ -100,7 +98,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
 
     setIsLoading(true);
-    setLoadingStep('Sending secure credentials...');
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -134,7 +131,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
 
     setIsLoading(true);
-    setLoadingStep('Checking email eligibility...');
 
     try {
       const res = await fetch('/api/auth/forgot-password', {
@@ -169,7 +165,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
 
     setIsLoading(true);
-    setLoadingStep('Verifying OTP code...');
 
     try {
       const res = await fetch('/api/auth/reset-password', {
@@ -199,16 +194,9 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
   };
 
   const triggerLoadingSequence = (userEmail: string) => {
-    setLoadingStep('Establishing secure network tunnel...');
     setTimeout(() => {
-      setLoadingStep('Authenticating encrypted tokens...');
-      setTimeout(() => {
-        setLoadingStep('Syncing neural analytics layers...');
-        setTimeout(() => {
-          onLoginSuccess(userEmail);
-        }, 800);
-      }, 700);
-    }, 600);
+      onLoginSuccess(userEmail);
+    }, 2100);
   };
 
   return (

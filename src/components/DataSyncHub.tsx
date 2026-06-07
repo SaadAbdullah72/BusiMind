@@ -171,36 +171,37 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
   };
 
   return (
-    <div className="bg-[#121216]/80 backdrop-blur-md border border-[#1e1e24] rounded-2xl p-5 md:p-8 shadow-2xl">
-      <h2 className="text-2xl font-bold text-slate-100 mb-2">Data Sync Hub</h2>
-      <p className="text-sm text-slate-400 mb-8">
+    <div className="bg-gradient-to-b from-[#0e0e12]/90 to-[#0c0c0f]/95 border border-[#1e1e26] rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none"></div>
+      <h2 className="text-2xl font-bold text-slate-100 mb-2 uppercase tracking-wide">Data Sync Hub</h2>
+      <p className="text-xs text-slate-400 mb-8 uppercase tracking-widest font-semibold">
         Upload your store's CSV files to power the AI Diagnostic Engine. The AI uses this exact data to make real-world decisions.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Inventory Card */}
-        <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+        <div className="bg-gradient-to-b from-[#0c0c0e]/80 to-[#171512]/50 border border-orange-500/10 hover:border-orange-500/30 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-orange-500/2">
+          <div className="w-12 h-12 bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded-full flex items-center justify-center mb-4 font-black text-sm shadow-[0_0_10px_rgba(249,115,22,0.15)]">
              1
           </div>
-          <h3 className="text-md font-bold text-slate-200">1. Current Inventory</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs for AI to verify stock & Expiry Optimization.</p>
+          <h3 className="text-sm font-extrabold text-slate-200 uppercase tracking-widest">1. Current Inventory</h3>
+          <p className="text-[11px] text-slate-500 mt-2 mb-4 leading-relaxed">Upload multiple CSVs for AI to verify stock & Expiry Optimization.</p>
           
           <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
               {inventoryFiles.length === 0 ? (
-                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                <div className="text-[11px] text-slate-500 text-center py-4 bg-[#121216]/30 rounded-lg border border-dashed border-slate-800/40">
                   No inventory uploaded.
                 </div>
               ) : (
                 inventoryFiles.map(f => (
-                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
-                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'Inventory CSV'}>
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216]/50 px-3 py-2 rounded-lg border border-slate-800/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[10px] text-slate-350 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'Inventory CSV'}>
                       {f.filename || 'Inventory CSV'}
                     </span>
                     <button 
                       onClick={() => deleteInventory(f.doc_id)} 
-                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
+                      className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/10 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
                       Delete
@@ -212,10 +213,10 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('inventory')} className="w-1/3 py-2 bg-[#121216] hover:bg-slate-800 text-slate-300 text-[11px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40" title="Download Template">
+             <button onClick={() => handleDownload('inventory')} className="w-1/3 py-2.5 bg-[#121216]/60 hover:bg-[#1c1c24] text-slate-350 text-[10px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40 uppercase tracking-wider" title="Download Template">
                Template
              </button>
-             <label className={`flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] rounded-lg font-bold transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+             <label className={`flex-1 py-2.5 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-slate-950 border border-transparent text-[10px] rounded-lg font-extrabold transition-all cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-orange-500/20 uppercase tracking-wider`}>
                {uploading === 'Inventory' ? 'Uploading...' : 'Upload CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'inventory', 'Inventory')} />
              </label>
@@ -223,28 +224,28 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
         </div>
 
         {/* Business Policy Card */}
-        <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+        <div className="bg-gradient-to-b from-[#0c0c0e]/80 to-[#121217]/50 border border-indigo-500/10 hover:border-indigo-500/30 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-indigo-500/2">
+          <div className="w-12 h-12 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full flex items-center justify-center mb-4 font-black text-sm shadow-[0_0_10px_rgba(99,102,241,0.15)]">
              2
           </div>
-          <h3 className="text-md font-bold text-slate-200">2. Business Policy (PDF)</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple PDFs for the AI to use as context.</p>
+          <h3 className="text-sm font-extrabold text-slate-200 uppercase tracking-widest">2. Business Policy (PDF)</h3>
+          <p className="text-[11px] text-slate-500 mt-2 mb-4 leading-relaxed">Upload multiple PDFs for the AI to use as context.</p>
           
           <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
               {policies.length === 0 ? (
-                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                <div className="text-[11px] text-slate-500 text-center py-4 bg-[#121216]/30 rounded-lg border border-dashed border-slate-800/40">
                   No policies uploaded yet.
                 </div>
               ) : (
                 policies.map(p => (
-                  <div key={p.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
-                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={p.filename || 'Business Policy Document'}>
+                  <div key={p.doc_id} className="flex items-center justify-between bg-[#121216]/50 px-3 py-2 rounded-lg border border-slate-800/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[10px] text-slate-350 truncate pr-2 flex-1 flex items-center gap-2" title={p.filename || 'Business Policy Document'}>
                       {p.filename || 'Business Policy Document'}
                     </span>
                     <button 
                       onClick={() => deletePolicy(p.doc_id)} 
-                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
+                      className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/10 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
                       Delete
@@ -256,7 +257,7 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full mt-auto">
-             <label className={`w-full py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] font-bold rounded-lg transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+             <label className={`w-full py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white border border-transparent text-[10px] font-extrabold rounded-lg transition-all cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-indigo-500/20 uppercase tracking-wider`}>
                {uploading === 'Policy' ? 'Extracting Text...' : 'Upload PDF'}
                <input type="file" accept=".pdf" className="hidden" onChange={uploadPdfFile} />
              </label>
@@ -264,28 +265,28 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
         </div>
 
         {/* POS Logs Card */}
-        <div className="bg-[#0c0c0e] border border-[#1e1e24] rounded-xl p-5 flex flex-col items-center text-center relative overflow-hidden">
-          <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-700 font-bold text-slate-300">
+        <div className="bg-gradient-to-b from-[#0c0c0e]/80 to-[#121714]/50 border border-emerald-500/10 hover:border-emerald-500/30 rounded-2xl p-6 flex flex-col items-center text-center relative overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-emerald-500/2">
+          <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center justify-center mb-4 font-black text-sm shadow-[0_0_10px_rgba(16,185,129,0.15)]">
              3
           </div>
-          <h3 className="text-md font-bold text-slate-200">3. Daily POS Sales</h3>
-          <p className="text-xs text-slate-500 mt-2 mb-4">Upload multiple CSVs. Required for AI to verify historical purchases.</p>
+          <h3 className="text-sm font-extrabold text-slate-200 uppercase tracking-widest">3. Daily POS Sales</h3>
+          <p className="text-[11px] text-slate-500 mt-2 mb-4 leading-relaxed">Upload multiple CSVs. Required for AI to verify historical purchases.</p>
           
           <div className="w-full text-left mb-4 flex-1 overflow-hidden flex flex-col">
             <div className="flex-1 overflow-y-auto pr-1 space-y-2 custom-scrollbar" style={{ maxHeight: '120px' }}>
               {posFiles.length === 0 ? (
-                <div className="text-xs text-slate-500 text-center py-4 bg-[#121216]/50 rounded-lg border border-dashed border-slate-700/50">
+                <div className="text-[11px] text-slate-500 text-center py-4 bg-[#121216]/30 rounded-lg border border-dashed border-slate-800/40">
                   No POS logs uploaded.
                 </div>
               ) : (
                 posFiles.map(f => (
-                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216] px-3 py-2 rounded-lg border border-slate-700/50 group/item transition-colors hover:border-slate-500/30">
-                    <span className="text-[11px] text-slate-300 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'POS Sales CSV'}>
+                  <div key={f.doc_id} className="flex items-center justify-between bg-[#121216]/50 px-3 py-2 rounded-lg border border-slate-800/50 group/item transition-colors hover:border-slate-500/30">
+                    <span className="text-[10px] text-slate-350 truncate pr-2 flex-1 flex items-center gap-2" title={f.filename || 'POS Sales CSV'}>
                       {f.filename || 'POS Sales CSV'}
                     </span>
                     <button 
                       onClick={() => deletePos(f.doc_id)} 
-                      className="text-slate-500 hover:text-slate-300 p-1 rounded-md hover:bg-slate-800 transition-colors text-[9px] uppercase font-bold"
+                      className="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/10 transition-colors text-[9px] uppercase font-bold"
                       title="Delete document"
                     >
                       Delete
@@ -297,10 +298,10 @@ export default function DataSyncHub({ userEmail, onUploadSuccess }: DataSyncHubP
           </div>
 
           <div className="flex w-full space-x-2 mt-auto">
-             <button onClick={() => handleDownload('pos')} className="w-1/3 py-2 bg-[#121216] hover:bg-slate-800 text-slate-300 text-[11px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40" title="Download Template">
+             <button onClick={() => handleDownload('pos')} className="w-1/3 py-2.5 bg-[#121216]/60 hover:bg-[#1c1c24] text-slate-350 text-[10px] rounded-lg font-bold transition-colors flex items-center justify-center gap-1 border border-slate-700/40 uppercase tracking-wider" title="Download Template">
                Template
              </button>
-             <label className={`flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-white border border-transparent text-[11px] rounded-lg font-bold transition-colors cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-slate-500/20`}>
+             <label className={`flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-slate-950 border border-transparent text-[10px] rounded-lg font-extrabold transition-all cursor-pointer text-center relative overflow-hidden group flex items-center justify-center gap-1 shadow-md hover:shadow-emerald-500/20 uppercase tracking-wider`}>
                {uploading === 'POS' ? 'Uploading...' : 'Upload CSV'}
                <input type="file" accept=".csv" className="hidden" onChange={(e) => uploadFile(e, 'pos', 'POS')} />
              </label>

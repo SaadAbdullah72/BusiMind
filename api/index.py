@@ -40,6 +40,7 @@ if MONGO_URI:
     emails_collection = db["customer_emails"]
     policies_collection = db["business_policies"]
     settings_collection = db["business_settings"]
+    chat_sessions_collection = db["chat_sessions"]
 else:
     mongo_client = None
     users_collection = None
@@ -50,6 +51,7 @@ else:
     emails_collection = None
     policies_collection = None
     settings_collection = None
+    chat_sessions_collection = None
 
 from fastapi import File, UploadFile, Form
 import PyPDF2
@@ -2006,5 +2008,50 @@ def store_chatbot(req: ChatbotRequest):
         import traceback
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+from typing import List
+
+class ChatSessionMessageModel(BaseModel):
+    sender: str
+    text: str
+
+class ChatSessionModel(BaseModel):
+    id: str
+    title: str
+    messages: List[ChatSessionMessageModel]
+    createdAt: float
+
+class ChatSessionsSaveRequest(BaseModel):
+    email: str
+    sessions: List[ChatSessionModel]
+
+@app.get("/api/chatbot/sessions")
+def get_chatbot_sessions(email: str = None):
+    if not email:
+        return JSONResponse(status_code=400, content={"error": "email is required"})
+    if chat_sessions_collection is None:
+        return {"sessions": []}
+    
+    doc = chat_sessions_collection.find_one({"email": email})
+    if not doc:
+        return {"sessions": []}
+    
+    return {"sessions": doc.get("sessions", [])}
+
+@app.post("/api/chatbot/sessions")
+def save_chatbot_sessions(payload: ChatSessionsSaveRequest):
+    if chat_sessions_collection is None:
+        return JSONResponse(status_code=500, content={"error": "Database not configured"})
+    
+    # Save/update sessions for user email
+    chat_sessions_collection.update_one(
+        {"email": payload.email},
+        {"$set": {
+            "sessions": [s.dict() for s in payload.sessions],
+            "updated_at": datetime.utcnow()
+        }},
+        upsert=True
+    )
+    return {"status": "success", "message": "Chat sessions synchronized successfully."}
 
 
