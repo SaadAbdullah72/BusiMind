@@ -213,52 +213,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   return (
     <div className="min-h-screen bg-[#050505] text-slate-100 flex flex-col font-sans antialiased relative overflow-hidden select-none">
-      <style>{`
-        .logo-scene {
-          perspective: 1200px;
-          width: 150px;
-          height: 150px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 1rem;
-        }
-        .logo-3d-object {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          transform-style: preserve-3d;
-          animation: continuous-spin 10s linear infinite;
-        }
-        @keyframes continuous-spin {
-          0% { transform: rotateY(0deg) rotateX(0deg); }
-          100% { transform: rotateY(360deg) rotateX(0deg); }
-        }
-        .logo-face {
-          position: absolute;
-          inset: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          backface-visibility: visible;
-          transform-style: preserve-3d;
-        }
-        .logo-glow {
-          position: absolute;
-          width: 150%;
-          height: 150%;
-          background: radial-gradient(circle, rgba(249,115,22,0.3) 0%, transparent 65%);
-          top: -25%;
-          left: -25%;
-          pointer-events: none;
-          animation: pulse-glow 3s ease-in-out infinite alternate;
-        }
-        @keyframes pulse-glow {
-          0% { opacity: 0.5; transform: scale(0.95); }
-          100% { opacity: 1; transform: scale(1.05); }
-        }
-      `}</style>
-      
+
       {/* Background Decorative Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/5 rounded-full blur-[150px] pointer-events-none z-0"></div>
@@ -320,9 +275,8 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
           
           <div className="max-w-md w-full mx-auto space-y-8">
             
-            {/* 3D Rotating Logo */}
             <div className="flex flex-col items-center">
-              <div className="logo-scene relative">
+              <div className="logo-scene relative w-[150px] h-[150px] mb-4">
                 <div className="logo-glow"></div>
                 <div className="logo-3d-object">
                   {/* Edges (Thickness) */}
@@ -636,7 +590,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             <div className="flex flex-col items-center justify-center">
               <div className="logo-scene relative" style={{ width: '100px', height: '100px', perspective: '1200px' }}>
                 <div className="logo-glow"></div>
-                <div className="logo-3d-object" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="logo-3d-object" style={{ transformStyle: 'preserve-3d', animation: 'continuous-spin 3s linear infinite' }}>
                   {/* Edges */}
                   {Array.from({ length: 10 }).map((_, i) => (
                     <div key={`loader-edge-${i}`} className="logo-face" style={{ transform: `translateZ(${i - 5}px)` }}>
@@ -670,19 +624,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white tracking-tight">Accessing Database</h3>
-              <p className="text-xs text-slate-400 font-mono tracking-wider transition-all duration-300">
-                {loadingStep}
-              </p>
-            </div>
-            
-            {/* Tiny logs window */}
-            <div className="w-full bg-[#0a0a0c] border border-[#1e1e24] p-3 rounded-lg text-left font-mono text-[9px] text-slate-500 h-20 overflow-hidden leading-relaxed shadow-inner">
-              <div>[SYSTEM] Initiating authentication handshake</div>
-              <div>[SECURE] Connected to api.busimind.com/v2</div>
-              <div>[AUTH] Handshake verification passed: OK</div>
-              <div>[CLIENT] Session token generated successfully</div>
-              <div className="animate-pulse text-orange-500/80">[ENV] Unlocking modules: overview, expiry, strategic_sandbox</div>
+              <h3 className="text-lg font-bold text-white tracking-tight">AI Loading</h3>
             </div>
 
           </div>
