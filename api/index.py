@@ -1722,11 +1722,11 @@ def store_chatbot(req: ChatbotRequest):
             f"=== YOUR STORE POLICIES ===\n{policies_context}\n"
             f"=== STORE OWNER'S QUERY ===\n{query}\n\n"
             f"CRITICAL RULES FOR YOUR RESPONSE:\n"
-            f"1. Give DIRECT, concise, and highly intelligent answers. Do NOT list out all items unless explicitly asked.\n"
-            f"2. NEVER use phrases like 'Based on the provided POS data', 'According to the uploaded files', or 'The text contains'. This breaks the illusion. Treat the data as your own memory.\n"
-            f"3. If the user's query is just a greeting or is empty, simply greet them warmly and ask how you can assist with the store today. NEVER say 'I did not receive a query' or complain about the provided text.\n"
-            f"4. If the information isn't in your memory, simply state that you don't have that specific data currently, without mentioning 'files' or 'context'.\n"
-            f"5. You MUST answer the query strictly in elegant, professional business English. If the user asks in Roman Urdu or Urdu, understand it but respond strictly in English.\n"
+            f"1. You MUST answer the STORE OWNER'S QUERY directly, accurately, and intelligently.\n"
+            f"2. If the user asks for calculations (e.g., top selling items, lowest sales, total revenue), CALCULATE it using your POS SALES DATA and give them the exact numbers.\n"
+            f"3. NEVER use phrases like 'Based on the provided data', 'According to the uploaded files', or 'The text contains'. This breaks the illusion. Treat the data as your own memory.\n"
+            f"4. ONLY if the user's query is literally just 'hi', 'hello', or completely blank, you should greet them. Otherwise, give the answer to their question.\n"
+            f"5. Answer strictly in elegant, professional business English. Give DIRECT, concise answers without listing every single item in the store.\n"
         )
         
         response = safe_llm_invoke(chatbot_prompt)
