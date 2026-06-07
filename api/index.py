@@ -1186,18 +1186,18 @@ def send_mock_live_emails(payload: MockEmailPayload):
         return JSONResponse(status_code=400, content={"status": "error", "message": "Customer or SMTP Credentials not found in Business Settings."})
 
     queries = [
-        # Solvable by PDF
-        "How long does standard delivery take for metropolitan areas?",
-        "What is your return policy? I bought an item 2 days ago.",
-        "Can I get express shipping and how much is it?",
-        "Do electronic products come with a warranty?",
-        "Can I get a refund for a sale item I bought at 30% discount?",
-        # Unsolvable / Escalations (Go to Staff)
-        "I want to collaborate with your brand for a marketing campaign. Who should I contact?",
-        "I received the completely wrong item. The rider was very rude. I want my money back NOW!",
-        "Can I change my delivery address? I moved to a different city yesterday.",
-        "Do you offer wholesale or B2B discounts for bulk purchasing?",
-        "My credit card was charged twice for the same order! Please refund the extra charge!"
+        # Solvable by PDF (FAQ) - 70%
+        "I bought a packet of Olpers Milk yesterday and it was spoiled. Can I return it?",
+        "Can I return a 5L tin of Dalda Cooking Oil that I bought 5 days ago? The seal is not open.",
+        "What discount do you offer on bakery items at night? I want to visit at 9:00 PM.",
+        "I want to return a bag of Surf Excel detergent. The bag is slightly torn and wet. Will you accept it?",
+        "How long does Unilever Pakistan take to deliver order supplies to the store?",
+        "What is the maximum cash limit allowed in a register till before a safe drop is required?",
+        "At what temperature should the open chiller for dairy and yogurt be maintained?",
+        # Unsolvable / Escalations (Go to Staff) - 30%
+        "I want to collaborate with your store for a local food festival sponsorship. Who is the manager?",
+        "I received the wrong items from home delivery and the delivery rider shouted at me! Refund my money right now!",
+        "I noticed a double charge of 2,500 PKR on my bank statement for my shopping today. Reverse it immediately!"
     ]
 
     try:
@@ -1427,11 +1427,13 @@ def resolve_live_email(req: LiveResolveRequest):
         f"=== RELEVANT BUSINESS POLICY CONTEXT ===\n"
         f"{relevant_policy if relevant_policy else 'No matching policy details found in store memory.'}\n\n"
         f"CRITICAL INSTRUCTIONS:\n"
-        f"1. Check if the customer query is answered DIRECTLY and CLEARLY by the store policy context above.\n"
-        f"2. If yes, classify intent as 'faq' and generate a highly professional email reply in Roman Urdu answering their query strictly using the policy details.\n"
-        f"3. If the query is NOT answered by the policies, or if the customer is complaining about a bad experience, or demands a refund/human contact, classify intent as 'complaint' and generate a short internal escalation memo summarizing the customer's issue.\n"
-        f"4. Extract any Transaction/Order ID (e.g. T1001) if present. If none, output 'none'.\n\n"
-        f"Return ONLY valid JSON format matching this schema:\n"
+        f"1. Classify the intent as 'faq' ONLY if the customer's question is directly answered by the store policy guidelines above (for example: return/refund eligibility of spoiled milk, open tins of oil, torn bags of detergent, store markdown discount hours, supplier lead times, register safe drops till cash limit, or chiller temperatures).\n"
+        f"2. Classify the intent as 'complaint' (escalation) if the issue requires direct human intervention, such as: service quality complaints (e.g. delivery rider shouting or bad staff behaviour), billing discrepancies (double charges), local sponsorships, business collaborations, or bulk sales. These require direct human action.\n"
+        f"3. If intent is 'faq', generate a highly professional email reply in Roman Urdu answering their query strictly using the policy details.\n"
+        f"4. If intent is 'complaint', generate a short internal escalation memo in English summarizing the customer's issue for the management team.\n"
+        f"5. Extract any Transaction/Order ID (e.g. T1001) if present. If none, output 'none'.\n"
+        f"6. Return ONLY a valid JSON object. Do NOT include any preamble, comments, or markdown wraps. Any newlines inside the JSON string values must be escaped as \\n.\n\n"
+        f"Return JSON format matching this schema:\n"
         f"{{\n"
         f"  \"intent\": \"faq\" or \"complaint\",\n"
         f"  \"extracted_id\": \"id\",\n"
@@ -1440,19 +1442,35 @@ def resolve_live_email(req: LiveResolveRequest):
     )
 
     try:
-        print(f"LLM CLASSIFICATION PROMPT:\n{classify_prompt}\n")
-        
+        # Avoid direct printing of non-ASCII content to Windows console to prevent encoding crashes
         res = safe_llm_invoke(classify_prompt).content.strip()
-        print(f"LLM RAW RESPONSE:\n{res}\n")
+        
+        # Clean potential markdown block wrapping
+        if res.startswith("```json"):
+            res = res[7:]
+        if res.endswith("```"):
+            res = res[:-3]
+        res = res.strip()
+        
         json_match = re.search(r'\{.*\}', res, re.DOTALL)
         if json_match:
-            res = json_match.group(0)
-        classification = json.loads(res.strip())
+            res_json_str = json_match.group(0)
+            try:
+                classification = json.loads(res_json_str)
+            except json.JSONDecodeError:
+                # Escape control characters/newlines within quotes if LLM returned raw multiline text
+                def escape_newlines(m):
+                    return m.group(0).replace('\n', '\\n').replace('\r', '')
+                escaped_str = re.sub(r'"([^"\\]*(?:\\.[^"\\]*)*)"', escape_newlines, res_json_str)
+                classification = json.loads(escaped_str)
+        else:
+            raise ValueError("No JSON block found in LLM response")
+            
         intent = classification.get("intent", "faq")
         extracted_id = classification.get("extracted_id", "none")
-        auto_reply = classification.get("reply", "We have received your email. Our human support team will get back to you shortly.")
+        auto_reply = classification.get("reply", "We have received your email. Our support team will get back to you shortly.")
     except Exception as e:
-        print("LLM Classification Error:", e)
+        print("LLM Classification Error (Safely Caught):", str(e).encode('utf-8', errors='ignore').decode('utf-8'))
         intent, extracted_id = "complaint", "none"
         auto_reply = "We have received your email. Our human support team will get back to you shortly."
 
